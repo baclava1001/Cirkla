@@ -27,7 +27,6 @@ namespace Cirkla_API.Users
                 return BadRequest();
             }
             await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
             return Ok(user);
         }
 

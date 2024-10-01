@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Users
 {
-
-    // TODO: !!! Ändra namnen till tydligare, skippa -Async-suffixet
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
@@ -18,6 +16,7 @@ namespace Cirkla_API.Users
         public async Task<User> AddAsync(User user)
         {
             await _context.AddAsync(user);
+            await _context.SaveChangesAsync();
             return user;
         }
 
@@ -38,6 +37,7 @@ namespace Cirkla_API.Users
         public async Task<User> RemoveAsync(User user)
         {
             _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
             return user;
         }
 
@@ -49,6 +49,7 @@ namespace Cirkla_API.Users
         public async Task<User> UpdateAsync(User user)
         {
             _context.Users.Update(user);
+            await _context.SaveChangesAsync();
             return user;
         }
     }
