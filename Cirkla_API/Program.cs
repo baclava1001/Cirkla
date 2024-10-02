@@ -13,7 +13,7 @@ namespace Cirkla_API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            // TODO: Try using Service decoration: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
+            // TODO: Try using Service decoration to contain services: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
 
             builder.Services.AddDbContext<AppDbContext>
                 (options => options.UseSqlServer(builder.Configuration
@@ -21,6 +21,11 @@ namespace Cirkla_API
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IItemRepository, ItemRepository>();
             builder.Services.AddScoped<IItemPictureRepository, ItemPictureRepository>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
+            builder.Services.AddScoped<IItemService, ItemService>();
+            builder.Services.AddScoped<IItemPictureService, ItemPictureService>();
+            
+            // TODO: Add iLogger configuration
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

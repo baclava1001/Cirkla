@@ -34,7 +34,7 @@ namespace Cirkla_API.Items
 
         public Task<Item> Remove(Item item)
         {
-            _context.Items.Remove(item);
+            _context.Remove(item);
             return Task.FromResult(item);
         }
 
@@ -43,10 +43,10 @@ namespace Cirkla_API.Items
             await _context.SaveChangesAsync();
         }
 
-        public Task<Item> Update(Item item)
+        public async Task<Item> Update(Item item)
         {
-            _context.Items.Update(item);
-            return Task.FromResult(item);
+            _context.Update(item);
+            return await Task.FromResult(item);
         }
     }
 }

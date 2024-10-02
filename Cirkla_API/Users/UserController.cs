@@ -8,7 +8,6 @@ namespace Cirkla_API.Users
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        // TODO: Plugga på om ILogger och om jag ev behöver dependency injection
         private readonly ILogger<UserController> _logger;
 
         public UserController(IUserRepository userRepository, ILogger<UserController> logger)
@@ -17,11 +16,10 @@ namespace Cirkla_API.Users
             _logger = logger;
         }
 
-        // TODO: Null-checks and other error-handling (try global exception handling?)
-
         [HttpPost]
         public async Task<ActionResult<User>> AddUserAsync(User user)
         {
+            _logger.LogInformation("Adding user.");
             if (user is null)
             {
                 return BadRequest();
@@ -33,6 +31,7 @@ namespace Cirkla_API.Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync()
         {
+            _logger.LogInformation("Listing all users.");
             IEnumerable<User> userList = await _userRepository.GetAllAsync();
 
             if (!userList.Any())
@@ -46,6 +45,7 @@ namespace Cirkla_API.Users
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         {
+            _logger.LogInformation("Retrieving user by id.");
             User user = await _userRepository.GetByIdAsync(id);
             
             if (user is null)
@@ -59,6 +59,7 @@ namespace Cirkla_API.Users
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUserAsync(int id, User user)
         {
+            _logger.LogInformation("Updating user info by id.");
             if (user is null || id != user.Id)
             {
                 return BadRequest("Can not update information.");
@@ -73,6 +74,7 @@ namespace Cirkla_API.Users
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserAsync(int id)
         {
+            _logger.LogInformation("Deleting user by id.");
             User user = await _userRepository.GetByIdAsync(id);
 
             if (user is null)

@@ -7,85 +7,68 @@ namespace Cirkla_API.Items
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private readonly IItemRepository _itemRepository;
-        // TODO: Plugga på om ILogger och om jag ev behöver dependency injection
+        private readonly IItemService _itemService;
+        // TODO: Plugga på om ILogger
         private readonly ILogger<ItemController> _logger;
 
-        public ItemController(IItemRepository itemRepository, ILogger<ItemController> logger)
+        public ItemController(IItemService itemService, ILogger<ItemController> logger)
         {
-            _itemRepository = itemRepository;
+            _itemService = itemService;
             _logger = logger;
         }
 
-        // TODO: Null-checks and other error-handling
-
         [HttpPost]
-        public async Task<ActionResult<Item>> AddItemAsync(Item item)
+        public async Task<ActionResult<Item>> CreateItemAsync(Item item)
         {
             if (item is null)
             {
                 return BadRequest();
             }
-            await _itemRepository.AddAsync(item);
-            await _itemRepository.SaveChangesAsync();
-            // TODO: Return Created method instead
+            await _itemService.CreateItemAsync(item);
+            // TODO: Return Created method instead?
             return Ok(item);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetAllItemsAsync()
+        public async Task<ActionResult<IEnumerable<Item>>> ListAllItemsAsync()
         {
-            IEnumerable<Item> itemList = await _itemRepository.GetAllAsync();
-
-            if (!itemList.Any())
-            {
-                return NotFound("No item found.");
-            }
-            // TODO: Ersätt med mappad DTO
-            return Ok(itemList);
+            IEnumerable<Item> items = await _itemService.ListAllItemsAsync();
+            return Ok(items);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItemByIdAsync(int id)
         {
-            Item item = await _itemRepository.GetByIdAsync(id);
+            Item item = await _itemService.FindItemByIdAsync(id);
 
             if (item is null)
             {
                 return NotFound("No item found.");
             }
-            // TODO: Ersätt med mappad DTO
             return Ok(item);
         }
 
+        // TODO: Always returns success code even when operation not successful
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateItemAsync(int id, Item item)
         {
-
-            if (item is null || _itemRepository.GetByIdAsync(id) is null)
+            if(await _itemService.UpdateItem(id, item) == false)
             {
-                return NotFound("Can not update information.");
+                return BadRequest();
             }
-
-            await _itemRepository.Update(item);
-            await _itemRepository.SaveChangesAsync();
             Response.Headers.Append("Updated-Item-Id", item.Id.ToString());
             return NoContent();
         }
 
+        // TODO: Always returns success code even when Item does not exist
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItemAsync(int id)
         {
-            Item item = await _itemRepository.GetByIdAsync(id);
-
-            if (item is null)
+            if(await _itemService.DeleteItem(id) == false)
             {
-                return NotFound("Can not find item at this time.");
+                return BadRequest();
             }
-
-            await _itemRepository.Remove(item);
-            await _itemRepository.SaveChangesAsync();
-            Response.Headers.Append("Removed-Item-Id", item.Id.ToString());
+            Response.Headers.Append("Removed-Item-Id", id.ToString());
             return NoContent();
         }
     }
