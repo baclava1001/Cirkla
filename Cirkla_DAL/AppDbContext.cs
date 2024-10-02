@@ -13,8 +13,6 @@ namespace Cirkla_DAL
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemPicture> ItemPictures { get; set; }
 
-        // TODO: !!!Seed some data
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

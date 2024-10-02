@@ -19,9 +19,10 @@ namespace Cirkla_API.ItemPictures
             return itemPicture;
         }
 
-        public async Task<IEnumerable<ItemPicture>> GetAllAsync()
+        // Gets all images related to a certain item
+        public async Task<IEnumerable<ItemPicture>> GetAllAsync(int itemId)
         {
-            return await _context.ItemPictures.ToListAsync();
+            return await _context.ItemPictures.Where(p => p.ItemId == itemId).ToListAsync();
         }
 
         public async Task<ItemPicture> GetByIdAsync(int id)

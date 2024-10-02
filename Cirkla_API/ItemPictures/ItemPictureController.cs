@@ -8,13 +8,13 @@ namespace Cirkla_API.Items
     [ApiController]
     public class ItemPictureController : ControllerBase
     {
-        private readonly IItemPictureRepository _itemPictureRepository;
-        // TODO: Plugga på om ILogger och om jag ev behöver dependency injection
+        private readonly IItemPictureService _itemPictureService;
+        // TODO: Plugga på om ILogger
         private readonly ILogger<ItemPictureController> _logger;
 
-        public ItemPictureController(IItemPictureRepository itemPictureRepository, ILogger<ItemPictureController> logger)
+        public ItemPictureController(IItemPictureService itemPictureService, ILogger<ItemPictureController> logger)
         {
-            _itemPictureRepository = itemPictureRepository;
+            _itemPictureService = itemPictureService;
             _logger = logger;
         }
 
@@ -23,38 +23,28 @@ namespace Cirkla_API.Items
         [HttpPost]
         public async Task<ActionResult<ItemPicture>> AddItemPictureAsync(ItemPicture itemPicture)
         {
-            if (itemPicture is null)
+            if(await _itemPictureService.AddItemPictureAsync(itemPicture) == false)
             {
                 return BadRequest();
             }
-            await _itemPictureRepository.AddAsync(itemPicture);
-            await _itemPictureRepository.SaveChangesAsync();
             // TODO: Return Created method instead
             return Ok(itemPicture);
         }
 
+        // Gets all images belonging to a specific item
+        // TODO: Best practice?
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemPicture>>> GetAllItemsAsync()
+        public async Task<ActionResult<IEnumerable<ItemPicture>>> ListItemPicturesAsync(int itemId)
         {
-            IEnumerable<ItemPicture> itemPictureList = await _itemPictureRepository.GetAllAsync();
-
-            if (!itemPictureList.Any())
-            {
-                return NotFound("No picture found.");
-            }
+            IEnumerable<ItemPicture> itemPictures = await _itemPictureService.ListItemPicturesAsync(itemId);
             // TODO: Ersätt med mappad DTO
-            return Ok(itemPictureList);
+            return Ok(itemPictures);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ItemPicture>> GetItemPictureByIdAsync(int id)
         {
-            ItemPicture itemPicture = await _itemPictureRepository.GetByIdAsync(id);
-
-            if (itemPicture is null)
-            {
-                return NotFound("No picture found.");
-            }
+            ItemPicture itemPicture = await _itemPictureService.FindItemPictureByIdAsync(id);
             // TODO: Ersätt med mappad DTO
             return Ok(itemPicture);
         }
@@ -62,14 +52,10 @@ namespace Cirkla_API.Items
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateItemPictureAsync(int id, ItemPicture itemPicture)
         {
-
-            if (itemPicture is null || _itemPictureRepository.GetByIdAsync(id) is null)
+            if(await _itemPictureService.ChangeItemPicture(id, itemPicture) == false)
             {
-                return NotFound("Can not update information.");
+                return BadRequest();
             }
-
-            await _itemPictureRepository.Update(itemPicture);
-            await _itemPictureRepository.SaveChangesAsync();
             Response.Headers.Append("Updated-ItemPicture-Id", itemPicture.Id.ToString());
             return NoContent();
         }
@@ -77,16 +63,11 @@ namespace Cirkla_API.Items
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItemPictureAsync(int id)
         {
-            ItemPicture itemPicture = await _itemPictureRepository.GetByIdAsync(id);
-
-            if (itemPicture is null)
+            if(await _itemPictureService.DeleteItemPicture(id) == false)
             {
-                return NotFound("Can not find picture at this time.");
+                return BadRequest();
             }
-
-            await _itemPictureRepository.Remove(itemPicture);
-            await _itemPictureRepository.SaveChangesAsync();
-            Response.Headers.Append("Removed-ItemPicture-Id", itemPicture.Id.ToString());
+            Response.Headers.Append("Removed-ItemPicture-Id", id.ToString());
             return NoContent();
         }
     }
