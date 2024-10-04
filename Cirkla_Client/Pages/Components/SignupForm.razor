@@ -1,7 +1,7 @@
 ﻿@using Cirkla.ApiClient.ClientService;
 @inject IClient _client;
 
-<EditForm method="post" Model="User" OnInvalidSubmit="OnValidSubmit">
+<EditForm method="post" Model="User" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
     <h3>Signup</h3>
     <hr/>
@@ -35,14 +35,45 @@
         <InputText id="zipcode" @bind-Value="User.ZipCode" class="form-control" />
         <ValidationMessage For="() => User.ZipCode" class="text-danger" />
     </div>
+    <div class="mb-3">
+        <label for="profilepictureurl" class="form-label">Profile picture </label>
+        <InputText id="profilepictureurl" @bind-Value="User.ProfilePictureURL" class="form-control" />
+        <ValidationMessage For="() => User.ProfilePictureURL" class="text-danger" />
+    </div>
+    <div>
+        <input class="btn btn-secondary" type="reset" value="Reset" />
+        <button class="btn btn-primary" type="submit" value="Submit">Signup</button>
+     </div>
+     <div class="mt-3 mb-3">
+        @if (errorMessage is not null)
+        {
+            <p class="text-danger">@errorMessage</p>
+        }
+        else
+        {
+            <p class="text-success">@successMessage</p>
+        }
+    </div>
 </EditForm>
 
 @code {
-    [Parameter]
+    [SupplyParameterFromForm]
     public User User { get; set; } = new();
+
+    private string? errorMessage;
+    private string? successMessage;
 
     private async Task OnValidSubmit()
     {
-        _client.ProfilePOSTAsync(User);
+        try
+        {
+            errorMessage = null;
+            await _client.ProfilePOSTAsync(User);
+            successMessage = $"Welcome to the Cirkla community {User.FirstName} {User.LastName}!";
+        }
+        catch(Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
     }
 }

@@ -2,6 +2,6 @@
 {
     public static class Constants
     {
-        public static string baseAdress = "https://localhost:7089/api";
+        public static string baseAdress = "https://localhost:7089/";
     }
 }
