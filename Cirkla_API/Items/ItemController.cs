@@ -16,6 +16,7 @@ namespace Cirkla_API.Items
             _itemService = itemService;
             _logger = logger;
         }
+        // TODO: Remove async-suffix
 
         [HttpPost]
         public async Task<ActionResult<Item>> CreateItemAsync(Item item)

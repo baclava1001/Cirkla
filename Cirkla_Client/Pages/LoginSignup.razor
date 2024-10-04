@@ -1,0 +1,26 @@
+﻿@page "/login"
+@using Cirkla_Client.Pages.Components;
+@using Cirkla.ApiClient.ClientService;
+@*TODO: Inject httpClient*@
+
+<PageTitle>Login</PageTitle>
+<h1>Welcome, get ready to Cirkla! :-)</h1>
+<br />
+<div class="container">
+    <div class="row justify-content-left">
+        <div class="col-md-4 mb-3">
+            <fieldset>
+                <LoginForm />
+            </fieldset>
+        </div>
+        <div class="col-md-4 mb-3 offset-md-1">
+            <RegisterForm />
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+}
