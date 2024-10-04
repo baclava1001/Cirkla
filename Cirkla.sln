@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla_API", "Cirkla_API\Ci
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla_DAL", "Cirkla_DAL\Cirkla_DAL.csproj", "{B9E00E8A-C17A-4943-BB23-779263B85330}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cirkla_Client", "Cirkla_Client\Cirkla_Client.csproj", "{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla_Client", "Cirkla_Client\Cirkla_Client.csproj", "{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiClient", "ApiClient\ApiClient.csproj", "{9DE29432-A2CF-4D59-A1CA-E32751185FC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DE29432-A2CF-4D59-A1CA-E32751185FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE29432-A2CF-4D59-A1CA-E32751185FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE29432-A2CF-4D59-A1CA-E32751185FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE29432-A2CF-4D59-A1CA-E32751185FC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

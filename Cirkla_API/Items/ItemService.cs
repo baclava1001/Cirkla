@@ -41,6 +41,9 @@ namespace Cirkla_API.Items
             return true;
         }
 
+        // TODO: Tänk overloads!
+        // Byt till "get"
+
         public async Task<Item> FindItemByIdAsync(int id)
         {
             Item item = await _itemRepository.GetByIdAsync(id);

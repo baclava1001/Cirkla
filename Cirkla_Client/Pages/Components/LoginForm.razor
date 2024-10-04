@@ -1,0 +1,30 @@
+﻿@using Cirkla.ApiClient.ClientService;
+@inject IClient _client;
+
+<EditForm method="post" Model="User" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <h3>Login</h3>
+    <hr />
+    <div class="=mb3">
+        <label for="email" class="form-label">Email </label>
+        <InputText id="email" @bind-Value="User.Email" class="form-control" />
+        <ValidationMessage For="() => User.Email" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password </label>
+        <input id="password" type="password" class="form-control" />
+        @*Change to InputText above, and add validation below
+        <ValidationMessage For="() => PasswordPlaceholder" class="text-danger" />*@
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public User User { get; set; } = new();
+
+    private async Task OnValidSubmit()
+    {
+        // Call method from ApiClientService and send request to API
+    }
+}

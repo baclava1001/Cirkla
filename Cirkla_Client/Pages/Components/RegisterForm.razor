@@ -1,0 +1,48 @@
+﻿@using Cirkla.ApiClient.ClientService;
+@inject IClient _client;
+
+<EditForm method="post" Model="User" OnInvalidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <h3>Signup</h3>
+    <hr/>
+    <div class="mb-3">
+        <label for="firstname" class="form-label">First name </label>
+        <InputText id="firstname" @bind-Value="User.FirstName" class="form-control" />
+        <ValidationMessage For="() => User.FirstName" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="lastname" class="form-label">Last name </label>
+        <InputText id="lastname" @bind-Value="User.LastName" class="form-control" />
+        <ValidationMessage For="() => User.LastName" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email </label>
+        <InputText id="email" @bind-Value="User.Email" class="form-control" />
+        <ValidationMessage For="() => User.Email" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="phonenumber" class="form-label">Phone number </label>
+        <InputText id="phonenumber" @bind-Value="User.PhoneNumber" class="form-control" />
+        <ValidationMessage For="() => User.PhoneNumber" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="address" class="form-label">Address </label>
+        <InputText id="address" @bind-Value="User.Address" class="form-control" />
+        <ValidationMessage For="() => User.Address" class="text-danger" />
+    </div>
+    <div class="mb-3">
+        <label for="zipcode" class="form-label">Zip code </label>
+        <InputText id="zipcode" @bind-Value="User.ZipCode" class="form-control" />
+        <ValidationMessage For="() => User.ZipCode" class="text-danger" />
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public User User { get; set; } = new();
+
+    private async Task OnValidSubmit()
+    {
+        _client.ProfilePOSTAsync(User);
+    }
+}

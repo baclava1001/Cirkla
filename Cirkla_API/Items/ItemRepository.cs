@@ -22,14 +22,14 @@ namespace Cirkla_API.Items
 
         public async Task<IEnumerable<Item>> GetAllAsync()
         {
-            return await _context.Items
+            return await _context.Items.Include(i => i.Pictures).Include(i => i.Owner)
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }
 
         public async Task<Item> GetByIdAsync(int id)
         {
-            return await _context.Items.FindAsync(id);
+            return _context.Items.Include(i => i.Pictures).Include(i => i.Owner).FirstOrDefault(i => i.Id == id);
         }
 
         public Task<Item> Remove(Item item)
