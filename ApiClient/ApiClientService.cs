@@ -1417,7 +1417,7 @@ namespace Cirkla.ApiClient.ClientService
         public string PhoneNumber { get; set; }
 
         [Newtonsoft.Json.JsonProperty("profilePictureURL", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri ProfilePictureURL { get; set; }
+        public string ProfilePictureURL { get; set; }
 
         [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<Item> Items { get; set; }

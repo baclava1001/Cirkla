@@ -1,7 +1,7 @@
 ﻿@using Cirkla.ApiClient.ClientService;
 @inject IClient _client;
 
-<EditForm method="post" Model="User" OnValidSubmit="OnValidSubmit">
+<EditForm method="post" Model="User" OnSubmit="OnSubmit">
     <DataAnnotationsValidator />
     <h3>Login</h3>
     <hr />
@@ -16,6 +16,16 @@
         @*Change to InputText above, and add validation below
         <ValidationMessage For="() => PasswordPlaceholder" class="text-danger" />*@
     </div>
+    <div>
+        <input class="btn btn-secondary" type="reset" value="Reset" />
+        <button class="btn btn-primary" type="submit" value="Submit">Login</button>
+    </div>
+    <div class="mt-3 mb-3">
+        @if (userMessage is not null)
+        {
+            <p class="text-success">@userMessage</p>
+        }
+    </div>
 </EditForm>
 
 
@@ -23,8 +33,10 @@
     [Parameter]
     public User User { get; set; } = new();
 
-    private async Task OnValidSubmit()
+    private string? userMessage;
+
+    private async Task OnSubmit()
     {
-        // Call method from ApiClientService and send request to API
+        userMessage = $"You successfully logged in as {User.Email}.";
     }
 }

@@ -17,7 +17,7 @@ namespace Cirkla_DAL.Models.Users
         [Required, EmailAddress]
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        [Url]
+        // [Url]
         public string? ProfilePictureURL { get; set; }
         public List<Item>? Items { get; set; }
         // public List<Circle>? Circles { get; set; }
