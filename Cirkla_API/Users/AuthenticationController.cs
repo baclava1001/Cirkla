@@ -3,6 +3,11 @@ using Cirkla_DAL.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Cirkla_API.Constants;
 
 namespace Cirkla_API.Users
 {
@@ -11,9 +16,11 @@ namespace Cirkla_API.Users
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        public AuthenticationController(UserManager<User> userManager)
+        private readonly IConfiguration _configuration;
+        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
+            _configuration = configuration;
         }
 
 
@@ -48,7 +55,7 @@ namespace Cirkla_API.Users
                     }
                     return BadRequest(ModelState);
                 }
-                await _userManager.AddToRoleAsync(user, ApiRole.User);
+                await _userManager.AddToRoleAsync(user, ApiRoles.User);
                 return Accepted(user);
             }
             catch(Exception ex)
@@ -60,7 +67,7 @@ namespace Cirkla_API.Users
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
+        public async Task<ActionResult<UserAuthResponseDTO>> Login(UserLoginDTO userLoginDTO)
         {
             try
             {
@@ -69,12 +76,19 @@ namespace Cirkla_API.Users
 
                 if(user == null || !passwordValid)
                 {
-                    return NotFound();
+                    return Unauthorized(userLoginDTO);
                 }
 
-                // TODO: Add JWT-logic here
+                string tokenString = await GenerateToken(user);
 
-                return Accepted();
+                var response = new UserAuthResponseDTO
+                {
+                    Email = user.Email,
+                    Token = tokenString,
+                    Id = user.Id
+                };
+
+                return Accepted(response);
             }
             catch(Exception ex)
             {
@@ -82,5 +96,38 @@ namespace Cirkla_API.Users
             }
         }
 
+
+        // Move token logic to separate class
+        private async Task<string> GenerateToken(User user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
+
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleClaims = roles.Select(q => new Claim(ClaimTypes.Role, q)).ToList();
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(CustomClaimTypes.UserId, user.Id)
+            }
+            .Union(roleClaims)
+            .Union(userClaims);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_configuration["JwtSettings:DurationInMinutes"])),
+                signingCredentials: credentials
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }
