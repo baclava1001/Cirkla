@@ -13,27 +13,27 @@ namespace Cirkla_API.Users
             _userRepository = userRepository;
         }
 
-        public async Task<bool> CreateProfileAsync(User user)
+        public async Task<bool> CreateProfile(User user)
         {
-            await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
+            await _userRepository.Add(user);
+            await _userRepository.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteProfileAsync(int id)
+        public async Task<bool> DeleteProfile(string id)
         {
-            User user = await _userRepository.GetByIdAsync(id);
-            await _userRepository.RemoveAsync(user);
-            await _userRepository.SaveChangesAsync();
+            User user = await _userRepository.Get(id);
+            await _userRepository.Remove(user);
+            await _userRepository.SaveChanges();
             return true;
         }
 
-        public async Task<bool> UpdateProfileAsync(int id, User user)
+        public async Task<bool> UpdateProfile(string id, User user)
         {
             if (id == user.Id)
             {
-                await _userRepository.UpdateAsync(user);
-                await _userRepository.SaveChangesAsync();
+                await _userRepository.Update(user);
+                await _userRepository.SaveChanges();
             }
             return true;
         }

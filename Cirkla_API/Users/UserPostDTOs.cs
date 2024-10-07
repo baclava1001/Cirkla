@@ -1,10 +1,8 @@
-﻿using Cirkla_DAL.Models.Items;
-using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cirkla_DAL.Models.Users
+namespace Cirkla_API.Users
 {
-    public class User : IdentityUser
+    public class UserPostDTOs : UserLoginDTO
     {
         [Required]
         public string FirstName { get; set; }
@@ -16,8 +14,6 @@ namespace Cirkla_DAL.Models.Users
         public string ZipCode { get; set; }
         [Url]
         public string? ProfilePictureURL { get; set; }
-        public List<Item>? Items { get; set; }
 
-        // Future feature: public List<Circle>? Circles { get; set; }
     }
 }

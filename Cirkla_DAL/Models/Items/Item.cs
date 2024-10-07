@@ -1,6 +1,7 @@
 ﻿using Cirkla_DAL.Models.ItemPictures;
 using Cirkla_DAL.Models.Users;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cirkla_DAL.Models.Items
 {
@@ -17,7 +18,7 @@ namespace Cirkla_DAL.Models.Items
         public string? Description { get; set; }
         // public OwnersTerms { get; set; } // Fkey for coming feature
         // public string List<HashTag> HashTags { get; set; } // Fkey for coming feature
-        public int OwnerId { get; set; }
+        public string OwnerId { get; set; }
         public User? Owner { get; set; }
         // public List<Circle> Circles { get; set; } // Fkey for coming feature
         public List<ItemPicture>? Pictures { get; set; }

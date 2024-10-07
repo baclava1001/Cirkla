@@ -4,9 +4,9 @@ namespace Cirkla_API.Users
 {
     public interface IProfileService
     {
-        Task<bool> CreateProfileAsync(User user);
-        Task<bool> DeleteProfileAsync(int id);
-        Task<bool> UpdateProfileAsync(int id, User user);
+        Task<bool> CreateProfile(User user);
+        Task<bool> DeleteProfile(string id);
+        Task<bool> UpdateProfile(string id, User user);
         // TODO: DeactivateProfile?
     }
 }
