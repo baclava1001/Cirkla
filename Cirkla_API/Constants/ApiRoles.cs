@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cirkla_DAL.Constants
 {
-    public static class ApiRole
+    public static class ApiRoles
     {
         public const string User = "User";
         public const string Administrator = "Administrator";

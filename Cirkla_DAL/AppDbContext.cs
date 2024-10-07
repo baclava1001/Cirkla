@@ -1,7 +1,6 @@
 ﻿using Cirkla_DAL.Models.ItemPictures;
 using Cirkla_DAL.Models.Items;
 using Cirkla_DAL.Models.Users;
-using Cirkla_DAL.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

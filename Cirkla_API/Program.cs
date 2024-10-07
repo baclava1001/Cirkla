@@ -97,7 +97,7 @@ namespace Cirkla_API
             using(var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                var roles = new[] { ApiRole.User, ApiRole.Administrator };
+                var roles = new[] { ApiRoles.User, ApiRoles.Administrator };
 
                 foreach(var role in roles)
                 {
