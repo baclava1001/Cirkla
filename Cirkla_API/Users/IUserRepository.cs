@@ -4,11 +4,11 @@ namespace Cirkla_API.Users
 {
     public interface IUserRepository
     {
-        Task<User> AddAsync(User user);
-        Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(int id);
-        Task<User> RemoveAsync(User user);
-        Task<User> UpdateAsync(User user);
-        Task SaveChangesAsync();
+        Task<User> Add(User user);
+        Task<IEnumerable<User>> GetAll();
+        Task<User> Get(string id);
+        Task<User> Remove(User user);
+        Task<User> Update(User user);
+        Task SaveChanges();
     }
 }

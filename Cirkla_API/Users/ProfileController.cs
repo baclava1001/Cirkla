@@ -18,12 +18,12 @@ namespace Cirkla_API.Users
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewProfileAsync(User user)
+        public async Task<IActionResult> CreateNewProfile(User user)
         {
             _logger.LogInformation("Adding user.");
             try
             {
-                await _profileService.CreateProfileAsync(user);
+                await _profileService.CreateProfile(user);
             }
             catch(Exception e)
             {
@@ -33,7 +33,7 @@ namespace Cirkla_API.Users
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProfileAsync(int id, User user)
+        public async Task<IActionResult> UpdateProfile(string id, User user)
         {
             _logger.LogInformation("Updating profile by id.");
             if (user is null || id != user.Id)
@@ -42,15 +42,15 @@ namespace Cirkla_API.Users
                 return BadRequest("Can not update information.");
             }
 
-            await _profileService.UpdateProfileAsync(id, user);
+            await _profileService.UpdateProfile(id, user);
             Response.Headers.Append("Updated-User-Id", user.Id.ToString());
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProfileAsync(int id)
+        public async Task<IActionResult> DeleteProfile(string id)
         {
-            await _profileService.DeleteProfileAsync(id);
+            await _profileService.DeleteProfile(id);
             Response.Headers.Append("Removed-User-Id", id.ToString());
             return NoContent();
         }

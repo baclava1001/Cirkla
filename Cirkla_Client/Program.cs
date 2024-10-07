@@ -15,20 +15,15 @@ namespace Cirkla_Client
 
             builder.Services.AddScoped(sp => new HttpClient
             {
-                BaseAddress = new Uri(Constants.Constants.baseAdress)
+                BaseAddress = new Uri(Constants.GetConstant.baseAdress)
             });
 
             builder.Services.AddScoped<IClient, Client>(sp =>
             {
                 var httpClient = sp.GetRequiredService<HttpClient>();
-                return new Client(Constants.Constants.baseAdress, httpClient);
-            });
+                return new Client(GetConstant.baseAdress, httpClient);
 
-            // TODO: Register httpClient from Nswag
-            //builder.Services.AddScoped<IClient, Client>(sp => new Client
-            //{
-            //    BaseUrl = Constants.Constants.baseAdress, HttpClient httpClient
-            //});
+            });
 
             await builder.Build().RunAsync();
         }

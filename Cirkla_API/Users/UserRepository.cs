@@ -14,38 +14,37 @@ namespace Cirkla_API.Users
             _context = context;
         }
 
-        public async Task<User> AddAsync(User user)
+        public async Task<User> Add(User user)
         {
             await _context.AddAsync(user);
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAll()
         {
             return await _context.Users
-                .OrderBy(u => u.FirstName)
-                .ThenBy(u => u.LastName)
+                .OrderBy(u => u.UserName)
                 .ToListAsync();
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<User> Get(string id)
         {
             return await _context.Users
                 .FindAsync(id);
         }
 
-        public async Task<User> RemoveAsync(User user)
+        public async Task<User> Remove(User user)
         {
             _context.Users.Remove(user);
             return user;
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> UpdateAsync(User user)
+        public async Task<User> Update(User user)
         {
             _context.Users.Update(user);
             return user;
