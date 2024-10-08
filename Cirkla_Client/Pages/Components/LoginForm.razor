@@ -45,11 +45,14 @@
     {
         try
         {
-            errorMessage = null;
-            await authService.Authenticate(User);
-            successMessage = $"You successfully logged in as {User.Email}!";
-            await Task.Delay(10000);
-            _navigationManager.NavigateTo("/");
+            var response = await authService.Authenticate(User);
+            if(response)
+            {
+                successMessage = $"You successfully logged in as {User.Email}!";
+                await Task.Delay(10000);
+                _navigationManager.NavigateTo("/");
+            }
+            errorMessage = "Invalid credentials, try again.";
         }
         catch(Exception ex)
         {
