@@ -2,7 +2,7 @@
 
 namespace Cirkla_API.Users
 {
-    public class UserPostDTOs : UserLoginDTO
+    public class UserPostDTO : UserLoginDTO
     {
         [Required]
         public string FirstName { get; set; }

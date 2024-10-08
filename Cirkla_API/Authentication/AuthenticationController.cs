@@ -8,8 +8,9 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Cirkla_API.Constants;
+using Cirkla_API.Users;
 
-namespace Cirkla_API.Users
+namespace Cirkla_API.Authentication
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,10 +25,9 @@ namespace Cirkla_API.Users
         }
 
 
-        // TODO: Scrap either this method or the ProfileController CreateNewProfile method
         [HttpPost]
         [Route("Signup")]
-        public async Task<IActionResult> Register(UserPostDTOs userPostDTO)
+        public async Task<IActionResult> Register(UserPostDTO userPostDTO)
         {
             // TODO: Move logic to a separate service
             try
@@ -47,18 +47,18 @@ namespace Cirkla_API.Users
                 };
                 var result = await _userManager.CreateAsync(user, userPostDTO.Password);
 
-                if(!result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    foreach(var error in result.Errors)
+                    foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(error.Code, error.Description);
                     }
                     return BadRequest(ModelState);
                 }
                 await _userManager.AddToRoleAsync(user, ApiRoles.User);
-                return Accepted(user);
+                return Ok(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem("Something went wrong while signing up.", statusCode: 500);
             }
@@ -74,7 +74,7 @@ namespace Cirkla_API.Users
                 User user = await _userManager.FindByEmailAsync(userLoginDTO.Email);
                 bool passwordValid = await _userManager.CheckPasswordAsync(user, userLoginDTO.Password);
 
-                if(user == null || !passwordValid)
+                if (user == null || !passwordValid)
                 {
                     return Unauthorized(userLoginDTO);
                 }
@@ -88,9 +88,9 @@ namespace Cirkla_API.Users
                     Id = user.Id
                 };
 
-                return Accepted(response);
+                return Ok(response);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem("Something went wrong while signing in.", statusCode: 500);
             }

@@ -14,7 +14,7 @@ namespace Cirkla_DAL.Models.Users
         public string Address { get; set; }
         [Required]
         public string ZipCode { get; set; }
-        [Url]
+        //[Url]
         public string? ProfilePictureURL { get; set; }
         public List<Item>? Items { get; set; }
 

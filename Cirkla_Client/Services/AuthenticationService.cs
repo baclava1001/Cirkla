@@ -1,0 +1,38 @@
+﻿using Blazored.LocalStorage;
+using Cirkla.ApiClient;
+using Cirkla_API.Providers;
+using Microsoft.AspNetCore.Components.Authorization;
+
+namespace Cirkla_Client.Services
+{
+    /// <summary>
+    /// This class is responsible for sending authentication requests and recieving and storing token.
+    /// </summary>
+    public class AuthenticationService : IAuthenticationService
+    {
+        private readonly IClient _client;
+        private readonly ILocalStorageService _localStorage;
+        private readonly IApiAuthStateProvider _apiAuthStateProvider;
+
+        public AuthenticationService(IClient client, ILocalStorageService localStorage, IApiAuthStateProvider apiAuthStateProvider)
+        {
+            _client = client;
+            _localStorage = localStorage;
+            _apiAuthStateProvider = apiAuthStateProvider;
+        }
+
+
+        public async Task<bool> Authenticate(UserLoginDTO user)
+        {
+            var response = await _client.LoginAsync(user);
+            await _localStorage.SetItemAsync("accesstoken", response.Token);
+            await _apiAuthStateProvider.LoggedIn();
+            return true;
+        }
+
+        public async Task Logout()
+        {
+            await _apiAuthStateProvider.LoggedOut();
+        }
+    }
+}
