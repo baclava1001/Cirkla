@@ -17,6 +17,8 @@ namespace Cirkla_API.Users
             _logger = logger;
         }
 
+
+        // TODO: Remove this controller?
         [HttpPost]
         public async Task<IActionResult> CreateNewProfile(User user)
         {

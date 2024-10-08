@@ -1,5 +1,6 @@
-﻿@using Cirkla.ApiClient.ClientService;
+﻿@using Cirkla.ApiClient;
 @inject IClient _client;
+@inject NavigationManager navigationManager;
 
 <EditForm method="post" Model="User" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -21,11 +22,6 @@
         <ValidationMessage For="() => User.Email" class="text-danger" />
     </div>
     <div class="mb-3">
-        <label for="phonenumber" class="form-label">Phone number </label>
-        <InputText id="phonenumber" @bind-Value="User.PhoneNumber" class="form-control" />
-        <ValidationMessage For="() => User.PhoneNumber" class="text-danger" />
-    </div>
-    <div class="mb-3">
         <label for="address" class="form-label">Address </label>
         <InputText id="address" @bind-Value="User.Address" class="form-control" />
         <ValidationMessage For="() => User.Address" class="text-danger" />
@@ -35,10 +31,15 @@
         <InputText id="zipcode" @bind-Value="User.ZipCode" class="form-control" />
         <ValidationMessage For="() => User.ZipCode" class="text-danger" />
     </div>
-    <div class="mb-3">
+@*     <div class="mb-3">
         <label for="profilepictureurl" class="form-label">Profile picture </label>
-        <InputText id="profilepictureurl" @bind-Value="User.ProfilePictureURL" class="form-control" />
+        <input id="profilepictureurl" @bind="User.ProfilePictureURL" class="form-control" />
         <ValidationMessage For="() => User.ProfilePictureURL" class="text-danger" />
+    </div> *@
+    <div class="mb-3">
+        <label for="password" class="form-label">Password </label>
+        <InputText type="password" id="profilepictureurl" @bind-Value="User.Password" class="form-control" />
+        <ValidationMessage For="() => User.Password" class="text-danger" />
     </div>
     <div>
         <input class="btn btn-secondary" type="reset" value="Reset" />
@@ -56,19 +57,27 @@
     </div>
 </EditForm>
 
+
+
 @code {
     [SupplyParameterFromForm]
-    public User User { get; set; } = new();
+    public UserPostDTO User { get; set; } = new();
 
     private string? errorMessage;
     private string? successMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
 
     private async Task OnValidSubmit()
     {
         try
         {
+            await _client.SignupAsync(User);
             errorMessage = null;
-            await _client.ProfilePOSTAsync(User);
             successMessage = $"Welcome to the Cirkla community {User.FirstName} {User.LastName}!";
         }
         catch(Exception ex)

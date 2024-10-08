@@ -1,29 +1,34 @@
-﻿@using Cirkla.ApiClient.ClientService;
+﻿@using Cirkla_Client.Services;
 @inject IClient _client;
+@inject IAuthenticationService authService;
+@inject NavigationManager _navigationManager;
 
-<EditForm method="post" Model="User" OnSubmit="OnSubmit">
+<EditForm method="post" Model="User" OnSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
     <h3>Login</h3>
     <hr />
     <div class="=mb3">
-        <label for="email" class="form-label">Email </label>
-        <InputText id="email" @bind-Value="User.Email" class="form-control" />
+        <label for="username" class="form-label">Email </label>
+        <InputText id="username" @bind-Value="User.Email" class="form-control" />
         <ValidationMessage For="() => User.Email" class="text-danger" />
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Password </label>
-        <input id="password" type="password" class="form-control" />
-        @*Change to InputText above, and add validation below
-        <ValidationMessage For="() => PasswordPlaceholder" class="text-danger" />*@
+        <InputText id="password" type="password" @bind-Value="User.Password" class="form-control" />
+        <ValidationMessage For="() => User.Password" class="text-danger" />
     </div>
     <div>
         <input class="btn btn-secondary" type="reset" value="Reset" />
         <button class="btn btn-primary" type="submit" value="Submit">Login</button>
     </div>
     <div class="mt-3 mb-3">
-        @if (userMessage is not null)
+        @if (errorMessage is not null)
         {
-            <p class="text-success">@userMessage</p>
+            <p class="text-danger">@errorMessage</p>
+        }
+        else
+        {
+            <p class="text-success">@successMessage</p>
         }
     </div>
 </EditForm>
@@ -31,12 +36,25 @@
 
 @code {
     [Parameter]
-    public User User { get; set; } = new();
+    public UserLoginDTO User { get; set; } = new();
 
-    private string? userMessage;
+    private string? errorMessage;
+    private string? successMessage;
 
-    private async Task OnSubmit()
+    private async Task OnValidSubmit()
     {
-        userMessage = $"You successfully logged in as {User.Email}.";
+        try
+        {
+            errorMessage = null;
+            await authService.Authenticate(User);
+            successMessage = $"You successfully logged in as {User.Email}!";
+            await Task.Delay(10000);
+            _navigationManager.NavigateTo("/");
+        }
+        catch(Exception ex)
+        {
+            errorMessage = ex.Message;
+            return;
+        }
     }
 }
