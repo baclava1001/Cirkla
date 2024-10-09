@@ -15,13 +15,13 @@ namespace Cirkla_API.Items
             _logger = logger;
         }
 
-        public async Task<bool> CreateItemAsync(Item item)
+        public async Task<bool> CreateItem(Item item)
         {
             if (item is null)
             {
                 return false;
             }
-            await _itemRepository.AddAsync(item);
+            await _itemRepository.Add(item);
             await _itemRepository.SaveChangesAsync();
             // TODO: Return Created method instead
             return true;
@@ -29,7 +29,7 @@ namespace Cirkla_API.Items
 
         public async Task<bool> DeleteItem(int id)
         {
-            Item item = await _itemRepository.GetByIdAsync(id);
+            Item item = await _itemRepository.GetItem(id);
 
             if (item is null)
             {
@@ -44,15 +44,15 @@ namespace Cirkla_API.Items
         // TODO: Tänk overloads!
         // Byt till "get"
 
-        public async Task<Item> FindItemByIdAsync(int id)
+        public async Task<Item> FindItemById(int id)
         {
-            Item item = await _itemRepository.GetByIdAsync(id);
+            Item item = await _itemRepository.GetItem(id);
             return item;
         }
 
-        public async Task<IEnumerable<Item>> ListAllItemsAsync()
+        public async Task<IEnumerable<Item>> ListAllItems()
         {
-            IEnumerable<Item> itemList = await _itemRepository.GetAllAsync();
+            IEnumerable<Item> itemList = await _itemRepository.GetAllItems();
 
             if (!itemList.Any())
             {
@@ -60,6 +60,19 @@ namespace Cirkla_API.Items
             }
             return itemList;
         }
+
+        public async Task<IEnumerable<Item>> ListAllItems(string userId)
+        {
+            IEnumerable<Item> itemList = await _itemRepository.GetAllItems(userId);
+
+            if (!itemList.Any())
+            {
+                // TODO: return error
+            }
+            return itemList;
+        }
+
+
 
         public async Task<bool> UpdateItem(int id, Item item)
         {
