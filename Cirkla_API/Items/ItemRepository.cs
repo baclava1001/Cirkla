@@ -1,6 +1,5 @@
 ﻿using Cirkla_DAL;
 using Cirkla_DAL.Models.Items;
-using Cirkla_DAL.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Items
@@ -14,22 +13,36 @@ namespace Cirkla_API.Items
             _context = context;
         }
 
-        public async Task<Item> AddAsync(Item item)
+        public async Task<Item> Add(Item item)
         {
             await _context.AddAsync(item);
             return item;
         }
 
-        public async Task<IEnumerable<Item>> GetAllAsync()
+        public async Task<IEnumerable<Item>> GetAllItems()
         {
-            return await _context.Items.Include(i => i.Pictures).Include(i => i.Owner)
+            return await _context.Items
+                .Include(i => i.Pictures)
+                .Include(i => i.OwnerId)
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }
 
-        public async Task<Item> GetByIdAsync(int id)
+        public async Task<IEnumerable<Item>> GetAllItems(string ownerId)
         {
-            return _context.Items.Include(i => i.Pictures).Include(i => i.Owner).FirstOrDefault(i => i.Id == id);
+            return _context.Items
+                .Include(i => i.Pictures)
+                .Where(i => i.OwnerId == ownerId)
+                .OrderBy(i => i.Name)
+                .ToList();
+        }
+
+        public async Task<Item> GetItem(int id)
+        {
+            return _context.Items
+                .Include(i => i.Pictures)
+                .Include(i => i.Owner)
+                .FirstOrDefault(i => i.Id == id);
         }
 
         public Task<Item> Remove(Item item)

@@ -1,0 +1,81 @@
+﻿@page "/publishitem"
+@inject IClient _client;
+
+<EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+        <h3>Add new item</h3>
+        <hr/>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name </label>
+            <InputText id="name" @bind-Value="Item.Name" class="form-control" />
+            <ValidationMessage For="() => Item.Name" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category </label>
+            <InputText id="category" @bind-Value="Item.Category" class="form-control" />
+            <ValidationMessage For="() => Item.Category" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="Model" class="form-label">Model </label>
+            <InputText id="model" @bind-Value="Item.Model" class="form-control" />
+            <ValidationMessage For="() => Item.Model" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="specifications" class="form-label">Specifications </label>
+            <InputTextArea id="specifications" @bind-Value="Item.Specifications" class="form-control" />
+            <ValidationMessage For="() => Item.Specifications" class="=text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description </label>
+            <InputTextArea id="description" @bind-Value="Item.Description" class="form-control" />
+            <ValidationMessage For="() => Item.Description" class="text-danger" />
+        </div>
+    <div>
+        <input class="btn btn-secondary" type="reset" value="Reset" />
+        <button class="btn btn-primary" type="submit" value="Submit">Publish</button>
+    </div>
+    <div class="mt-3 mb-3">
+        @if (errorMessage is not null)
+        {
+            <p class="text-danger">@errorMessage</p>
+        }
+        else
+        {
+            <p class="text-success">@successMessage</p>
+        }
+    </div>
+</EditForm>
+
+
+@code {
+
+    // TODO:
+    // 1.Populate drop-down for Category
+    // 2.Later make Category a separate, prepopulated class and populate a drop-down-meny with it.
+    // 3.Add some greyed out text to guide user
+    // 4.Add pictures property
+
+
+    [SupplyParameterFromForm]
+    private Item Item { get; set; } = new();
+
+    private string? errorMessage;
+    private string? successMessage;
+
+    private async Task OnValidSubmit()
+    {
+        Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a";
+        Item.Pictures = null;
+
+        try
+        {
+            await _client.ItemPOSTAsync(Item);
+            errorMessage = null;
+            successMessage = $"{Item.Name} published successfully";
+        }
+        catch(Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}

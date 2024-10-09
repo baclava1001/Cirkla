@@ -19,28 +19,28 @@ namespace Cirkla_API.Items
         // TODO: Remove async-suffix
 
         [HttpPost]
-        public async Task<ActionResult<Item>> CreateItemAsync(Item item)
+        public async Task<ActionResult<Item>> CreateItem(Item item)
         {
             if (item is null)
             {
                 return BadRequest();
             }
-            await _itemService.CreateItemAsync(item);
+            await _itemService.CreateItem(item);
             // TODO: Return Created method instead?
             return Ok(item);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> ListAllItemsAsync()
+        public async Task<ActionResult<IEnumerable<Item>>> ListAllItems(string ownerId)
         {
-            IEnumerable<Item> items = await _itemService.ListAllItemsAsync();
+            IEnumerable<Item> items = await _itemService.ListAllItems(ownerId);
             return Ok(items);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItemByIdAsync(int id)
+        public async Task<ActionResult<Item>> GetItemById(int id)
         {
-            Item item = await _itemService.FindItemByIdAsync(id);
+            Item item = await _itemService.FindItemById(id);
 
             if (item is null)
             {
@@ -51,7 +51,7 @@ namespace Cirkla_API.Items
 
         // TODO: Always returns success code even when operation not successful
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItemAsync(int id, Item item)
+        public async Task<IActionResult> UpdateItem(int id, Item item)
         {
             if(await _itemService.UpdateItem(id, item) == false)
             {
@@ -63,7 +63,7 @@ namespace Cirkla_API.Items
 
         // TODO: Always returns success code even when Item does not exist
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItemAsync(int id)
+        public async Task<IActionResult> DeleteItem(int id)
         {
             if(await _itemService.DeleteItem(id) == false)
             {
