@@ -1,34 +1,4 @@
-﻿@* <CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <Notauthorized>
-                @if(!context.User.Identity?.IsAuthenticated)
-                {
-                    <redirectToLogin />
-                }
-                else
-                {
-                    <div class="alert-warning">
-                        <p>You are not authorized for access.</p>
-                    </div>
-                }
-            </Notauthorized>
-        </AuthorizeRouteView>
-        
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
-</CascadingAuthenticationState> *@
-
-
-    <Router AppAssembly="@typeof(App).Assembly">
+﻿<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -36,7 +6,9 @@
     <NotFound>
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+            <div class="d-flex align-items-center" style="height: 100vh;">
+                <img src="\Images\underconstruction.png" class="img-fluid mx-auto" style="width:400px" alt="Under construction sign" />
+            </div>
         </LayoutView>
     </NotFound>
 </Router>
