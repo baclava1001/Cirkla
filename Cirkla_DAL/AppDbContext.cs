@@ -28,6 +28,7 @@ namespace Cirkla_DAL
                 .HasMany(i => i.Pictures)
                 .WithOne(p => p.Item);
 
+
             // TODO: Extract seeding to a separate file
             
             //builder.Entity<User>().HasData(GetUsers());
