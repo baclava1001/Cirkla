@@ -1544,8 +1544,9 @@ namespace Cirkla.ApiClient
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string? Description { get; set; } = default!;
 
-        [Newtonsoft.Json.JsonProperty("ownerId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string? OwnerId { get; set; } = default!;
+        [Newtonsoft.Json.JsonProperty("ownerId", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string OwnerId { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("owner", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public User? Owner { get; set; } = default!;
@@ -1562,7 +1563,7 @@ namespace Cirkla.ApiClient
         public int Id { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri? Url { get; set; } = default!;
+        public string? Url { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("itemId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? ItemId { get; set; } = default!;

@@ -18,6 +18,7 @@ namespace Cirkla_DAL.Models.Items
         public string? Description { get; set; }
         // public OwnersTerms { get; set; } // Fkey for coming feature
         // public string List<HashTag> HashTags { get; set; } // Fkey for coming feature
+        [Required]
         public string OwnerId { get; set; }
         public User? Owner { get; set; }
         // public List<Circle> Circles { get; set; } // Fkey for coming feature

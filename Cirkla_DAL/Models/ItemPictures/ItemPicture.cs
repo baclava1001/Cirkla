@@ -7,7 +7,7 @@ namespace Cirkla_DAL.Models.ItemPictures
     {
         [Required]
         public int Id { get; set; }
-        [Url]
+        //[Url]
         public string Url { get; set; }
         public int ItemId { get; set; }
         public Item? Item { get; set; }
