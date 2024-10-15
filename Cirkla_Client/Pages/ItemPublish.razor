@@ -2,19 +2,23 @@
 @using Cirkla_Client.Pages.Components;
 @inject IClient _client;
 
-<EditForm method="post" Model="Item" Disabled="@IsPublishingItem" OnValidSubmit="OnValidSubmit" FormName="PublishItem">
+<PageTitle>Publish new item</PageTitle>
+<h3>Add new item</h3>
+<hr />
+<EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit" FormName="PublishItem">
     <DataAnnotationsValidator />
-        <h3>Add new item</h3>
-        <hr/>
+    <fieldset disabled="@IsPublishingItem">
         <div class="mb-3">
             <label for="name" class="form-label">Name </label>
             <InputText id="name" @bind-Value="Item.Name" class="form-control" />
             <ValidationMessage For="() => Item.Name" class="text-danger" />
         </div>
         <div class="mb-3">
-            <label for="category" class="form-label">Category </label>
-            <InputText id="category" @bind-Value="Item.Category" class="form-control" />
-            <ValidationMessage For="() => Item.Category" class="text-danger" />
+            <CascadingValue Value="temporaryCategoryList">
+                <CascadingValue Value="Item">
+                    <CategoryDropdown />
+                </CascadingValue>
+            </CascadingValue>
         </div>
         <div class="mb-3">
             <label for="Model" class="form-label">Model </label>
@@ -47,7 +51,8 @@
             {
                 <p class="text-success">@successMessage</p>
             }
-        </div>  
+        </div>
+    </fieldset>
 </EditForm>
 <div class="mb-3">
     @if (Item.Pictures is not null)
@@ -63,10 +68,10 @@
 @code {
 
     // TODO:
-    // 1.Populate drop-down for Category
     // 2.Later make Category a separate, prepopulated class and populate a drop-down-meny with it.
     // 3.Add some greyed out text to guide user
-    // 4.Add pictures property
+    // 5.Fix Navmenu obscuring h3-element (page title)
+    // 6.Fix image dissapearing/breaking halfway through
 
 
     [SupplyParameterFromForm]
@@ -75,10 +80,14 @@
     [CascadingParameter]
     public ItemPicture? ItemPicture { get; set; } = new();
 
+    string[] temporaryCategoryList = ["Fordon", "Hus & hem", "Bostad", "Personligt", "Elektronik", "Fritid & hobby"];
+
     public bool IsPublishingItem { get; set; }
 
     private string? errorMessage;
     private string? successMessage;
+
+    
 
 
     private void AddPictureToList()
@@ -106,6 +115,7 @@
             await Task.Delay(500);
             errorMessage = null;
             successMessage = $"{Item.Name} published successfully";
+            Item = new();
         }
         catch(Exception ex)
         {
