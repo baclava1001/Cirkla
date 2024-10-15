@@ -2,7 +2,7 @@
 @using Cirkla_Client.Pages.Components;
 @inject IClient _client;
 
-<EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit">
+<EditForm method="post" Model="Item" Disabled="@IsPublishingItem" OnValidSubmit="OnValidSubmit" FormName="PublishItem">
     <DataAnnotationsValidator />
         <h3>Add new item</h3>
         <hr/>
@@ -31,32 +31,30 @@
             <InputTextArea id="description" @bind-Value="Item.Description" class="form-control" />
             <ValidationMessage For="() => Item.Description" class="text-danger" />
         </div>
-        <div>
             <CascadingValue Value="ItemPicture">
                 <AddItemPicture OnPictureAdded="AddPictureToList" />
             </CascadingValue>
+        <div class="mb-3">
+            <input class="btn btn-secondary" type="reset" value="Reset" />
+            <button class="btn btn-primary" type="button" @onclick="(() => OnValidSubmit())">Publish</button>
         </div>
-    <div>
-        <input class="btn btn-secondary" type="reset" value="Reset" />
-        <button class="btn btn-primary" type="submit" @onclick="(() => OnValidSubmit())">Publish</button>
-    </div>
-    <div class="mt-3 mb-3">
-        @if (errorMessage is not null)
-        {
-            <p class="text-danger">@errorMessage</p>
-        }
-        else
-        {
-            <p class="text-success">@successMessage</p>
-        }
-    </div>
+        <div class="mb-3">
+            @if (errorMessage is not null)
+            {
+                <p class="text-danger">@errorMessage</p>
+            }
+            else
+            {
+                <p class="text-success">@successMessage</p>
+            }
+        </div>  
 </EditForm>
-<div>
+<div class="mb-3">
     @if (Item.Pictures is not null)
     {
         foreach(ItemPicture picture in Item.Pictures)
         {
-            <img src="@picture.Url" alt="Picture of @Item.Name" />
+            <img src="@picture.Url" class="img-fluid rounded" alt="Picture of @Item.Name" />
         }
     }
 </div>
@@ -76,6 +74,8 @@
 
     [CascadingParameter]
     public ItemPicture? ItemPicture { get; set; } = new();
+
+    public bool IsPublishingItem { get; set; }
 
     private string? errorMessage;
     private string? successMessage;
@@ -97,17 +97,23 @@
 
     private async Task OnValidSubmit()
     {
-        Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a";
+        IsPublishingItem = true;
 
         try
         {
+            Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a";
             await _client.ItemPOSTAsync(Item);
+            await Task.Delay(500);
             errorMessage = null;
             successMessage = $"{Item.Name} published successfully";
         }
         catch(Exception ex)
         {
             errorMessage = ex.Message;
+        }
+        finally
+        {
+            IsPublishingItem = false;
         }
     }
 }

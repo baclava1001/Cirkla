@@ -1,23 +1,34 @@
-﻿<EditForm method="post" Model="ItemPicture" OnValidSubmit="AddPicture">
-    <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label for="itempictureurl" class="form-label">Picture url </label>
-        <InputText id="itempictureurl" @bind-Value="ItemPicture.Url" class="form-control" />
-        <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
-        <button class="btn btn-primary" type="submit" @onclick="@(() => AddPicture())">Add</button>
-    </div>
-</EditForm>
-
+﻿<div class="mb-3">
+    <label for="itempictureurl" class="form-label">Picture url </label>
+    <InputText id="itempictureurl" @bind-Value="ItemPicture.Url" class="form-control" />
+    <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
+    <button class="btn btn-primary" type="button" disabled="@IsAddingPicture" @onclick="@(() => AddPicture())">Add</button>
+</div>
 
 @code {
     [CascadingParameter]
-    public ItemPicture ItemPicture { get; set; }
+    public ItemPicture? ItemPicture { get; set; }
 
     [Parameter]
     public EventCallback<ItemPicture> OnPictureAdded { get; set; }
 
+    public bool IsAddingPicture { get; set; }
+
     private async Task AddPicture()
     {
-        await OnPictureAdded.InvokeAsync(ItemPicture);
+        IsAddingPicture = true;
+        try
+        {
+            await OnPictureAdded.InvokeAsync(ItemPicture);
+            await Task.Delay(500);
+        }
+        catch (Exception ex)
+        {
+            ex.Message.ToString();
+        }
+        finally
+        {
+            IsAddingPicture = false;
+        }
     }
 }
