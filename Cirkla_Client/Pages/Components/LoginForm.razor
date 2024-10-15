@@ -35,6 +35,8 @@
 
 
 @code {
+    // TODO: Add user name in top right corner instead of login button when logged in
+
     [Parameter]
     public UserLoginDTO User { get; set; } = new();
 
@@ -49,7 +51,6 @@
             if(response)
             {
                 successMessage = $"You successfully logged in as {User.Email}!";
-                await Task.Delay(10000);
                 _navigationManager.NavigateTo("/");
             }
             errorMessage = "Invalid credentials, try again.";
