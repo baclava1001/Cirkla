@@ -1,0 +1,28 @@
+﻿@if (temporaryCategoryList == null)
+{
+    <p>
+        <em>Loading ...</em>
+    </p>
+}
+else
+{
+    <div class="mb-3">
+        <label for="category" class="col-form-label me-3">Category </label>
+        <InputSelect id="categorydropdown" @bind-Value="Item.Category" class="form-select">
+            <option value="" disabled selected hidden>Select category</option>
+            @foreach (string category in temporaryCategoryList)
+            {
+                <option value="@category">@category</option>
+            }
+        </InputSelect>
+    </div>
+}
+
+
+@code {
+    [CascadingParameter]
+    private string[] temporaryCategoryList { get; set; }
+
+    [CascadingParameter]
+    Item Item { get; set; }
+}

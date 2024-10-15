@@ -1,9 +1,9 @@
-﻿<div class="mb-3">
+﻿<fieldset class="mb-3" disabled="@IsAddingPicture">
     <label for="itempictureurl" class="form-label">Picture url </label>
     <InputText id="itempictureurl" @bind-Value="ItemPicture.Url" class="form-control" />
     <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
-    <button class="btn btn-primary" type="button" disabled="@IsAddingPicture" @onclick="@(() => AddPicture())">Add</button>
-</div>
+    <button class="btn btn-primary" type="button" @onclick="@(() => AddPicture())">Add</button>
+</fieldset>
 
 @code {
     [CascadingParameter]
@@ -21,6 +21,7 @@
         {
             await OnPictureAdded.InvokeAsync(ItemPicture);
             await Task.Delay(500);
+            ItemPicture.Url = "";
         }
         catch (Exception ex)
         {
