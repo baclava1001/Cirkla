@@ -1,9 +1,14 @@
-﻿<fieldset class="mb-3" disabled="@IsAddingPicture">
-    <label for="itempictureurl" class="form-label">Picture url </label>
-    <InputText id="itempictureurl" @bind-Value="ItemPicture.Url" class="form-control" />
-    <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
-    <button class="btn btn-primary" type="button" @onclick="@(() => AddPicture())">Add</button>
-</fieldset>
+﻿    <fieldset id="add-picture" disabled="@IsAddingPicture">
+        <div class="row mb-3">
+            <label for="item-picture-url" class="col-sm-2 col-form-label">Picture url </label>
+            <div class="input-group w-25">
+                <InputText id="item-picture-url" @bind-Value="ItemPicture.Url" class="form-control" placeholder="Enter full url" />
+                <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
+                <button class="btn btn-outline-primary" style="color:#fff; background-color:#186F65; border-color:#186F65" type="button" @onclick="@(() => AddPicture())">Add</button>
+            </div>
+        </div>
+    </fieldset>
+
 
 @code {
     [CascadingParameter]
@@ -17,19 +22,23 @@
     private async Task AddPicture()
     {
         IsAddingPicture = true;
-        try
+        if(!string.IsNullOrEmpty(ItemPicture.Url))
         {
-            await OnPictureAdded.InvokeAsync(ItemPicture);
-            await Task.Delay(500);
-            ItemPicture.Url = "";
+            try
+            {
+                await OnPictureAdded.InvokeAsync(ItemPicture);
+                await Task.Delay(500);
+                ItemPicture.Url = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                ex.Message.ToString();
+            }
+            finally
+            {
+                IsAddingPicture = false;
+            }
         }
-        catch (Exception ex)
-        {
-            ex.Message.ToString();
-        }
-        finally
-        {
-            IsAddingPicture = false;
-        }
+        IsAddingPicture = false;
     }
 }

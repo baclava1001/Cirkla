@@ -7,7 +7,6 @@ namespace Cirkla_DAL.Models.Items
 {
     public class Item
     {
-        // TODO: Add attributes
         [Required]
         public int Id { get; set; }
         [Required]

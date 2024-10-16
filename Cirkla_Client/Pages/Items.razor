@@ -1,7 +1,8 @@
 ﻿@page "/items"
 @inject IClient _client;
 
-<h3>Items</h3>
+<PageTitle>View my items</PageTitle>
+<h3>View my items</h3>
 <hr/>
 @if(message is not null)
 {
@@ -9,11 +10,11 @@
 }
 <div class="container">
     <div class="row">
-    @foreach (var item in itemList)
-    {
+        @foreach (var item in itemList)
+        {
             <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <div class="card h-100">
-                    <img class="card-img-top" src="https://loremflickr.com/420/420/tool" alt="Picture of @item.Name" />
+                    <img class="card-img-top" src="@item.Pictures.FirstOrDefault().Url" alt="Picture of @item.Name" />
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
@@ -21,7 +22,7 @@
                     </div>
                 </div>
             </div>
-    }
+        }
     </div>
 </div>
 

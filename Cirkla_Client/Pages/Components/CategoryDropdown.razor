@@ -6,15 +6,17 @@
 }
 else
 {
-    <div class="mb-3">
-        <label for="category" class="col-form-label me-3">Category </label>
-        <InputSelect id="categorydropdown" @bind-Value="Item.Category" class="form-select">
-            <option value="" disabled selected hidden>Select category</option>
-            @foreach (string category in temporaryCategoryList)
-            {
-                <option value="@category">@category</option>
-            }
-        </InputSelect>
+    <div class="row mb-3">
+        <label for="category" class="col-sm-2 col-form-label">Category </label>
+        <div class="col-sm-10">
+            <InputSelect id="categorydropdown" @bind-Value="Item.Category" class="form-select w-25">
+                <option value="" disabled selected hidden>Select category</option>
+                @foreach (string category in temporaryCategoryList)
+                {
+                    <option value="@category">@category</option>
+                }
+            </InputSelect>
+        </div>
     </div>
 }
 
