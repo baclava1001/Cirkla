@@ -11,7 +11,7 @@
                 <NavLink class="nav-link" href="publishitem">Add item</NavLink>
             </li>
                 <li class="nav-item p-2 mx-3">
-                <NavLink class="nav-link" href="items">View your items</NavLink>
+                <NavLink class="nav-link" href="inventory">My items</NavLink>
             </li>
                 <li class="nav-item p-2 mx-3">
                 <NavLink class="nav-link" href="login">Login</NavLink>
@@ -23,6 +23,8 @@
 
 
 @code {
+    // TODO: Add user name in top right corner instead of login button when logged in
+
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;

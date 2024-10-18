@@ -18,7 +18,6 @@ namespace Cirkla_Client
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             // TODO: Move services to separate class
-
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IApiAuthStateProvider, ApiAuthStateProvider>();
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();

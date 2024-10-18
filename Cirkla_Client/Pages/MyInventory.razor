@@ -1,8 +1,8 @@
-﻿@page "/items"
+﻿@page "/inventory"
 @inject IClient _client;
 
-<PageTitle>View my items</PageTitle>
-<h3>View my items</h3>
+<PageTitle>My inventory</PageTitle>
+<h3>My inventory</h3>
 <hr/>
 @if(message is not null)
 {
@@ -10,18 +10,25 @@
 }
 <div class="container">
     <div class="row">
-        @foreach (var item in itemList)
+        @if(!MyItems.Any())
         {
+            <p>Loading items...</p>
+        }
+        else
+        {
+            foreach (var item in MyItems)
+            {
             <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <div class="card h-100">
-                    <img class="card-img-top" src="@item.Pictures.FirstOrDefault().Url" alt="Picture of @item.Name" />
+                    <img class="card-img-top" src="@item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @item.Name" />
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
-                        <a href="/" class="card-link">More...</a>
+                        <a href="/itemdetails/?id=@item.Id" class="card-link">More...</a>
                     </div>
                 </div>
             </div>
+            }
         }
     </div>
 </div>
@@ -30,21 +37,22 @@
 
 
 @code {
-    // TODO: Add pagination
+    // TODO: Add pagination serverside & clientside
 
-    private List<Item> itemList = new List<Item>();
+    [Parameter]
+    public List<Item> MyItems { get; set; } = new();
 
     private string? message;
 
-    private string? ownerId = "b2162ceb-793d-4e32-8029-ca56472dd93a";
+    private string? ownerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; // Samed's id hardcoded
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         try
         {
             var response = await _client.ItemAllAsync(ownerId);
-            itemList = response.ToList();
-            if (itemList is null)
+            MyItems = response.ToList();
+            if (MyItems is null)
             {
                 message = "No objects to load at this time";
             }

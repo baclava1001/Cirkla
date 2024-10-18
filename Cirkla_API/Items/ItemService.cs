@@ -23,7 +23,6 @@ namespace Cirkla_API.Items
             }
             await _itemRepository.Add(item);
             await _itemRepository.SaveChangesAsync();
-            // TODO: Return Created method instead
             return true;
         }
 
