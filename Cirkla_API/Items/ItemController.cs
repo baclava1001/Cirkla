@@ -16,7 +16,7 @@ namespace Cirkla_API.Items
             _itemService = itemService;
             _logger = logger;
         }
-        // TODO: Remove async-suffix
+
 
         [HttpPost]
         public async Task<ActionResult<Item>> CreateItem(Item item)
@@ -49,7 +49,7 @@ namespace Cirkla_API.Items
             return Ok(item);
         }
 
-        // TODO: Always returns success code even when operation not successful
+        // TODO: Fix always returns success code even when operation not successful
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateItem(int id, Item item)
         {
@@ -61,7 +61,7 @@ namespace Cirkla_API.Items
             return NoContent();
         }
 
-        // TODO: Always returns success code even when Item does not exist
+        // TODO: Fix always returns success code even when Item does not exist
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {

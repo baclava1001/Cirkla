@@ -6,45 +6,47 @@
     <DataAnnotationsValidator />
     <h3>Signup</h3>
     <hr/>
-    <div class="mb-3">
-        <label for="firstname" class="form-label">First name </label>
-        <InputText id="firstname" @bind-Value="User.FirstName" class="form-control" />
-        <ValidationMessage For="() => User.FirstName" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="lastname" class="form-label">Last name </label>
-        <InputText id="lastname" @bind-Value="User.LastName" class="form-control" />
-        <ValidationMessage For="() => User.LastName" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email </label>
-        <InputText id="email" @bind-Value="User.Email" class="form-control" />
-        <ValidationMessage For="() => User.Email" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="address" class="form-label">Address </label>
-        <InputText id="address" @bind-Value="User.Address" class="form-control" />
-        <ValidationMessage For="() => User.Address" class="text-danger" />
-    </div>
-    <div class="mb-3">
-        <label for="zipcode" class="form-label">Zip code </label>
-        <InputText id="zipcode" @bind-Value="User.ZipCode" class="form-control" />
-        <ValidationMessage For="() => User.ZipCode" class="text-danger" />
-    </div>
-@*     <div class="mb-3">
+    <fieldset disabled="@hasSubmitted">
+        <div class="mb-3">
+            <label for="firstname" class="form-label">First name </label>
+            <InputText id="firstname" @bind-Value="User.FirstName" class="form-control" />
+            <ValidationMessage For="() => User.FirstName" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="lastname" class="form-label">Last name </label>
+            <InputText id="lastname" @bind-Value="User.LastName" class="form-control" />
+            <ValidationMessage For="() => User.LastName" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email </label>
+            <InputText id="email" @bind-Value="User.Email" class="form-control" />
+            <ValidationMessage For="() => User.Email" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address </label>
+            <InputText id="address" @bind-Value="User.Address" class="form-control" />
+            <ValidationMessage For="() => User.Address" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="zipcode" class="form-label">Zip code </label>
+            <InputText id="zipcode" @bind-Value="User.ZipCode" class="form-control" />
+            <ValidationMessage For="() => User.ZipCode" class="text-danger" />
+        </div>
+        @*     <div class="mb-3">
         <label for="profilepictureurl" class="form-label">Profile picture </label>
         <input id="profilepictureurl" @bind="User.ProfilePictureURL" class="form-control" />
         <ValidationMessage For="() => User.ProfilePictureURL" class="text-danger" />
-    </div> *@
-    <div class="mb-3">
-        <label for="password" class="form-label">Password </label>
-        <InputText type="password" id="profilepictureurl" @bind-Value="User.Password" class="form-control" />
-        <ValidationMessage For="() => User.Password" class="text-danger" />
-    </div>
+        </div> *@
+        <div class="mb-3">
+            <label for="password" class="form-label">Password </label>
+            <InputText type="password" id="profilepictureurl" @bind-Value="User.Password" class="form-control" />
+            <ValidationMessage For="() => User.Password" class="text-danger" />
+        </div>
+    </fieldset>
     <div>
-        <input class="btn btn-secondary" type="reset" value="Reset" />
+        <input class="btn btn-secondary" type="reset" value="Reset" @onclick="@ActivateForm"/>
         <button class="btn btn-primary" type="submit" value="Submit">Signup</button>
-     </div>
+    </div>
      <div class="mt-3 mb-3">
         @if (errorMessage is not null)
         {
@@ -65,18 +67,29 @@
 
     private string? errorMessage;
     private string? successMessage;
+    private bool hasSubmitted;
 
     private async Task OnValidSubmit()
     {
         try
         {
+            // Add a random profilepicture url
+            Uri.TryCreate("https://avatar.iran.liara.run/public", new UriKind(), out Uri? result);
+            User.ProfilePictureURL = result;
+
             await _client.SignupAsync(User);
             errorMessage = null;
+            hasSubmitted = true;
             successMessage = $"Welcome to the Cirkla community {User.FirstName} {User.LastName}!";
         }
         catch(Exception ex)
         {
             errorMessage = ex.Message;
         }
+    }
+
+    private async Task ActivateForm()
+    {
+        hasSubmitted = false;
     }
 }
