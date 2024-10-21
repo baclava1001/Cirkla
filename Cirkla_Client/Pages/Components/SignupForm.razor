@@ -77,7 +77,7 @@
             Uri.TryCreate("https://avatar.iran.liara.run/public", new UriKind(), out Uri? result);
             User.ProfilePictureURL = result;
 
-            await _client.SignupAsync(User);
+            await _client.ApiAuthenticationSignupAsync(User);
             errorMessage = null;
             hasSubmitted = true;
             successMessage = $"Welcome to the Cirkla community {User.FirstName} {User.LastName}!";

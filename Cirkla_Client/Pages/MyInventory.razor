@@ -50,7 +50,7 @@
     {
         try
         {
-            var response = await _client.ItemAllAsync(ownerId);
+            var response = await _client.ApiItemGetAsync(ownerId);
             MyItems = response.ToList();
             if (MyItems is null)
             {
