@@ -1,7 +1,8 @@
-﻿using Cirkla_DAL.Models.Items;
+﻿using Cirkla_API.Services;
+using Cirkla_DAL.Models.Items;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cirkla_API.Items
+namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -53,7 +54,7 @@ namespace Cirkla_API.Items
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateItem(int id, Item item)
         {
-            if(await _itemService.UpdateItem(id, item) == false)
+            if (await _itemService.UpdateItem(id, item) == false)
             {
                 return BadRequest();
             }
@@ -65,7 +66,7 @@ namespace Cirkla_API.Items
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            if(await _itemService.DeleteItem(id) == false)
+            if (await _itemService.DeleteItem(id) == false)
             {
                 return BadRequest();
             }

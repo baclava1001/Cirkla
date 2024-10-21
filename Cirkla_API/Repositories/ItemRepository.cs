@@ -2,7 +2,7 @@
 using Cirkla_DAL.Models.Items;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_API.Items
+namespace Cirkla_API.Repositories
 {
     public class ItemRepository : IItemRepository
     {

@@ -1,6 +1,7 @@
-﻿using Cirkla_DAL.Models.ItemPictures;
+﻿using Cirkla_API.Repositories;
+using Cirkla_DAL.Models.ItemPictures;
 
-namespace Cirkla_API.ItemPictures
+namespace Cirkla_API.Services
 {
     public class ItemPictureService : IItemPictureService
     {

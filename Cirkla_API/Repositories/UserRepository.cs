@@ -2,7 +2,7 @@
 using Cirkla_DAL.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_API.Users
+namespace Cirkla_API.Repositories
 {
     public class UserRepository : IUserRepository
     {

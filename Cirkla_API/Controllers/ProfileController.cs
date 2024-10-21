@@ -1,8 +1,9 @@
-﻿using Cirkla_DAL.Models.Users;
+﻿using Cirkla_API.Services;
+using Cirkla_DAL.Models.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cirkla_API.Users
+namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -27,7 +28,7 @@ namespace Cirkla_API.Users
             {
                 await _profileService.CreateProfile(user);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(e.Message);
             }
