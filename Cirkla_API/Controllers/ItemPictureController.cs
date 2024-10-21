@@ -1,8 +1,8 @@
-﻿using Cirkla_API.ItemPictures;
+﻿using Cirkla_API.Services;
 using Cirkla_DAL.Models.ItemPictures;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cirkla_API.Items
+namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,7 +23,7 @@ namespace Cirkla_API.Items
         [HttpPost]
         public async Task<ActionResult<ItemPicture>> AddItemPictureAsync(ItemPicture itemPicture)
         {
-            if(await _itemPictureService.AddItemPictureAsync(itemPicture) == false)
+            if (await _itemPictureService.AddItemPictureAsync(itemPicture) == false)
             {
                 return BadRequest();
             }
@@ -52,7 +52,7 @@ namespace Cirkla_API.Items
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateItemPictureAsync(int id, ItemPicture itemPicture)
         {
-            if(await _itemPictureService.ChangeItemPicture(id, itemPicture) == false)
+            if (await _itemPictureService.ChangeItemPicture(id, itemPicture) == false)
             {
                 return BadRequest();
             }
@@ -63,7 +63,7 @@ namespace Cirkla_API.Items
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItemPictureAsync(int id)
         {
-            if(await _itemPictureService.DeleteItemPicture(id) == false)
+            if (await _itemPictureService.DeleteItemPicture(id) == false)
             {
                 return BadRequest();
             }

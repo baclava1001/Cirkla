@@ -1,6 +1,7 @@
-﻿using Cirkla_DAL.Models.Users;
+﻿using Cirkla_API.Repositories;
+using Cirkla_DAL.Models.Users;
 
-namespace Cirkla_API.Users
+namespace Cirkla_API.Services
 {
     public class ProfileService : IProfileService
     {

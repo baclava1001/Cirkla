@@ -1,6 +1,6 @@
 ﻿using Cirkla_DAL.Models.ItemPictures;
 
-namespace Cirkla_API.ItemPictures
+namespace Cirkla_API.Services
 {
     public interface IItemPictureService
     {

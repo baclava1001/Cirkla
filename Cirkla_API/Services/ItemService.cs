@@ -1,6 +1,7 @@
-﻿using Cirkla_DAL.Models.Items;
+﻿using Cirkla_API.Repositories;
+using Cirkla_DAL.Models.Items;
 
-namespace Cirkla_API.Items
+namespace Cirkla_API.Services
 {
     public class ItemService : IItemService
     {

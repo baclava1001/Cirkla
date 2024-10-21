@@ -1,6 +1,5 @@
-using Cirkla_API.ItemPictures;
-using Cirkla_API.Items;
-using Cirkla_API.Users;
+using Cirkla_API.Repositories;
+using Cirkla_API.Services;
 using Cirkla_DAL;
 using Cirkla_DAL.Constants;
 using Cirkla_DAL.Models.Users;

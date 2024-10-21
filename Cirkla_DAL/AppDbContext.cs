@@ -1,9 +1,11 @@
-﻿using Cirkla_DAL.Models.ItemPictures;
+﻿using Cirkla_DAL.Models.Contract;
+using Cirkla_DAL.Models.ItemPictures;
 using Cirkla_DAL.Models.Items;
 using Cirkla_DAL.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Cirkla_DAL
 {
@@ -13,6 +15,8 @@ namespace Cirkla_DAL
 
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemPicture> ItemPictures { get; set; }
+
+        public DbSet<Contract> Contracts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -26,8 +30,7 @@ namespace Cirkla_DAL
 
             builder.Entity<Item>()
                 .HasMany(i => i.Pictures)
-                .WithOne(p => p.Item);
-
+            .WithOne(p => p.Item);
 
         //TODO: Extract seeding to a separate file
 

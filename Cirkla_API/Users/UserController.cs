@@ -1,4 +1,5 @@
 ﻿using Cirkla_DAL.Models.Users;
+using Cirkla_API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Users
@@ -24,7 +25,7 @@ namespace Cirkla_API.Users
             {
                 return BadRequest();
             }
-            await _userRepository.AddAsync(user);
+            await _userRepository.Add(user);
             return Ok(user);
         }
 
@@ -32,7 +33,7 @@ namespace Cirkla_API.Users
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync()
         {
             _logger.LogInformation("Listing all users.");
-            IEnumerable<User> userList = await _userRepository.GetAllAsync();
+            IEnumerable<User> userList = await _userRepository.GetAll();
 
             if (!userList.Any())
             {
@@ -43,10 +44,10 @@ namespace Cirkla_API.Users
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserByIdAsync(int id)
+        public async Task<ActionResult<User>> GetUserByIdAsync(string id)
         {
             _logger.LogInformation("Retrieving user by id.");
-            User user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.Get(id);
             
             if (user is null)
             {
@@ -57,7 +58,7 @@ namespace Cirkla_API.Users
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserAsync(int id, User user)
+        public async Task<IActionResult> UpdateUserAsync(string id, User user)
         {
             _logger.LogInformation("Updating user info by id.");
             if (user is null || id != user.Id)
@@ -65,26 +66,26 @@ namespace Cirkla_API.Users
                 return BadRequest("Can not update information.");
             }
 
-            await _userRepository.UpdateAsync(user);
-            await _userRepository.SaveChangesAsync();
-            Response.Headers.Append("Updated-User-Id", user.Id.ToString());
+            await _userRepository.Update(user);
+            await _userRepository.SaveChanges();
+            Response.Headers.Append("Updated-User-Id", user.Id);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserAsync(int id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
             _logger.LogInformation("Deleting user by id.");
-            User user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.Get(id);
 
             if (user is null)
             {
                 return BadRequest("Can not find user at this time.");
             }
 
-            await _userRepository.RemoveAsync(user);
-            await _userRepository.SaveChangesAsync();
-            Response.Headers.Append("Removed-User-Id", user.Id.ToString());
+            await _userRepository.Remove(user);
+            await _userRepository.SaveChanges();
+            Response.Headers.Append("Removed-User-Id", user.Id);
             return NoContent();
         }
         
