@@ -31,7 +31,7 @@ namespace Cirkla_Client
             builder.Services.AddScoped<IClient, Client>(sp =>
             {
                 var httpClient = sp.GetRequiredService<HttpClient>();
-                return new Client(ApiAddress.baseAdress, httpClient);
+                return new Client(httpClient);
 
             });
 

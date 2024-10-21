@@ -40,6 +40,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Item = await _client.ItemGETAsync(Id);
+        Item = await _client.ApiItemGetAsync(Id);
     }
 }
