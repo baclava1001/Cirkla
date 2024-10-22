@@ -12,15 +12,15 @@ namespace Cirkla_DAL.Models.Contract
     {
         [Required]
         public int Id { get; set; }
-        [ForeignKey("Item"), Required, DeleteBehavior(DeleteBehavior.NoAction)]
-        public int ItemId { get; set; }
+        [Required]
+        //public int ItemId { get; set; }
         public Item? Item { get; set; }
-        [ForeignKey("Owner"), Required, DeleteBehavior(DeleteBehavior.NoAction)]
-        public string OwnerId { get; set; }
-        public User Owner { get; set; }
-        [ForeignKey("Borrower"), Required, DeleteBehavior(DeleteBehavior.NoAction)]
-        public string BorrowerId { get; set; }
-        public User Borrower { get; set; }
+        [Required]
+        //public string OwnerId { get; set; }
+        public User? Owner { get; set; }
+        [Required]
+        //public string BorrowerId { get; set; }
+        public User? Borrower { get; set; }
         [Required]
         public DateTimeOffset StartTime { get; set; }
         [Required]

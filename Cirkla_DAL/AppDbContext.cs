@@ -1,4 +1,4 @@
-﻿using Cirkla_DAL.Models.Contract;
+﻿// using Cirkla_DAL.Models.Contract;
 using Cirkla_DAL.Models.ItemPictures;
 using Cirkla_DAL.Models.Items;
 using Cirkla_DAL.Models.Users;
@@ -15,8 +15,7 @@ namespace Cirkla_DAL
 
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemPicture> ItemPictures { get; set; }
-
-        public DbSet<Contract> Contracts { get; set; }
+        // public DbSet<Contract> Contracts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -30,31 +29,82 @@ namespace Cirkla_DAL
 
             builder.Entity<Item>()
                 .HasMany(i => i.Pictures)
-            .WithOne(p => p.Item);
+                .WithOne(p => p.Item);
 
-        //TODO: Extract seeding to a separate file
+            //builder.Entity<Contract>()
+            //    .HasOne(c => c.Owner)
+            //    .WithMany()
+            //    .HasForeignKey(c => c.OwnerId)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
+            //builder.Entity<Contract>()
+            //    .HasOne(c => c.Borrower)
+            //    .WithMany()
+            //    .HasForeignKey(c => c.BorrowerId)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
+            //TODO: Extract seeding to a separate file
+
+            builder.Entity<User>().HasData(GetUsers());
             builder.Entity<Item>().HasData(GetItems());
             builder.Entity<ItemPicture>().HasData(GetItemPictures());
         }
 
 
         #region Seed data
-        //private List<User> GetUsers()
-        //{
-        //    return Enumerable.Range(1, 10)
-        //        .Select(index => new User
-        //        {
-        //            FirstName = $"User{index}",
-        //            LastName = $"UserSon{index}",
-        //            Address = $"Melrose Place {index}",
-        //            ZipCode = $"{index}{index}{index}{index}{index}",
-        //            Email = $"User{index}.UserSon{index}@mail.com",
-        //            PhoneNumber = $"0920 {index}{index}{index} {index}{index}{index}",
-        //            ProfilePictureURL = "https://avatar.iran.liara.run/public" // Generates random profile image
-        //        }).ToList();
-        //}
+        private List<User> GetUsers()
+        {
+            PasswordHasher<User> passwordHasher = new();
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = "54b5627b-1f8e-4634-8bb0-206fecc840f3",
+                    UserName = "samed.salman@gmail.com",
+                    NormalizedUserName = "SAMED.SALMAN@GMAIL.COM",
+                    FirstName = "Samed",
+                    LastName = "Salman",
+                    Address = "Hertx island",
+                    ZipCode = "974 54",
+                    Email = "samed.salman@gmail.com",
+                    NormalizedEmail = "SAMED.SALMAN@GMAIL.COM",
+                    PhoneNumber = "0737672491",
+                    ProfilePictureURL = "https://avatar.iran.liara.run/public", // Generates random profile image
+                    PasswordHash = passwordHasher.HashPassword(null, "Hejhopp@123") // Replace with actual password
+                },
+                new User
+                {
+                    Id = "6ce14244-d9f8-417e-b05f-df87f2c044e4",
+                    UserName = "kalle@kanin.se",
+                    NormalizedUserName = "KALLE.KANIN.SE",
+                    FirstName = "Kalle",
+                    LastName = "Kanin",
+                    Address = "Prärien",
+                    ZipCode = "59784",
+                    Email = "kalle@kanin.se",
+                    NormalizedEmail = "KALLE.KANIN.SE",
+                    PhoneNumber = "0920 555 888",
+                    ProfilePictureURL = "https://avatar.iran.liara.run/public", // Generates random profile image
+                    PasswordHash = passwordHasher.HashPassword(null ,"Hejhopp@123") // Replace with actual password
+                },
+                new User
+                {
+                    Id = "b2162ceb-793d-4e32-8029-ca56472dd93a",
+                    UserName = "lizaminelli@popstar.com",
+                    NormalizedUserName = "LIZAMINELLI@POPSTAR.COM",
+                    FirstName = "Liza",
+                    LastName = "Minelli",
+                    Address = "Melrose Place",
+                    ZipCode = "559412",
+                    Email = "lizaminelli@popstar.com",
+                    NormalizedEmail = "LIZAMINELLI@POPSTAR.COM",
+                    PhoneNumber = "0920 252525",
+                    ProfilePictureURL = "https://avatar.iran.liara.run/public", // Generates random profile image
+                    PasswordHash = passwordHasher.HashPassword(null, "Hejhopp@123") // Replace with actual password
+                }
+            };
+            return users;
+        }
 
         public List<Item> GetItems()
         {

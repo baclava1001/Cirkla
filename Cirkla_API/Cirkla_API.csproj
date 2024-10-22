@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\BorrowingController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
@@ -31,6 +35,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Cirkla_DAL\Cirkla_DAL.csproj" />
   </ItemGroup>
+
+	<Target Name="NSwag" AfterTargets="Build">
+		<Exec Command="$(NSwagExe) aspnetcore2openapi /assembly:$(TargetDir)Cirkla_API.dll /output:swagger.json" />
+		<Exec Command="$(NSwagExe) openapi2tsclient /input:swagger.json /output:Scripts/MyController.ts" />
+	</Target>
 
 	<Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' ">
 		<Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net80) run nswag.json /variables:Configuration=$(Configuration)" />

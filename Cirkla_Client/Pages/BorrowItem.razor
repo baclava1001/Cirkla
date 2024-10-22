@@ -1,5 +1,6 @@
-﻿@page "/itemdetails/"
+﻿@page "/borrowitem/"
 @inject IClient _client;
+
 
 <PageTitle>Details for @Item.Name</PageTitle>
 <h3>Details for @Item.Name</h3>
@@ -29,7 +30,12 @@
         </dl>
         <button class="btn btn-primary me-2" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
     }
+    @if(!string.IsNullOrEmpty(tempMessage))
+    {
+        <p class="text-success">@tempMessage</p>
+    }
 </div>
+
 
 @code {
     // TODO: Add more pictures in this view
@@ -39,13 +45,40 @@
     [Parameter]
     public Item Item { get; set; } = new();
 
+    string tempMessage;
+
     protected override async Task OnInitializedAsync()
     {
         Item = await _client.ApiItemGetAsync(Id);
     }
 
+    // TODO: Refactor this
     public async Task AskToBorrow()
     {
-        // TODO: Call API
+        Contract contract = new()
+            {
+                Id = 1,
+                BorrowerId = "e273ab8d-7a57-4de3-88f5-7e53623764c0", // Luke, hardcoded
+                ItemId = Item.Id,
+                OwnerId = Item.OwnerId,
+                StartTime = DateTimeOffset.Now,
+                EndTime = DateTimeOffset.Now.AddDays(30),
+                Created = DateTimeOffset.Now
+            };
+        try
+        {
+            var response = await _client.ApiBorrowingAsync(contract);
+        }
+        catch (ApiException ex)
+        {
+            tempMessage = ex.StatusCode.ToString();
+        }
+
+        // tempMessage = response.ToString();
+        // if(response.IsSuccessStatusCode)
+        // {
+        //     tempMessage = $"Your borrowing request was sent successfully to the owner of {Item.Name}";
+        // }
     }
 }
+
