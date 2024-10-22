@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cirkla_DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241017133430_seedingDataForDemo")]
-    partial class seedingDataForDemo
+    [Migration("20241022100643_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -524,6 +524,74 @@ namespace Cirkla_DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "54b5627b-1f8e-4634-8bb0-206fecc840f3",
+                            AccessFailedCount = 0,
+                            Address = "Hertx island",
+                            ConcurrencyStamp = "14751402-8874-4829-85df-f7594ce55769",
+                            Email = "samed.salman@gmail.com",
+                            EmailConfirmed = false,
+                            FirstName = "Samed",
+                            LastName = "Salman",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SAMED.SALMAN@GMAIL.COM",
+                            NormalizedUserName = "SAMED.SALMAN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKL9A5RLIE6gmwtT9a1pNgQV7Q/2g5mCSC5Sitxx1Ee4V3959TYY28KFOAabKuafqQ==",
+                            PhoneNumber = "0737672491",
+                            PhoneNumberConfirmed = false,
+                            ProfilePictureURL = "https://avatar.iran.liara.run/public",
+                            SecurityStamp = "09ff23a4-d9a8-49f1-a9e7-314a8e352431",
+                            TwoFactorEnabled = false,
+                            UserName = "samed.salman@gmail.com",
+                            ZipCode = "974 54"
+                        },
+                        new
+                        {
+                            Id = "6ce14244-d9f8-417e-b05f-df87f2c044e4",
+                            AccessFailedCount = 0,
+                            Address = "Prärien",
+                            ConcurrencyStamp = "9e33c6fd-7008-4bd3-8884-ce7b8838be17",
+                            Email = "kalle@kanin.se",
+                            EmailConfirmed = false,
+                            FirstName = "Kalle",
+                            LastName = "Kanin",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "KALLE.KANIN.SE",
+                            NormalizedUserName = "KALLE.KANIN.SE",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHaGcwEbVWF2L3+pKTivpQ/Ca22dqZ2RX/ij5oY+SZOTZt+r3ohTq+aOZU6ZFQhwXg==",
+                            PhoneNumber = "0920 555 888",
+                            PhoneNumberConfirmed = false,
+                            ProfilePictureURL = "https://avatar.iran.liara.run/public",
+                            SecurityStamp = "e5e19ae5-7429-48ce-aae3-f3b5f2b019e7",
+                            TwoFactorEnabled = false,
+                            UserName = "kalle@kanin.se",
+                            ZipCode = "59784"
+                        },
+                        new
+                        {
+                            Id = "b2162ceb-793d-4e32-8029-ca56472dd93a",
+                            AccessFailedCount = 0,
+                            Address = "Melrose Place",
+                            ConcurrencyStamp = "6c3379e8-09d7-41c1-93dc-89b3783be64f",
+                            Email = "lizaminelli@popstar.com",
+                            EmailConfirmed = false,
+                            FirstName = "Liza",
+                            LastName = "Minelli",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "LIZAMINELLI@POPSTAR.COM",
+                            NormalizedUserName = "LIZAMINELLI@POPSTAR.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH2ihMELvgr4WkDOkYtDd1bUxRAPFxXi/qoNGjcebm9N0oCLAWyBJlCa5nYFVPoI0A==",
+                            PhoneNumber = "0920 252525",
+                            PhoneNumberConfirmed = false,
+                            ProfilePictureURL = "https://avatar.iran.liara.run/public",
+                            SecurityStamp = "5d444839-c639-412a-85f0-19c0d3f81d99",
+                            TwoFactorEnabled = false,
+                            UserName = "lizaminelli@popstar.com",
+                            ZipCode = "559412"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

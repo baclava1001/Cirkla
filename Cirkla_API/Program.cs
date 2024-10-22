@@ -100,14 +100,14 @@ namespace Cirkla_API
             app.MapControllers();
 
             // Seed roles on startup
-            using(var scope = app.Services.CreateScope())
+            using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var roles = new[] { ApiRoles.User, ApiRoles.Administrator };
 
-                foreach(var role in roles)
+                foreach (var role in roles)
                 {
-                    if(!await roleManager.RoleExistsAsync(role))
+                    if (!await roleManager.RoleExistsAsync(role))
                     {
                         await roleManager.CreateAsync(new IdentityRole(role));
                     }
