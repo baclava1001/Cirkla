@@ -19,6 +19,7 @@ namespace Cirkla_API.Repositories
             return item;
         }
 
+        // TODO: Include only foreign keys..?
         public async Task<IEnumerable<Item>> GetAllItems()
         {
             return await _context.Items
@@ -51,7 +52,7 @@ namespace Cirkla_API.Repositories
             return Task.FromResult(item);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
         }

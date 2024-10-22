@@ -13,7 +13,7 @@ namespace Cirkla_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Contract>> AskToBorrow(Contract contract)
         {
-            return StatusCode(404);
+            return StatusCode(201, contract);
         }
     }
 }

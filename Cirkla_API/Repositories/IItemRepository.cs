@@ -10,6 +10,6 @@ namespace Cirkla_API.Repositories
         Task<Item> GetItem(int id);
         Task<Item> Remove(Item item);
         Task<Item> Update(Item item);
-        Task SaveChangesAsync();
+        Task SaveChanges();
     }
 }
