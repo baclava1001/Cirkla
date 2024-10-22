@@ -41,7 +41,7 @@ namespace Cirkla_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItemById(int id)
         {
-            Item item = await _itemService.FindItemById(id);
+            Item item = await _itemService.GetItem(id);
 
             if (item is null)
             {

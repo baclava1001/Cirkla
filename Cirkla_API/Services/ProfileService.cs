@@ -7,7 +7,7 @@ namespace Cirkla_API.Services
     {
         // TODO: Add error handling and logging (try global exception handling?)
 
-        IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
         public ProfileService(IUserRepository userRepository)
         {
