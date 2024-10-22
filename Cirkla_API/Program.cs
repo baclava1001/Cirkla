@@ -40,6 +40,9 @@ namespace Cirkla_API
             builder.Services.AddScoped<IItemPictureRepository, ItemPictureRepository>();
             builder.Services.AddScoped<IItemPictureService, ItemPictureService>();
 
+            builder.Services.AddScoped<IContractRepository, ContractRepository>();
+            builder.Services.AddScoped<IBorrowingService, BorrowingService>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
