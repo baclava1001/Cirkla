@@ -23,7 +23,7 @@ namespace Cirkla_API.Services
                 return false;
             }
             await _itemRepository.Add(item);
-            await _itemRepository.SaveChangesAsync();
+            await _itemRepository.SaveChanges();
             return true;
         }
 
@@ -37,7 +37,7 @@ namespace Cirkla_API.Services
                 // return NotFound("Can not find item at this time.");
             }
             await _itemRepository.Remove(item);
-            await _itemRepository.SaveChangesAsync();
+            await _itemRepository.SaveChanges();
             return true;
         }
 
@@ -81,7 +81,7 @@ namespace Cirkla_API.Services
                 return false;
             }
             await _itemRepository.Update(item);
-            await _itemRepository.SaveChangesAsync();
+            await _itemRepository.SaveChanges();
             return true;
         }
     }
