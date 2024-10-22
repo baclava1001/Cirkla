@@ -22,6 +22,45 @@ namespace Cirkla_DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Cirkla_DAL.Models.Contract.Contract", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BorrowerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("EndTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BorrowerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Contracts");
+                });
+
             modelBuilder.Entity("Cirkla_DAL.Models.ItemPictures.ItemPicture", b =>
                 {
                     b.Property<int>("Id")
@@ -528,19 +567,19 @@ namespace Cirkla_DAL.Migrations
                             Id = "54b5627b-1f8e-4634-8bb0-206fecc840f3",
                             AccessFailedCount = 0,
                             Address = "Hertx island",
-                            ConcurrencyStamp = "14751402-8874-4829-85df-f7594ce55769",
+                            ConcurrencyStamp = "87402a2c-6683-4c67-918f-24ed66947be5",
                             Email = "samed.salman@gmail.com",
-                            EmailConfirmed = false,
+                            EmailConfirmed = true,
                             FirstName = "Samed",
                             LastName = "Salman",
                             LockoutEnabled = false,
                             NormalizedEmail = "SAMED.SALMAN@GMAIL.COM",
                             NormalizedUserName = "SAMED.SALMAN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKL9A5RLIE6gmwtT9a1pNgQV7Q/2g5mCSC5Sitxx1Ee4V3959TYY28KFOAabKuafqQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJEuBugYZsRMXUhS3yXLAxZPKlKo4dzoUItAePqSZDHdA1WPi5sMYK1B5VznQ1Gatw==",
                             PhoneNumber = "0737672491",
                             PhoneNumberConfirmed = false,
                             ProfilePictureURL = "https://avatar.iran.liara.run/public",
-                            SecurityStamp = "09ff23a4-d9a8-49f1-a9e7-314a8e352431",
+                            SecurityStamp = "ffe2bafe-4346-4599-8a61-91b9bb36b29c",
                             TwoFactorEnabled = false,
                             UserName = "samed.salman@gmail.com",
                             ZipCode = "974 54"
@@ -550,19 +589,19 @@ namespace Cirkla_DAL.Migrations
                             Id = "6ce14244-d9f8-417e-b05f-df87f2c044e4",
                             AccessFailedCount = 0,
                             Address = "Prärien",
-                            ConcurrencyStamp = "9e33c6fd-7008-4bd3-8884-ce7b8838be17",
+                            ConcurrencyStamp = "735eb032-b342-4a69-8504-f763c10501ad",
                             Email = "kalle@kanin.se",
-                            EmailConfirmed = false,
+                            EmailConfirmed = true,
                             FirstName = "Kalle",
                             LastName = "Kanin",
                             LockoutEnabled = false,
                             NormalizedEmail = "KALLE.KANIN.SE",
                             NormalizedUserName = "KALLE.KANIN.SE",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHaGcwEbVWF2L3+pKTivpQ/Ca22dqZ2RX/ij5oY+SZOTZt+r3ohTq+aOZU6ZFQhwXg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPt0P4baE/tZw4Pa+M2nDg3E4D4D4Yskk3jVvKXLNko+rVySlXyypgzzynucUW/HXw==",
                             PhoneNumber = "0920 555 888",
                             PhoneNumberConfirmed = false,
                             ProfilePictureURL = "https://avatar.iran.liara.run/public",
-                            SecurityStamp = "e5e19ae5-7429-48ce-aae3-f3b5f2b019e7",
+                            SecurityStamp = "f2977088-1d6e-4a37-a601-29a9e9a911fa",
                             TwoFactorEnabled = false,
                             UserName = "kalle@kanin.se",
                             ZipCode = "59784"
@@ -572,19 +611,19 @@ namespace Cirkla_DAL.Migrations
                             Id = "b2162ceb-793d-4e32-8029-ca56472dd93a",
                             AccessFailedCount = 0,
                             Address = "Melrose Place",
-                            ConcurrencyStamp = "6c3379e8-09d7-41c1-93dc-89b3783be64f",
+                            ConcurrencyStamp = "394c21e3-a41f-4225-a5c6-3b6e7f7f6dda",
                             Email = "lizaminelli@popstar.com",
-                            EmailConfirmed = false,
+                            EmailConfirmed = true,
                             FirstName = "Liza",
                             LastName = "Minelli",
                             LockoutEnabled = false,
                             NormalizedEmail = "LIZAMINELLI@POPSTAR.COM",
                             NormalizedUserName = "LIZAMINELLI@POPSTAR.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEH2ihMELvgr4WkDOkYtDd1bUxRAPFxXi/qoNGjcebm9N0oCLAWyBJlCa5nYFVPoI0A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGUiVVLb9dFKIejHgUD4En9uEh816uySSZbjHb/9Az+j18ghg0e5bZo8ZMH9sEeIGQ==",
                             PhoneNumber = "0920 252525",
                             PhoneNumberConfirmed = false,
                             ProfilePictureURL = "https://avatar.iran.liara.run/public",
-                            SecurityStamp = "5d444839-c639-412a-85f0-19c0d3f81d99",
+                            SecurityStamp = "116ca9f9-d4c6-4e31-a4e4-1daf5795518a",
                             TwoFactorEnabled = false,
                             UserName = "lizaminelli@popstar.com",
                             ZipCode = "559412"
@@ -722,6 +761,33 @@ namespace Cirkla_DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Cirkla_DAL.Models.Contract.Contract", b =>
+                {
+                    b.HasOne("Cirkla_DAL.Models.Users.User", "Borrower")
+                        .WithMany()
+                        .HasForeignKey("BorrowerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Cirkla_DAL.Models.Items.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cirkla_DAL.Models.Users.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Borrower");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Cirkla_DAL.Models.ItemPictures.ItemPicture", b =>

@@ -188,6 +188,40 @@ namespace Cirkla_DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Contracts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BorrowerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    EndTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contracts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Contracts_AspNetUsers_BorrowerId",
+                        column: x => x.BorrowerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Contracts_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Contracts_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ItemPictures",
                 columns: table => new
                 {
@@ -212,9 +246,9 @@ namespace Cirkla_DAL.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Address", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePictureURL", "SecurityStamp", "TwoFactorEnabled", "UserName", "ZipCode" },
                 values: new object[,]
                 {
-                    { "54b5627b-1f8e-4634-8bb0-206fecc840f3", 0, "Hertx island", "14751402-8874-4829-85df-f7594ce55769", "samed.salman@gmail.com", false, "Samed", "Salman", false, null, "SAMED.SALMAN@GMAIL.COM", "SAMED.SALMAN@GMAIL.COM", "AQAAAAIAAYagAAAAEKL9A5RLIE6gmwtT9a1pNgQV7Q/2g5mCSC5Sitxx1Ee4V3959TYY28KFOAabKuafqQ==", "0737672491", false, "https://avatar.iran.liara.run/public", "09ff23a4-d9a8-49f1-a9e7-314a8e352431", false, "samed.salman@gmail.com", "974 54" },
-                    { "6ce14244-d9f8-417e-b05f-df87f2c044e4", 0, "Prärien", "9e33c6fd-7008-4bd3-8884-ce7b8838be17", "kalle@kanin.se", false, "Kalle", "Kanin", false, null, "KALLE.KANIN.SE", "KALLE.KANIN.SE", "AQAAAAIAAYagAAAAEHaGcwEbVWF2L3+pKTivpQ/Ca22dqZ2RX/ij5oY+SZOTZt+r3ohTq+aOZU6ZFQhwXg==", "0920 555 888", false, "https://avatar.iran.liara.run/public", "e5e19ae5-7429-48ce-aae3-f3b5f2b019e7", false, "kalle@kanin.se", "59784" },
-                    { "b2162ceb-793d-4e32-8029-ca56472dd93a", 0, "Melrose Place", "6c3379e8-09d7-41c1-93dc-89b3783be64f", "lizaminelli@popstar.com", false, "Liza", "Minelli", false, null, "LIZAMINELLI@POPSTAR.COM", "LIZAMINELLI@POPSTAR.COM", "AQAAAAIAAYagAAAAEH2ihMELvgr4WkDOkYtDd1bUxRAPFxXi/qoNGjcebm9N0oCLAWyBJlCa5nYFVPoI0A==", "0920 252525", false, "https://avatar.iran.liara.run/public", "5d444839-c639-412a-85f0-19c0d3f81d99", false, "lizaminelli@popstar.com", "559412" }
+                    { "54b5627b-1f8e-4634-8bb0-206fecc840f3", 0, "Hertx island", "87402a2c-6683-4c67-918f-24ed66947be5", "samed.salman@gmail.com", true, "Samed", "Salman", false, null, "SAMED.SALMAN@GMAIL.COM", "SAMED.SALMAN@GMAIL.COM", "AQAAAAIAAYagAAAAEJEuBugYZsRMXUhS3yXLAxZPKlKo4dzoUItAePqSZDHdA1WPi5sMYK1B5VznQ1Gatw==", "0737672491", false, "https://avatar.iran.liara.run/public", "ffe2bafe-4346-4599-8a61-91b9bb36b29c", false, "samed.salman@gmail.com", "974 54" },
+                    { "6ce14244-d9f8-417e-b05f-df87f2c044e4", 0, "Prärien", "735eb032-b342-4a69-8504-f763c10501ad", "kalle@kanin.se", true, "Kalle", "Kanin", false, null, "KALLE.KANIN.SE", "KALLE.KANIN.SE", "AQAAAAIAAYagAAAAEPt0P4baE/tZw4Pa+M2nDg3E4D4D4Yskk3jVvKXLNko+rVySlXyypgzzynucUW/HXw==", "0920 555 888", false, "https://avatar.iran.liara.run/public", "f2977088-1d6e-4a37-a601-29a9e9a911fa", false, "kalle@kanin.se", "59784" },
+                    { "b2162ceb-793d-4e32-8029-ca56472dd93a", 0, "Melrose Place", "394c21e3-a41f-4225-a5c6-3b6e7f7f6dda", "lizaminelli@popstar.com", true, "Liza", "Minelli", false, null, "LIZAMINELLI@POPSTAR.COM", "LIZAMINELLI@POPSTAR.COM", "AQAAAAIAAYagAAAAEGUiVVLb9dFKIejHgUD4En9uEh816uySSZbjHb/9Az+j18ghg0e5bZo8ZMH9sEeIGQ==", "0920 252525", false, "https://avatar.iran.liara.run/public", "116ca9f9-d4c6-4e31-a4e4-1daf5795518a", false, "lizaminelli@popstar.com", "559412" }
                 });
 
             migrationBuilder.InsertData(
@@ -317,6 +351,21 @@ namespace Cirkla_DAL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Contracts_BorrowerId",
+                table: "Contracts",
+                column: "BorrowerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contracts_ItemId",
+                table: "Contracts",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contracts_OwnerId",
+                table: "Contracts",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ItemPictures_ItemId",
                 table: "ItemPictures",
                 column: "ItemId");
@@ -344,6 +393,9 @@ namespace Cirkla_DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Contracts");
 
             migrationBuilder.DropTable(
                 name: "ItemPictures");
