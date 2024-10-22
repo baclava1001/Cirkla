@@ -1,4 +1,4 @@
-﻿// using Cirkla_DAL.Models.Contract;
+﻿using Cirkla_DAL.Models.Contract;
 using Cirkla_DAL.Models.ItemPictures;
 using Cirkla_DAL.Models.Items;
 using Cirkla_DAL.Models.Users;
@@ -12,10 +12,9 @@ namespace Cirkla_DAL
     public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemPicture> ItemPictures { get; set; }
-        // public DbSet<Contract> Contracts { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -31,17 +30,15 @@ namespace Cirkla_DAL
                 .HasMany(i => i.Pictures)
                 .WithOne(p => p.Item);
 
-            //builder.Entity<Contract>()
-            //    .HasOne(c => c.Owner)
-            //    .WithMany()
-            //    .HasForeignKey(c => c.OwnerId)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Contract>()
+                .HasOne(c => c.Owner)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //builder.Entity<Contract>()
-            //    .HasOne(c => c.Borrower)
-            //    .WithMany()
-            //    .HasForeignKey(c => c.BorrowerId)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Contract>()
+                .HasOne(c => c.Borrower)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
 
             //TODO: Extract seeding to a separate file
 
@@ -70,7 +67,8 @@ namespace Cirkla_DAL
                     NormalizedEmail = "SAMED.SALMAN@GMAIL.COM",
                     PhoneNumber = "0737672491",
                     ProfilePictureURL = "https://avatar.iran.liara.run/public", // Generates random profile image
-                    PasswordHash = passwordHasher.HashPassword(null, "Hejhopp@123") // Replace with actual password
+                    PasswordHash = passwordHasher.HashPassword(null, "Hejhopp@123"),
+                    EmailConfirmed = true
                 },
                 new User
                 {
@@ -85,7 +83,8 @@ namespace Cirkla_DAL
                     NormalizedEmail = "KALLE.KANIN.SE",
                     PhoneNumber = "0920 555 888",
                     ProfilePictureURL = "https://avatar.iran.liara.run/public", // Generates random profile image
-                    PasswordHash = passwordHasher.HashPassword(null ,"Hejhopp@123") // Replace with actual password
+                    PasswordHash = passwordHasher.HashPassword(null ,"Hejhopp@123"),
+                    EmailConfirmed = true
                 },
                 new User
                 {
@@ -100,7 +99,8 @@ namespace Cirkla_DAL
                     NormalizedEmail = "LIZAMINELLI@POPSTAR.COM",
                     PhoneNumber = "0920 252525",
                     ProfilePictureURL = "https://avatar.iran.liara.run/public", // Generates random profile image
-                    PasswordHash = passwordHasher.HashPassword(null, "Hejhopp@123") // Replace with actual password
+                    PasswordHash = passwordHasher.HashPassword(null, "Hejhopp@123"),
+                    EmailConfirmed = true
                 }
             };
             return users;
