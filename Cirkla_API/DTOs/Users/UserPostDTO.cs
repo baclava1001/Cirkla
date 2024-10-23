@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cirkla_API.Users
+namespace Cirkla_API.DTOs.Users
 {
     public class UserPostDTO : UserLoginDTO
     {
@@ -15,5 +15,8 @@ namespace Cirkla_API.Users
         [Url]
         public string? ProfilePictureURL { get; set; }
 
+        // From UserLoginDTO:
+        // string Email
+        // string password
     }
 }

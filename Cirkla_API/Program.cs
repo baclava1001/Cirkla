@@ -1,3 +1,4 @@
+using Cirkla_API.Helpers;
 using Cirkla_API.Repositories;
 using Cirkla_API.Services;
 using Cirkla_DAL;
@@ -30,6 +31,8 @@ namespace Cirkla_API
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
+
+            builder.Services.AddScoped<IMapper, Mapper>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProfileService, ProfileService>();

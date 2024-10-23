@@ -6,7 +6,7 @@
 <h3>Details for @Item.Name</h3>
 <hr />
 
-<div>   
+<div>
     @if (Item is null)
     {
         <p><em>Loading...</em></p>
@@ -57,9 +57,8 @@
     {
         Contract contract = new()
             {
-                Id = 1,
-                BorrowerId = "e273ab8d-7a57-4de3-88f5-7e53623764c0", // Luke, hardcoded
                 ItemId = Item.Id,
+                BorrowerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3", // Samed, hardcoded - test sending in a faulty id
                 OwnerId = Item.OwnerId,
                 StartTime = DateTimeOffset.Now,
                 EndTime = DateTimeOffset.Now.AddDays(30),
@@ -71,14 +70,8 @@
         }
         catch (ApiException ex)
         {
-            tempMessage = ex.StatusCode.ToString();
+            tempMessage = ex.Message.ToString();
         }
-
-        // tempMessage = response.ToString();
-        // if(response.IsSuccessStatusCode)
-        // {
-        //     tempMessage = $"Your borrowing request was sent successfully to the owner of {Item.Name}";
-        // }
     }
 }
 

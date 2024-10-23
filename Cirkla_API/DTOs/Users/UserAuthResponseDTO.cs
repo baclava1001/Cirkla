@@ -1,4 +1,4 @@
-﻿namespace Cirkla_API.Users
+﻿namespace Cirkla_API.DTOs.Users
 {
     public class UserAuthResponseDTO
     {

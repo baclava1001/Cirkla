@@ -54,12 +54,16 @@ namespace Cirkla_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateItem(int id, Item item)
         {
-            if (await _itemService.UpdateItem(id, item) == false)
+            try
+            {
+                await _itemService.UpdateItem(id, item);
+                Response.Headers.Append("Updated-Item-Id", item.Id.ToString());
+                return NoContent();
+            }
+            catch(Exception ex)
             {
                 return BadRequest();
             }
-            Response.Headers.Append("Updated-Item-Id", item.Id.ToString());
-            return NoContent();
         }
 
         // TODO: Fix always returns success code even when Item does not exist
