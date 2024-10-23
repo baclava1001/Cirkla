@@ -40,10 +40,10 @@ namespace Cirkla_API.Repositories
 
         public async Task<Item> GetItem(int id)
         {
-            return _context.Items
+            return await _context.Items
                 .Include(i => i.Pictures)
                 .Include(i => i.Owner)
-                .FirstOrDefault(i => i.Id == id);
+                .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public Task<Item> Remove(Item item)

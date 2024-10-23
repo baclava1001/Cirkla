@@ -16,15 +16,18 @@ namespace Cirkla_API.Services
             _logger = logger;
         }
 
-        public async Task<bool> CreateItem(Item item)
+        public async Task<Item> CreateItem(Item item)
         {
-            if (item is null)
+            try
             {
-                return false;
+                await _itemRepository.Add(item);
+                await _itemRepository.SaveChanges();
+                return item;
             }
-            await _itemRepository.Add(item);
-            await _itemRepository.SaveChanges();
-            return true;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<bool> DeleteItem(int id)
@@ -43,43 +46,50 @@ namespace Cirkla_API.Services
 
         public async Task<Item> GetItem(int id)
         {
-            Item item = await _itemRepository.GetItem(id);
-            return item;
+            return await _itemRepository.GetItem(id);
         }
 
         public async Task<IEnumerable<Item>> ListAllItems()
         {
-            IEnumerable<Item> itemList = await _itemRepository.GetAllItems();
+            IEnumerable<Item> items = await _itemRepository.GetAllItems();
 
-            if (!itemList.Any())
+            if (!items.Any())
             {
                 // TODO: return error
             }
-            return itemList;
+            return items;
         }
 
         public async Task<IEnumerable<Item>> ListAllItems(string userId)
         {
-            IEnumerable<Item> itemList = await _itemRepository.GetAllItems(userId);
+            IEnumerable<Item> items = await _itemRepository.GetAllItems(userId);
 
-            if (!itemList.Any())
+            if (!items.Any())
             {
                 // TODO: return error
             }
-            return itemList;
+            return items;
         }
 
 
 
-        public async Task<bool> UpdateItem(int id, Item item)
+        public async Task<Item> UpdateItem(int id, Item item)
         {
-            if (item is null || item is null || id != item.Id)
+            if (item is null || id != item.Id)
             {
-                return false;
+                return null;
             }
-            await _itemRepository.Update(item);
-            await _itemRepository.SaveChanges();
-            return true;
+            try
+            {
+                await _itemRepository.Update(item);
+                await _itemRepository.SaveChanges();
+                return item;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return item;
         }
     }
 }

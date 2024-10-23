@@ -13,13 +13,10 @@ namespace Cirkla_DAL.Models.Contract
         [Required]
         public int Id { get; set; }
         [Required]
-        //public int ItemId { get; set; }
         public Item Item { get; set; }
         [Required]
-        //public string OwnerId { get; set; }
         public User Owner { get; set; }
         [Required]
-        //public string BorrowerId { get; set; }
         public User Borrower { get; set; }
         [Required]
         public DateTimeOffset StartTime { get; set; }

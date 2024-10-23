@@ -8,18 +8,21 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Cirkla_API.Constants;
-using Cirkla_API.Users;
+using Cirkla_API.DTOs.Users;
+using Cirkla_API.Helpers;
 
-namespace Cirkla_API.Authentication
+namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
         {
+            _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
         }
@@ -32,19 +35,8 @@ namespace Cirkla_API.Authentication
             // TODO: Move logic to a separate service
             try
             {
-                // TODO: Add Automapper at a later stage
-                User user = new()
-                {
-                    UserName = userPostDTO.Email,
-                    Email = userPostDTO.Email,
-                    FirstName = userPostDTO.FirstName,
-                    LastName = userPostDTO.LastName,
-                    Address = userPostDTO.Address,
-                    ZipCode = userPostDTO.ZipCode,
-                    ProfilePictureURL = userPostDTO.ProfilePictureURL,
-                    EmailConfirmed = true
-                    // Password is hashed and added to the user object below
-                };
+                User user = await _mapper.MapUserPostDtoToUser(userPostDTO);
+                // Password is hashed and added to the user object below
                 var result = await _userManager.CreateAsync(user, userPostDTO.Password);
 
                 if (!result.Succeeded)
@@ -69,6 +61,7 @@ namespace Cirkla_API.Authentication
         [Route("Login")]
         public async Task<ActionResult<UserAuthResponseDTO>> Login(UserLoginDTO userLoginDTO)
         {
+            // TODO: Extract logic to separate service
             try
             {
                 User user = await _userManager.FindByEmailAsync(userLoginDTO.Email);
@@ -97,7 +90,7 @@ namespace Cirkla_API.Authentication
         }
 
 
-        // Move token logic to separate class
+        // TODO: Move token logic to separate class
         private async Task<string> GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
