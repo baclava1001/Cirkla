@@ -42,6 +42,7 @@ namespace Cirkla_API.Repositories
         {
             return _context.Contracts
                 .Include(c => c.Item)
+                .Include(c =>  c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .FirstOrDefault(c => c.Id == id);

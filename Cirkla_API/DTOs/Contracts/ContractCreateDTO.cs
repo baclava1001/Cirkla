@@ -10,6 +10,8 @@ namespace Cirkla_API.DTOs.Contracts
     public class ContractCreateDTO
     {
         [Required]
+        public int Id { get; set; }
+        [Required]
         public int ItemId { get; set; }
         [Required]
         public string OwnerId { get; set; }
