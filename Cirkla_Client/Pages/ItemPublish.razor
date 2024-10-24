@@ -115,12 +115,12 @@
 
         try
         {
-            Item.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed's id
+            Item.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed's id, harcoded
             await _client.ApiItemPostAsync(Item);
             await Task.Delay(500);
             errorMessage = null;
             successMessage = $"{Item.Name} published successfully";
-            Item = new();
+            Item = new(); // Fresh object reference to empty the form
         }
         catch(Exception ex)
         {

@@ -1,6 +1,6 @@
 ﻿@page "/borrowitem/"
 @inject IClient _client;
-
+@inject NavigationManager _navigationManager;
 
 <PageTitle>Details for @Item.Name</PageTitle>
 <h3>Details for @Item.Name</h3>
@@ -32,7 +32,7 @@
     }
     @if(!string.IsNullOrEmpty(tempMessage))
     {
-        <p class="text-success">@tempMessage</p>
+        <p class="@messageClass mt-3">@tempMessage</p>
     }
 </div>
 
@@ -43,9 +43,10 @@
     public int Id { get; set; }
 
     [Parameter]
-    public Item Item { get; set; } = new();
+    public Item? Item { get; set; } = new();
 
-    string tempMessage;
+    string? tempMessage;
+    string? messageClass;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,7 +56,8 @@
     // TODO: Refactor this
     public async Task AskToBorrow()
     {
-        Contract contract = new()
+        // TODO: Shouldn't NSwag create a DTO class..?
+        ContractCreateDTO contractDTO = new()
             {
                 ItemId = Item.Id,
                 BorrowerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3", // Samed, hardcoded - test sending in a faulty id
@@ -64,13 +66,28 @@
                 EndTime = DateTimeOffset.Now.AddDays(30),
                 Created = DateTimeOffset.Now
             };
+
         try
         {
-            var response = await _client.ApiBorrowingAsync(contract);
+            var response = await _client.ApiBorrowingPostAsync(contractDTO);
+            _navigationManager.NavigateTo($"/request/view?id={response.Id}");
         }
         catch (ApiException ex)
         {
-            tempMessage = ex.Message.ToString();
+            if(ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            {
+                messageClass = "text-success";
+                tempMessage = $"Your request to borrow {Item.Name} has been succesfully sent to {Item.Owner.FirstName} {Item.Owner.LastName}";
+            }
+            else if(ex.StatusCode == 404)
+            {
+                _navigationManager.NavigateTo("/notfound");
+            }
+            else
+            {
+                messageClass = "text-danger";
+                tempMessage = ex.Message.ToString();
+            }
         }
     }
 }

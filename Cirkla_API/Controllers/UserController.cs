@@ -2,7 +2,7 @@
 using Cirkla_API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cirkla_API.Users
+namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -48,7 +48,7 @@ namespace Cirkla_API.Users
         {
             _logger.LogInformation("Retrieving user by id.");
             User user = await _userRepository.Get(id);
-            
+
             if (user is null)
             {
                 return NotFound("Can not find user at this time.");
@@ -88,7 +88,7 @@ namespace Cirkla_API.Users
             Response.Headers.Append("Removed-User-Id", user.Id);
             return NoContent();
         }
-        
+
 
 
         // TODO: !!!"Fake login" (always returns true if user name is right)

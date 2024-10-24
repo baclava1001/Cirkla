@@ -1,0 +1,84 @@
+﻿@page "/request/view"
+@inject IClient _client;
+@inject NavigationManager _navigationManager;
+
+
+<PageTitle>Request summary</PageTitle>
+<h3>Request summary</h3>
+<hr />
+
+<div>
+    @if (Contract is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <img src="@Contract.Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Contract?.Item?.Name" class="img-fluid" style="width: 350px; height: auto;" />
+        <br />
+        <br />
+        <dl class="row">
+            <dt class="col-sm-2">Cirkla member</dt>
+            <dd class="col-sm-10">@Contract?.Borrower.FirstName @Contract?.Borrower.LastName</dd>
+            <dt class="col-sm-2">Requests to borrow</dt>
+            <dd class="col-sm-10">@Contract?.Item.Name @Contract?.Item.Model</dd>
+            <dt class="col-sm-2">From Cirkla member</dt>
+            <dd class="col-sm-10">@Contract?.Owner.FirstName @Contract?.Owner.LastName</dd>
+            <dt class="col-sm-2">From</dt>
+            <dd class="col-sm-10">@Contract?.StartTime.Date</dd>
+            <dt class="col-sm-2">To</dt>
+            <dd class="col-sm-10">@Contract?.EndTime.Date</dd>
+            <dt class="col-sm-2">Under the following conditions</dt>
+            <dd class="col-sm-10">(Coming feature, not yet implemented)</dd>
+        </dl>
+        @* Add button for borrower to edit request? *@
+        @* Add buttons for owner to handle request! *@
+    }
+    @if(!string.IsNullOrEmpty(tempMessage))
+    {
+        <p class="@messageClass mt-3">@tempMessage</p>
+    }
+</div>
+
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [Parameter]
+    public Contract? Contract { get; set; } = new();
+
+    string? tempMessage;
+    string? messageClass;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(Id);
+        try
+        {
+            Contract = await _client.ApiBorrowingGetAsync(Id);
+
+        }
+        catch(ApiException ex)
+        {
+            if(ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            {
+                messageClass = "text-success";
+                tempMessage = "Here's the request!";
+            }
+            else if (ex.StatusCode == 404)
+            {
+                _navigationManager.NavigateTo("/notfound");
+            }
+            else
+            {
+                messageClass = "text-danger";
+                tempMessage = ex.Message.ToString();
+            }
+        }
+
+    }
+
+    // TODO: Finalized contract leads to another view, with no controls
+}
+

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Cirkla_DAL.Models.Contract;
-using Cirkla_DAL.Models.Items;
-using Cirkla_API.Services;
-using Cirkla_API.DTOs;
 using Cirkla_API.DTOs.Contracts;
+using Cirkla_API.Services;
 using Cirkla_API.Helpers;
 
 namespace Cirkla_API.Controllers
@@ -13,25 +11,48 @@ namespace Cirkla_API.Controllers
     [ApiController]
     public class BorrowingController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IBorrowingService _borrowingService;
 
-        public BorrowingController(IMapper mapper, IBorrowingService borrowingService)
+        public BorrowingController(IBorrowingService borrowingService)
         {
-            _mapper = mapper;
             _borrowingService = borrowingService;
         }
 
         // Ask to borrow = create contract for owner to review
         [HttpPost]
-        public async Task<ActionResult<Contract>> AskToBorrow(ContractCreateDTO contractFromClient)
+        [ActionName("AskToBorrow")]
+        public async Task<ActionResult<Contract>> AskToBorrow(ContractCreateDTO contractDTOFromClient)
         {
-            if(contractFromClient is null)
+            if(contractDTOFromClient is null)
             {
                 return NotFound();
             }
-            Contract contract = await _mapper.MapContractCreateDtoToContract(contractFromClient);
-            await _borrowingService.AskForItem(contract);
+
+            try
+            {
+                Contract contract = await _borrowingService.AskForItem(contractDTOFromClient);
+                return CreatedAtAction("ViewRequestSummary", new { id = contract.Id }, contract);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
+            //return StatusCode(201, contract);
+        }
+
+        [HttpGet("{id}")]
+        [ActionName("ViewRequestSummary")]
+        public async Task<ActionResult<Contract>> ViewRequestSummary(int id)
+        {
+            Contract contract = new();
+            try
+            {
+                contract = await _borrowingService.ViewRequestSummary(id);
+            }
+            catch(Exception ex)
+            {
+                ex.Message.ToString();
+            }
             return Ok(contract);
         }
     }

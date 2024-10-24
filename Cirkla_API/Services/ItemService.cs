@@ -46,7 +46,13 @@ namespace Cirkla_API.Services
 
         public async Task<Item> GetItem(int id)
         {
-            return await _itemRepository.GetItem(id);
+            Item item = await _itemRepository.GetItem(id);
+            
+            if(item is null)
+            {
+                return null;
+            }
+            return item;
         }
 
         public async Task<IEnumerable<Item>> ListAllItems()
@@ -55,7 +61,7 @@ namespace Cirkla_API.Services
 
             if (!items.Any())
             {
-                // TODO: return error
+                return null;
             }
             return items;
         }
