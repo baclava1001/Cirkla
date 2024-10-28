@@ -7,7 +7,7 @@
 <hr />
 
 <div>
-    @if (Item is null)
+    @if(Item is null)
     {
         <p><em>Loading...</em></p>
     }
@@ -28,7 +28,19 @@
             <dt class="col-sm-2">Owner</dt>
             <dd class="col-sm-10">@Item.Owner?.FirstName @Item.Owner?.LastName</dd>
         </dl>
-        <button class="btn btn-primary me-2" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
+        <EditForm method="post" Model="ContractDTO" OnValidSubmit="AskToBorrow" FormName="choosedates">
+            <div class="mb-3">
+                <label for="requestedpickupdate" class="form-label">Requested pickup date</label>
+                <InputDate TValue="DateTime" id="requestedpickupdate" @bind-Value="@ContractDTO.StartTime" class="form-control" />
+                <ValidationMessage For="() => ContractDTO.StartTime" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="requestedreturndate" class="form-label">Requested return date</label>
+                <InputDate TValue="DateTime" id="requestedreturndate" @bind-Value="@ContractDTO.EndTime" class="form-control" />
+                <ValidationMessage For="() => ContractDTO.EndTime" class="text-danger" />
+            </div>
+            <button class="btn btn-primary me-2" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
+        </EditForm>
     }
     @if(!string.IsNullOrEmpty(tempMessage))
     {
@@ -38,12 +50,16 @@
 
 
 @code {
+    // TODO: Add logic for datepickers
     // TODO: Add more pictures in this view
     [SupplyParameterFromQuery]
-    public int Id { get; set; }
+    public int Id { get; set; } //Item id from http-query
 
     [Parameter]
     public Item? Item { get; set; } = new();
+
+    [Parameter]
+    public ContractCreateDTO ContractDTO { get; set; } = new();
 
     string? tempMessage;
     string? messageClass;
@@ -51,25 +67,20 @@
     protected override async Task OnInitializedAsync()
     {
         Item = await _client.ApiItemGetAsync(Id);
+        ContractDTO.StartTime = DateTime.Now;
+        ContractDTO.EndTime = DateTime.Now;
     }
 
-    // TODO: Refactor this
     public async Task AskToBorrow()
     {
-        // TODO: Shouldn't NSwag create a DTO class..?
-        ContractCreateDTO contractDTO = new()
-            {
-                ItemId = Item.Id,
-                BorrowerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3", // Samed, hardcoded - test sending in a faulty id
-                OwnerId = Item.OwnerId,
-                StartTime = DateTimeOffset.Now,
-                EndTime = DateTimeOffset.Now.AddDays(30),
-                Created = DateTimeOffset.Now
-            };
+        ContractDTO.ItemId = Item.Id;
+        ContractDTO.BorrowerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; // TODO: get Id from JWT or session
+        ContractDTO.OwnerId = Item.OwnerId;
+        ContractDTO.Created = DateTime.Now;
 
         try
         {
-            var response = await _client.ApiBorrowingPostAsync(contractDTO);
+            var response = await _client.ApiBorrowingPostAsync(ContractDTO);
             _navigationManager.NavigateTo($"/request/view?id={response.Id}");
         }
         catch (ApiException ex)
@@ -79,9 +90,10 @@
                 messageClass = "text-success";
                 tempMessage = $"Your request to borrow {Item.Name} has been succesfully sent to {Item.Owner.FirstName} {Item.Owner.LastName}";
             }
-            else if(ex.StatusCode == 404)
+            else if(ex.StatusCode >= 400 && ex.StatusCode <= 499)
             {
-                _navigationManager.NavigateTo("/notfound");
+                messageClass = "text-danger";
+                tempMessage = ex.Message.ToString();
             }
             else
             {

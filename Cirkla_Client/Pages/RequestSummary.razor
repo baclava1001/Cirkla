@@ -4,7 +4,7 @@
 
 
 <PageTitle>Request summary</PageTitle>
-<h3>Request summary</h3>
+<h3>Request summary @requestNumber</h3>
 <hr />
 
 <div>
@@ -45,9 +45,9 @@
     [SupplyParameterFromQuery]
     public int Id { get; set; }
 
-    [Parameter]
     public Contract? Contract { get; set; }
 
+    string requestNumber;
     string? tempMessage;
     string? messageClass;
 
@@ -57,7 +57,7 @@
         try
         {
             Contract = await _client.ApiBorrowingGetAsync(Id);
-
+            requestNumber = $"#{Contract.Id}";
         }
         catch(ApiException ex)
         {

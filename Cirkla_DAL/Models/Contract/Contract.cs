@@ -19,11 +19,11 @@ namespace Cirkla_DAL.Models.Contract
         [Required]
         public User Borrower { get; set; }
         [Required]
-        public DateTimeOffset StartTime { get; set; }
+        public DateTime StartTime { get; set; }
         [Required]
-        public DateTimeOffset EndTime { get; set; }
+        public DateTime EndTime { get; set; }
         [Required]
-        public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
+        public DateTime Created { get; set; }
 
         // TODO: Later add more timestamps for: AgreedStartTime, AgreedEndTime & ActualStartTime, ActualEndTime
     }
