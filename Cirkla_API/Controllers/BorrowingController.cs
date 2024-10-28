@@ -31,13 +31,13 @@ namespace Cirkla_API.Controllers
             try
             {
                 Contract contract = await _borrowingService.AskForItem(contractDTOFromClient);
-                return CreatedAtAction("ViewRequestSummary", new { id = contract.Id }, contract);
+                // return CreatedAtAction("ViewRequestSummary", new { id = contract.Id }, contract);
+                return Ok(contract); // Returns 200 instead of 201 because NSwag
             }
             catch(Exception ex)
             {
                 return BadRequest();
             }
-            //return StatusCode(201, contract);
         }
 
         [HttpGet("{id}")]

@@ -10,18 +10,16 @@ namespace Cirkla_API.DTOs.Contracts
     public class ContractCreateDTO
     {
         [Required]
-        public int Id { get; set; }
-        [Required]
         public int ItemId { get; set; }
         [Required]
         public string OwnerId { get; set; }
         [Required]
         public string BorrowerId { get; set; }
         [Required]
-        public DateTimeOffset StartTime { get; set; }
+        public DateTime StartTime { get; set; }
         [Required]
-        public DateTimeOffset EndTime { get; set; }
+        public DateTime EndTime { get; set; }
         [Required]
-        public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
+        public DateTime Created { get; set; }
     }
 }

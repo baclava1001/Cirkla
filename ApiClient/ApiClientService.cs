@@ -449,7 +449,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -2203,15 +2203,15 @@ namespace Cirkla.ApiClient
 
         [Newtonsoft.Json.JsonProperty("startTime", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTimeOffset StartTime { get; set; } = default!;
+        public System.DateTime StartTime { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("endTime", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTimeOffset EndTime { get; set; } = default!;
+        public System.DateTime EndTime { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTimeOffset Created { get; set; } = default!;
+        public System.DateTime Created { get; set; } = default!;
 
     }
 
@@ -2322,7 +2322,7 @@ namespace Cirkla.ApiClient
         public bool? TwoFactorEnabled { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("lockoutEnd", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? LockoutEnd { get; set; } = default!;
+        public System.DateTime? LockoutEnd { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("lockoutEnabled", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? LockoutEnabled { get; set; } = default!;
@@ -2352,9 +2352,6 @@ namespace Cirkla.ApiClient
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ContractCreateDTO
     {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; } = default!;
-
         [Newtonsoft.Json.JsonProperty("itemId", Required = Newtonsoft.Json.Required.Always)]
         public int ItemId { get; set; } = default!;
 
@@ -2368,15 +2365,15 @@ namespace Cirkla.ApiClient
 
         [Newtonsoft.Json.JsonProperty("startTime", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTimeOffset StartTime { get; set; } = default!;
+        public System.DateTime StartTime { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("endTime", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTimeOffset EndTime { get; set; } = default!;
+        public System.DateTime EndTime { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTimeOffset Created { get; set; } = default!;
+        public System.DateTime Created { get; set; } = default!;
 
     }
 

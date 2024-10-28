@@ -8,6 +8,8 @@ using Cirkla_API.Repositories;
 
 namespace Cirkla_API.Helpers
 {
+
+    // TODO: Make mapper static, not a service - and send in whole objects as arguments
     public class Mapper : IMapper
     {
         private readonly IItemRepository _itemRepository;

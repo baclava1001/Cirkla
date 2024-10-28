@@ -196,9 +196,9 @@ namespace Cirkla_DAL.Migrations
                     ItemId = table.Column<int>(type: "int", nullable: false),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BorrowerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StartTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    EndTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -246,9 +246,9 @@ namespace Cirkla_DAL.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Address", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePictureURL", "SecurityStamp", "TwoFactorEnabled", "UserName", "ZipCode" },
                 values: new object[,]
                 {
-                    { "54b5627b-1f8e-4634-8bb0-206fecc840f3", 0, "Hertx island", "87402a2c-6683-4c67-918f-24ed66947be5", "samed.salman@gmail.com", true, "Samed", "Salman", false, null, "SAMED.SALMAN@GMAIL.COM", "SAMED.SALMAN@GMAIL.COM", "AQAAAAIAAYagAAAAEJEuBugYZsRMXUhS3yXLAxZPKlKo4dzoUItAePqSZDHdA1WPi5sMYK1B5VznQ1Gatw==", "0737672491", false, "https://avatar.iran.liara.run/public", "ffe2bafe-4346-4599-8a61-91b9bb36b29c", false, "samed.salman@gmail.com", "974 54" },
-                    { "6ce14244-d9f8-417e-b05f-df87f2c044e4", 0, "Prärien", "735eb032-b342-4a69-8504-f763c10501ad", "kalle@kanin.se", true, "Kalle", "Kanin", false, null, "KALLE.KANIN.SE", "KALLE.KANIN.SE", "AQAAAAIAAYagAAAAEPt0P4baE/tZw4Pa+M2nDg3E4D4D4Yskk3jVvKXLNko+rVySlXyypgzzynucUW/HXw==", "0920 555 888", false, "https://avatar.iran.liara.run/public", "f2977088-1d6e-4a37-a601-29a9e9a911fa", false, "kalle@kanin.se", "59784" },
-                    { "b2162ceb-793d-4e32-8029-ca56472dd93a", 0, "Melrose Place", "394c21e3-a41f-4225-a5c6-3b6e7f7f6dda", "lizaminelli@popstar.com", true, "Liza", "Minelli", false, null, "LIZAMINELLI@POPSTAR.COM", "LIZAMINELLI@POPSTAR.COM", "AQAAAAIAAYagAAAAEGUiVVLb9dFKIejHgUD4En9uEh816uySSZbjHb/9Az+j18ghg0e5bZo8ZMH9sEeIGQ==", "0920 252525", false, "https://avatar.iran.liara.run/public", "116ca9f9-d4c6-4e31-a4e4-1daf5795518a", false, "lizaminelli@popstar.com", "559412" }
+                    { "54b5627b-1f8e-4634-8bb0-206fecc840f3", 0, "Hertx island", "1149f207-1f12-4aa6-aea0-480bbcc55af8", "samed.salman@gmail.com", true, "Samed", "Salman", false, null, "SAMED.SALMAN@GMAIL.COM", "SAMED.SALMAN@GMAIL.COM", "AQAAAAIAAYagAAAAENpMP8xXTItwLpkj4383blGSkLoGNfVi9Ja3pFd01exSLIBcbphYATMyA1yKdFYkLQ==", "0737672491", false, "https://avatar.iran.liara.run/public", "c057d159-cbc6-4a34-a161-17df6b88a50b", false, "samed.salman@gmail.com", "974 54" },
+                    { "6ce14244-d9f8-417e-b05f-df87f2c044e4", 0, "Prärien", "4457290b-9de8-4c26-a010-50ae3533c289", "kalle@kanin.se", true, "Kalle", "Kanin", false, null, "KALLE.KANIN.SE", "KALLE.KANIN.SE", "AQAAAAIAAYagAAAAELNaoyH6b5xipCTWCaobWVUZoZuoPVwDs63A3LquQ4jC3BteQMjBGxrZBublSZ52kg==", "0920 555 888", false, "https://avatar.iran.liara.run/public", "c2019ccf-c375-4663-a81e-3ff8a01e3b93", false, "kalle@kanin.se", "59784" },
+                    { "b2162ceb-793d-4e32-8029-ca56472dd93a", 0, "Melrose Place", "97b77eaf-cbb8-4930-9445-3d69f3d53e2f", "lizaminelli@popstar.com", true, "Liza", "Minelli", false, null, "LIZAMINELLI@POPSTAR.COM", "LIZAMINELLI@POPSTAR.COM", "AQAAAAIAAYagAAAAEHLuloBhHGjbIlpihwIz7F2UIXFcYU17HcpnuZ1ElZ7fD840MeWeF+VgF74dmjw3jw==", "0920 252525", false, "https://avatar.iran.liara.run/public", "d5ecd196-ed06-4806-8536-2f7de14528ca", false, "lizaminelli@popstar.com", "559412" }
                 });
 
             migrationBuilder.InsertData(
