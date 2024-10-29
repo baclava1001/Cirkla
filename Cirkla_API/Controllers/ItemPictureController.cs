@@ -32,7 +32,6 @@ namespace Cirkla_API.Controllers
         }
 
         // Gets all images belonging to a specific item
-        // TODO: Best practice?
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemPicture>>> ListItemPicturesAsync(int itemId)
         {
@@ -41,6 +40,7 @@ namespace Cirkla_API.Controllers
             return Ok(itemPictures);
         }
 
+        // Gets a specific image
         [HttpGet("{id}")]
         public async Task<ActionResult<ItemPicture>> GetItemPictureByIdAsync(int id)
         {

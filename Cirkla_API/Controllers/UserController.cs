@@ -88,9 +88,5 @@ namespace Cirkla_API.Controllers
             Response.Headers.Append("Removed-User-Id", user.Id);
             return NoContent();
         }
-
-
-
-        // TODO: !!!"Fake login" (always returns true if user name is right)
     }
 }
