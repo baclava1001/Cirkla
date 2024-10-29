@@ -8,7 +8,8 @@ namespace Cirkla_API.Services
         private readonly IItemRepository _itemRepository;
         private readonly ILogger<ItemService> _logger;
 
-        // TODO: Exceptions, Return types that can return exceptions and objects, Logging
+        // TODO: Exceptions and logging
+        // TODO: Go through return types in methods below
 
         public ItemService(IItemRepository itemRepository, ILogger<ItemService> logger)
         {

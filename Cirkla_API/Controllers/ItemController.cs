@@ -27,7 +27,7 @@ namespace Cirkla_API.Controllers
                 return BadRequest();
             }
             await _itemService.CreateItem(item);
-            // TODO: Return Created method instead?
+            // TODO: Return CreatedAtAction method instead with 201 status code
             return Ok(item);
         }
 

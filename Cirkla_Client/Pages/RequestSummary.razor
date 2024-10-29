@@ -25,13 +25,13 @@
             <dt class="col-sm-2">From Cirkla member</dt>
             <dd class="col-sm-10">@Contract?.Owner.FirstName @Contract?.Owner.LastName</dd>
             <dt class="col-sm-2">From</dt>
-            <dd class="col-sm-10">@Contract?.StartTime.Date</dd>
+            <dd class="col-sm-10">@Contract?.StartTime</dd>
             <dt class="col-sm-2">To</dt>
-            <dd class="col-sm-10">@Contract?.EndTime.Date</dd>
+            <dd class="col-sm-10">@Contract?.EndTime</dd>
             <dt class="col-sm-2">Under the following conditions</dt>
             <dd class="col-sm-10">(Coming feature, not yet implemented)</dd>
         </dl>
-        @* Add button for borrower to edit request? *@
+        @* Add buttons for borrower to edit or confirm request *@
         @* Add buttons for owner to handle request! *@
     }
     @if(!string.IsNullOrEmpty(tempMessage))
@@ -78,7 +78,6 @@
         }
 
     }
-
-    // TODO: Finalized contract leads to another view, with no controls
+    // TODO: Finalized contract (accepted and active, or archived or denied) leads to another, more static view, with no controls
 }
 

@@ -19,7 +19,6 @@ namespace Cirkla_API.Repositories
             return contract;
         }
 
-        // TODO: Include only foreign keys..?
         public async Task<IEnumerable<Contract>> GetAllContracts()
         {
             return await _context.Contracts

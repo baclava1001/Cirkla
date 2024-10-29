@@ -32,7 +32,7 @@ namespace Cirkla_API.Services
             }
             catch(Exception ex)
             {
-                throw new Exception("Something went wrong");
+                ex.Message.ToString();
             }
             return contract;
         }
