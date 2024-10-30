@@ -41,7 +41,6 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet("{id}")]
-        [ActionName("ViewRequestSummary")]
         public async Task<ActionResult<Contract>> ViewRequestSummary(int id)
         {
             Contract contract = new();
