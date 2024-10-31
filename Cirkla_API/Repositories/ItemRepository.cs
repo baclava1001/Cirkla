@@ -23,7 +23,6 @@ namespace Cirkla_API.Repositories
         {
             return await _context.Items
                 .Include(i => i.Pictures)
-                .Include(i => i.OwnerId)
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }

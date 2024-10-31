@@ -31,14 +31,21 @@ namespace Cirkla_API.Controllers
             return Ok(item);
         }
 
-        [HttpGet]
+        [HttpGet("ByUserId")]
         public async Task<ActionResult<IEnumerable<Item>>> ListAllItems(string ownerId)
         {
             IEnumerable<Item> items = await _itemService.ListAllItems(ownerId);
             return Ok(items);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("All")]
+        public async Task<ActionResult<IEnumerable<Item>>> ListAllItems()
+        {
+            IEnumerable<Item> items = await _itemService.ListAllItems();
+            return Ok(items);
+        }
+
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Item>> GetItemById(int id)
         {
             Item item = await _itemService.GetItem(id);

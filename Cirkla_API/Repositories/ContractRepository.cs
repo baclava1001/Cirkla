@@ -23,6 +23,7 @@ namespace Cirkla_API.Repositories
         {
             return await _context.Contracts
                 .Include(c => c.Item)
+                .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .ToListAsync();
@@ -32,8 +33,10 @@ namespace Cirkla_API.Repositories
         {
             return await _context.Contracts
                 .Include(c => c.Item)
+                .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
+                .Where(c => c.Owner.Id == userId)
                 .ToListAsync();
         }
 

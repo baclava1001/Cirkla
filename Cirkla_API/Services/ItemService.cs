@@ -27,7 +27,8 @@ namespace Cirkla_API.Services
             }
             catch(Exception ex)
             {
-                throw ex;
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return null;
             }
         }
 
@@ -73,7 +74,7 @@ namespace Cirkla_API.Services
 
             if (!items.Any())
             {
-                // TODO: return error
+                return null;
             }
             return items;
         }
@@ -94,9 +95,9 @@ namespace Cirkla_API.Services
             }
             catch(Exception ex)
             {
-                throw ex;
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return null;
             }
-            return item;
         }
     }
 }

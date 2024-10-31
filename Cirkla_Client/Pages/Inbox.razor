@@ -1,0 +1,78 @@
+﻿@page "/inbox"
+@inject IClient _client;
+
+<PageTitle>Inbox</PageTitle>
+<h3>User Names's inbox</h3>
+<hr />
+@if(Requests is null)
+{
+    <p><em>Loading...</em></p>
+}
+<QuickGrid Class="table table-hover table-striped" Items="Requests">
+    <TemplateColumn Title="From">
+        <ChildContent>
+            <span>@context.Borrower.FirstName @context.Borrower.LastName</span>
+        </ChildContent>
+    </TemplateColumn>
+    <PropertyColumn Property="request => request.Borrower.ZipCode" Title="Zip code" Sortable="true" />
+    <PropertyColumn Property="request => request.Item.Name" Title="Item" Sortable="true" />
+    <PropertyColumn Property="request => request.StartTime.ToShortDateString()" Title="Start date" Sortable="true" />
+    <PropertyColumn Property="request => request.EndTime.ToShortDateString()" Title="End date" Sortable="true" />
+    <PropertyColumn Property="request => request.Created.ToShortDateString()" Title="Request sent" Sortable="true" />
+    <TemplateColumn Context="request" Title="">
+        <img src="@request.Item.Pictures?.FirstOrDefault()" alt="Picture of @request.Item.Name" class="img-thumbnail" />
+    </TemplateColumn>
+    <TemplateColumn>
+        <div class="d-flex justify-content-between">
+            <button type="button" id="Deny" class="btn btn-danger" @onclick='() => SendReplyToBorrower("Deny", context.Id)'>Deny(icon)</button>
+            <button type="button" id="Accept" class="btn btn-success" @onclick='() => SendReplyToBorrower("Accept", context.Id)'>Accept(icon)</button>
+            <a href="/request/view?id=@context.Id" type="button" class="btn btn-secondary">Details(icon)</a>
+        </div>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    // TODO: Add user name in the h3 above
+    IQueryable<Contract>? Requests;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var requestsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync("b2162ceb-793d-4e32-8029-ca56472dd93a"); // TODO: Send in logged in user's id (Liza, hardcoded.)
+        Requests = requestsFromAPI.AsQueryable();
+    }
+
+    private async Task SendReplyToBorrower(string buttonName, int contractId)
+    {
+        Contract contract = await _client.ApiBorrowingViewRequestAsync(contractId);
+
+
+        // TODO: Move to mapper
+        ContractReplyDTO contractReplyDTO = new()
+        {
+            Id = contract.Id,
+            ItemId = contract.Item.Id,
+            OwnerId = contract.Owner.Id,
+            BorrowerId = contract.Borrower.Id,
+            StartTime = contract.StartTime,
+            EndTime = contract.EndTime,
+            Created = contract.Created
+        };
+
+        try
+        {
+            if (buttonName == "Deny")
+            {
+                contractReplyDTO.DeniedByOwner = DateTime.Now;
+            }
+            else if (buttonName == "Accept")
+            {
+                contractReplyDTO.AcceptedByOwner = DateTime.Now;
+            }
+            await _client.ApiBorrowingRespondToRequestAsync(contractId, contractReplyDTO);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+}
