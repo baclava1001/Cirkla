@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
+using static System.Net.WebRequestMethods;
 
 namespace Cirkla_DAL
 {
@@ -474,6 +475,59 @@ namespace Cirkla_DAL
                     Id = 26,
                     Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPpAUvCna2bt1kS3tXBhgQ4GQDQMBv6gEfMlwS2Xyw1Xam1BGvzhGdt2BKpNCYQWGDwsU&usqp=CAU",
                     ItemId = 20
+                },
+                new ItemPicture
+                {
+                    Id = 27,
+                    Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-IvVN7S0UFhWV6z-n4RBaZ1YxoPZikj3ODA&s",
+                    ItemId = 7
+                },
+                new ItemPicture
+                {
+                    Id = 28,
+                    Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD4qVS5aq3WC6EzFq1Dd--ggCn-FHrnMeXIQ&s",
+                    ItemId = 7
+                },
+                new ItemPicture
+                {
+                    Id = 29, Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCQpV8waVQTS2y8XXgXJX4H0L6biHgv9BfUA&s", 
+                    ItemId = 7 
+                }, 
+                new ItemPicture 
+                { 
+                    Id = 30,
+                    Url = "https://i1.adis.ws/i/canon/eos-r5_martin_bissig_lifestyle_05_c629aad3c2154f34b3d7d7ba5a509196?$70-30-header-4by3-dt-jpg$",
+                    ItemId = 8
+                },
+                new ItemPicture 
+                { 
+                    Id = 31,
+                    Url = "https://i1.adis.ws/i/canon/eos-r5-c_lifestyle_47-pro_7e76ebaee6314ff9a06d7f00f59f0d1a9",
+                    ItemId = 8 
+                },
+                new ItemPicture 
+                { 
+                    Id = 32, 
+                    Url = "https://cdn.mos.cms.futurecdn.net/cfxJWdTTkVAUXFxsdvTy3n-320-80.png",
+                    ItemId = 8
+                }, 
+                new ItemPicture 
+                {
+                    Id = 33,
+                    Url = "https://cdn.mos.cms.futurecdn.net/xaMxSfTmuD8nbaVGprXwS4.jpg",
+                    ItemId = 10
+                },
+                new ItemPicture
+                {
+                    Id = 34,
+                    Url = "https://cdn.mos.cms.futurecdn.net/cfxJWdTTkVAUXFxsdvTy3n-320-80.png",
+                    ItemId = 9
+                },
+                new ItemPicture
+                {
+                    Id = 35,
+                    Url = "https://www.cnet.com/a/img/resize/bebef835df90640f9aa2e4a2f2a2699cf53a301f/hub/2020/10/26/b60bfe6f-3193-4381-b0d4-ac628cdcc565/img-1419.jpg?auto=webp&width=1200",
+                    ItemId = 9
                 }
             };
             return itemPictures;

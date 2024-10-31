@@ -4,6 +4,7 @@ using Cirkla_DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cirkla_DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241030082725_TimestampsInContractNullable")]
+    partial class TimestampsInContractNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,60 +247,6 @@ namespace Cirkla_DAL.Migrations
                             Id = 26,
                             ItemId = 20,
                             Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPpAUvCna2bt1kS3tXBhgQ4GQDQMBv6gEfMlwS2Xyw1Xam1BGvzhGdt2BKpNCYQWGDwsU&usqp=CAU"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            ItemId = 7,
-                            Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-IvVN7S0UFhWV6z-n4RBaZ1YxoPZikj3ODA&s"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            ItemId = 7,
-                            Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD4qVS5aq3WC6EzFq1Dd--ggCn-FHrnMeXIQ&s"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            ItemId = 7,
-                            Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCQpV8waVQTS2y8XXgXJX4H0L6biHgv9BfUA&s"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            ItemId = 8,
-                            Url = "https://i1.adis.ws/i/canon/eos-r5_martin_bissig_lifestyle_05_c629aad3c2154f34b3d7d7ba5a509196?$70-30-header-4by3-dt-jpg$"
-                        },
-                        new
-                        {
-                            Id = 31,
-                            ItemId = 8,
-                            Url = "https://i1.adis.ws/i/canon/eos-r5-c_lifestyle_47-pro_7e76ebaee6314ff9a06d7f00f59f0d1a9"
-                        },
-                        new
-                        {
-                            Id = 32,
-                            ItemId = 8,
-                            Url = "https://cdn.mos.cms.futurecdn.net/cfxJWdTTkVAUXFxsdvTy3n-320-80.png"
-                        },
-                        new
-                        {
-                            Id = 33,
-                            ItemId = 10,
-                            Url = "https://cdn.mos.cms.futurecdn.net/xaMxSfTmuD8nbaVGprXwS4.jpg"
-                        },
-                        new
-                        {
-                            Id = 34,
-                            ItemId = 9,
-                            Url = "https://cdn.mos.cms.futurecdn.net/cfxJWdTTkVAUXFxsdvTy3n-320-80.png"
-                        },
-                        new
-                        {
-                            Id = 35,
-                            ItemId = 9,
-                            Url = "https://www.cnet.com/a/img/resize/bebef835df90640f9aa2e4a2f2a2699cf53a301f/hub/2020/10/26/b60bfe6f-3193-4381-b0d4-ac628cdcc565/img-1419.jpg?auto=webp&width=1200"
                         });
                 });
 
@@ -627,7 +576,7 @@ namespace Cirkla_DAL.Migrations
                             Id = "54b5627b-1f8e-4634-8bb0-206fecc840f3",
                             AccessFailedCount = 0,
                             Address = "Hertx island",
-                            ConcurrencyStamp = "572a48eb-270b-4d4f-9687-7f0103cd9bfb",
+                            ConcurrencyStamp = "93770194-65bd-435d-88af-bd7e59f58aba",
                             Email = "samed.salman@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Samed",
@@ -635,11 +584,11 @@ namespace Cirkla_DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "SAMED.SALMAN@GMAIL.COM",
                             NormalizedUserName = "SAMED.SALMAN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA7sRIrjNqy8xvCYrLFkB373r3lImJbEytQ8AuVCPwmgypFxVB81aYTyjCK5zvk+1g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAu1UvAHTq5RX4ZtD0w/KpI1AD75IJVmpraMndQvLvtwWGwtdfWg/6BvyLgjYGMc1Q==",
                             PhoneNumber = "0737672491",
                             PhoneNumberConfirmed = false,
                             ProfilePictureURL = "https://avatar.iran.liara.run/public",
-                            SecurityStamp = "4227d87b-a3f9-4b7e-9815-4cc4523af276",
+                            SecurityStamp = "4cab1cd4-0f73-4cbd-89e4-8d9f2d271cae",
                             TwoFactorEnabled = false,
                             UserName = "samed.salman@gmail.com",
                             ZipCode = "974 54"
@@ -649,7 +598,7 @@ namespace Cirkla_DAL.Migrations
                             Id = "6ce14244-d9f8-417e-b05f-df87f2c044e4",
                             AccessFailedCount = 0,
                             Address = "Prärien",
-                            ConcurrencyStamp = "69f9b96d-f027-44da-8335-fe6219819fbe",
+                            ConcurrencyStamp = "c0dc0237-6bb8-440e-aaf0-76bf7d59f900",
                             Email = "kalle@kanin.se",
                             EmailConfirmed = true,
                             FirstName = "Kalle",
@@ -657,11 +606,11 @@ namespace Cirkla_DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "KALLE.KANIN.SE",
                             NormalizedUserName = "KALLE.KANIN.SE",
-                            PasswordHash = "AQAAAAIAAYagAAAAELR76dgDyw73Dj0A3p3fxapXfxbMTHRDSAHIFID8ZU0Ef1tzdBE3AZ++0bh0KqKzfw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKK41BspZx7xzF2s6M4BX2vN7Y9H+lr1FZMJCkENuY+//n96uqr3YPNQgqWwDilvIA==",
                             PhoneNumber = "0920 555 888",
                             PhoneNumberConfirmed = false,
                             ProfilePictureURL = "https://avatar.iran.liara.run/public",
-                            SecurityStamp = "fec86636-6b26-4e5a-bb19-7d493c5a2ed8",
+                            SecurityStamp = "3f3fdb64-6f36-479b-b407-e68170a03fbe",
                             TwoFactorEnabled = false,
                             UserName = "kalle@kanin.se",
                             ZipCode = "59784"
@@ -671,7 +620,7 @@ namespace Cirkla_DAL.Migrations
                             Id = "b2162ceb-793d-4e32-8029-ca56472dd93a",
                             AccessFailedCount = 0,
                             Address = "Melrose Place",
-                            ConcurrencyStamp = "cac9f704-68c5-44b1-9960-96a2853540d0",
+                            ConcurrencyStamp = "d057346f-ba65-45cc-9bb8-b8f34afed726",
                             Email = "lizaminelli@popstar.com",
                             EmailConfirmed = true,
                             FirstName = "Liza",
@@ -679,11 +628,11 @@ namespace Cirkla_DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "LIZAMINELLI@POPSTAR.COM",
                             NormalizedUserName = "LIZAMINELLI@POPSTAR.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIyHlp0EanXKgaBMpddhqHKwq7NawQmJy/j1PGdfer5/fMlbWfZTm9HU1tSh25IQvQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJ/AYcqiyiU9xWQ6TeavBndjGN4/hdvj6XKX4LPekcmHuP2/CNWuTWUr5X/uCCIirA==",
                             PhoneNumber = "0920 252525",
                             PhoneNumberConfirmed = false,
                             ProfilePictureURL = "https://avatar.iran.liara.run/public",
-                            SecurityStamp = "5c906cca-3a1a-48f1-b8b3-ba3aac83ac21",
+                            SecurityStamp = "78ee19b6-fcb0-4326-bbfc-027f30d7950f",
                             TwoFactorEnabled = false,
                             UserName = "lizaminelli@popstar.com",
                             ZipCode = "559412"

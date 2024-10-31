@@ -24,6 +24,8 @@ namespace Cirkla_DAL.Models.Contract
         public DateTime EndTime { get; set; }
         [Required]
         public DateTime Created { get; set; }
+        public DateTime? AcceptedByOwner { get; set; }
+        public DateTime? DeniedByOwner { get; set; }
 
         // TODO: Later add more timestamps for: AgreedStartTime, AgreedEndTime & ActualStartTime, ActualEndTime
     }

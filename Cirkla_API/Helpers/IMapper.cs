@@ -7,7 +7,8 @@ namespace Cirkla_API.Helpers
 {
     public interface IMapper
     {
-        Task<Contract> MapContractCreateDtoToContract(ContractCreateDTO contractCreateDTO);
         Task<User> MapUserPostDtoToUser(UserPostDTO userPostDTO);
+        Task<Contract> MapContractCreateDtoToContract(ContractCreateDTO contractCreateDTO);
+        Task<Contract> MapContractReplyDtoToContract(ContractReplyDTO contractReplyDTO);
     }
 }

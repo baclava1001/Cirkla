@@ -52,6 +52,22 @@ namespace Cirkla_API.Helpers
             };
         }
 
+        public async Task<Contract> MapContractReplyDtoToContract(ContractReplyDTO contractReplyDTO)
+        {
+            return new Contract
+            {
+                Id = contractReplyDTO.Id,
+                Item = await _itemRepository.GetItem(contractReplyDTO.ItemId),
+                Owner = await _userRepository.Get(contractReplyDTO.OwnerId),
+                Borrower = await _userRepository.Get(contractReplyDTO.BorrowerId),
+                StartTime = contractReplyDTO.StartTime,
+                EndTime = contractReplyDTO.EndTime,
+                Created = contractReplyDTO.Created,
+                DeniedByOwner = contractReplyDTO.DeniedByOwner,
+                AcceptedByOwner = contractReplyDTO.AcceptedByOwner
+            };
+        }
+
         #endregion contracts
     }
 }
