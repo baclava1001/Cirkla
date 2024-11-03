@@ -1,0 +1,125 @@
+﻿@inject IClient _client;
+
+@if (IncomingRequests is null)
+{
+    <p><em>Loading...</em></p>
+}
+<h4 class="mt-3 mb-3">Incoming requests</h4>
+@if (!string.IsNullOrEmpty(tempMessage))
+{
+    <p class="@messageClass mt-3 mb-3">@tempMessage</p>
+}
+<div class="overflow-auto">
+    <QuickGrid Class="table table-hover table-striped" Items="IncomingRequests" Pagination="pagination">
+        <TemplateColumn Title="From">
+            <ChildContent>
+                <span>@context.Borrower.FirstName @context.Borrower.LastName</span>
+            </ChildContent>
+        </TemplateColumn>
+        <PropertyColumn Property="request => request.Borrower.ZipCode" Title="Zip code" Sortable="true" />
+        <PropertyColumn Property="request => request.Item.Name" Title="Item" Sortable="true" />
+        <PropertyColumn Property="request => request.StartTime.ToShortDateString()" Title="Start date" Sortable="true" />
+        <PropertyColumn Property="request => request.EndTime.ToShortDateString()" Title="End date" Sortable="true" />
+        <PropertyColumn Property="request => request.Created.ToShortDateString()" Title="Request sent" Sortable="true" />
+        <TemplateColumn Context="request" Title="">
+            <img src="@request.Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @request.Item.Name" class="img-thumbnail" />
+        </TemplateColumn>
+        <TemplateColumn>
+            <div class="d-flex justify-content-between">
+                <button type="button" id="Deny" class="btn btn-danger me-1" @onclick='() => SendReplyToBorrower("Deny", context.Id)'><i class="fa-solid fa-xmark" /></button>
+                <button type="button" id="Accept" class="btn btn-success me-1" @onclick='() => SendReplyToBorrower("Accept", context.Id)'><i class="fa-solid fa-check" /></button>
+                <a href="/request/view?id=@context.Id" type="button" class="btn btn-secondary me-1"><i class="fa-solid fa-align-left" /></a>
+            </div>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+
+<div class="page-buttons mb-5">
+    Page:
+    @if (pagination.TotalItemCount.HasValue)
+    {
+        for (var pageIndex = 0; pageIndex <= pagination.LastPageIndex; pageIndex++)
+        {
+            var capturedIndex = pageIndex;
+            <button @onclick="@(() => GoToPageAsync(capturedIndex))"
+                    class="@PageButtonClass(capturedIndex)"
+                    aria-current="@AriaCurrentValue(capturedIndex)"
+                    aria-label="Go to page @(pageIndex + 1)">
+                @(pageIndex + 1)
+            </button>
+        }
+    }
+</div>
+
+
+@code {
+    IQueryable<Contract>? IncomingRequests;
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    string? tempMessage;
+    string? messageClass;
+
+    string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza, hardcoded.
+
+    protected override async Task OnInitializedAsync()
+    {
+        var requestsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
+
+        // TODO: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each component
+        IncomingRequests = requestsFromAPI.Where(r => r.Owner.Id == tempUserId).Where(r => r.AcceptedByOwner is null && r.DeniedByOwner is null).AsQueryable();
+
+        pagination.TotalItemCountChanged += (sender, eventArgs) => StateHasChanged();
+    }
+
+
+    private async Task SendReplyToBorrower(string buttonName, int contractId)
+    {
+        Contract contract = await _client.ApiBorrowingViewRequestAsync(contractId);
+
+        // TODO: Move this block to mapper
+        ContractReplyDTO contractReplyDTO = new()
+            {
+                Id = contract.Id,
+                ItemId = contract.Item.Id,
+                OwnerId = contract.Owner.Id,
+                BorrowerId = contract.Borrower.Id,
+                StartTime = contract.StartTime,
+                EndTime = contract.EndTime,
+                Created = contract.Created
+            };
+
+        try
+        {
+            if (buttonName == "Deny")
+            {
+                contractReplyDTO.DeniedByOwner = DateTime.Now;
+            }
+            else if (buttonName == "Accept")
+            {
+                contractReplyDTO.AcceptedByOwner = DateTime.Now;
+            }
+            await _client.ApiBorrowingRespondToRequestAsync(contractId, contractReplyDTO);
+
+            tempMessage = $"You have responded {buttonName} to the request from {contract.Borrower.FirstName} {contract.Borrower.LastName}";
+            messageClass = "text-success";
+        }
+        catch (Exception ex)
+        {
+            tempMessage = $"An error occurred: {ex.Message}";
+            messageClass = "text-danger";
+        }
+    }
+
+
+    private async Task GoToPageAsync(int pageIndex)
+    {
+        await pagination.SetCurrentPageIndexAsync(pageIndex);
+    }
+
+    private string? PageButtonClass(int pageIndex)
+        => pagination.CurrentPageIndex == pageIndex ? "current" : null;
+
+    private string? AriaCurrentValue(int pageIndex)
+        => pagination.CurrentPageIndex == pageIndex ? "page" : null;
+}
