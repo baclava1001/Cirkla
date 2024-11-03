@@ -50,9 +50,8 @@
             if(response)
             {
                 successMessage = $"You successfully logged in as {User.Email}!";
-                _navigationManager.NavigateTo("/");
+                //_navigationManager.NavigateTo("/");
             }
-            errorMessage = "Invalid credentials, try again.";
         }
         catch(Exception ex)
         {

@@ -25,4 +25,8 @@
     <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Components\" />
+  </ItemGroup>
+
 </Project>

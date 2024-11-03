@@ -1,8 +1,8 @@
 ﻿@page "/publishitem"
-@using Cirkla_Client.Pages.Components;
+@using Cirkla_Client.Pages;
 @inject IClient _client;
 
-<PageTitle>Publish new item</PageTitle>
+<PageTitle>Add new item</PageTitle>
 <h3>Add new item</h3>
 <hr />
 <EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit" FormName="PublishItem">

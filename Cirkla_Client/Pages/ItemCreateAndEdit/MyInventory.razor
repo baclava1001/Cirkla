@@ -2,7 +2,9 @@
 @inject IClient _client;
 
 <PageTitle>My inventory</PageTitle>
-<h3>My inventory</h3>
+<div class="row mb-3">
+    <h3 class="col-2">My inventory</h3><a href="/publishitem" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"></i></a>
+</div>
 <hr/>
 @if(message is not null)
 {
@@ -18,13 +20,13 @@
         {
             foreach (var item in MyItems)
             {
-            <div class="col-12 col-sm-6 col-md-4 mb-4">
-                <div class="card">
+            <div class="col-12 col-sm-6 col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
                     <img class="card-img-top" src="@item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @item.Name" />
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text">@item.Description</p>
-                        <a href="/borrowitem/?id=@item.Id" class="card-link">More...</a>
+                        <a href="/borrowitem/?id=@item.Id" class="card-link mt-auto">More...</a>
                     </div>
                 </div>
             </div>
