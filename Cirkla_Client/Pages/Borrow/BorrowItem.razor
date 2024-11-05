@@ -31,16 +31,20 @@
             <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
         </dl>
             <div class="row mb-3">
-                <div class="col-4">
+                <div class="col-sm-2">
                     <label for="requestedpickupdate" class="form-label">Requested pickup date & time</label>
+                    <div class="col-sm-10">
                     <input type="datetime-local" id="start-time" class="form-control" min="@minDateTime" @bind="ContractDTO.StartTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.StartTime = dateTime)" required />
+                    </div>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-4">
                 <label for="requestedreturndate" class="form-label">Requested return date & time</label>
+                <div class="col-sm-10">
                 <input type="datetime-local" id="end-time" class="form-control" min="@minDateTime" @bind="ContractDTO.EndTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.EndTime = dateTime)" required />
                 </div>
+            </div>
             </div>
             <div class="row">
                 <div class="col-4">

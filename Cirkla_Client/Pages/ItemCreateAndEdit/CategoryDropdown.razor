@@ -9,7 +9,7 @@ else
     <div class="row mb-3">
         <label for="category" class="col-sm-2 col-form-label">Category </label>
         <div class="col-sm-10">
-            <InputSelect id="categorydropdown" @bind-Value="Item.Category" class="form-select w-25">
+            <InputSelect id="categorydropdown" @bind-Value="Item.Category" class="form-select col-sm-10">
                 <option value="" disabled selected hidden>Select category</option>
                 @foreach (string category in temporaryCategoryList)
                 {
