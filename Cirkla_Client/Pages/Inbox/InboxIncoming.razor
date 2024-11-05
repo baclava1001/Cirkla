@@ -10,7 +10,7 @@
     <p class="@messageClass mt-3 mb-3">@tempMessage</p>
 }
 <div class="overflow-auto">
-    <QuickGrid Class="table table-hover table-striped" Items="IncomingRequests" Pagination="pagination">
+    <QuickGrid Class="table table-hover table-striped" Items="IncomingRequests?.AsQueryable()" Pagination="pagination">
         <TemplateColumn Title="From">
             <ChildContent>
                 <span>@context.Borrower.FirstName @context.Borrower.LastName</span>
@@ -26,8 +26,8 @@
         </TemplateColumn>
         <TemplateColumn>
             <div class="d-flex justify-content-between">
-                <button type="button" id="Deny" class="btn btn-danger me-1" @onclick='() => SendReplyToBorrower("Deny", context.Id)'><i class="fa-solid fa-xmark" /></button>
-                <button type="button" id="Accept" class="btn btn-success me-1" @onclick='() => SendReplyToBorrower("Accept", context.Id)'><i class="fa-solid fa-check" /></button>
+                <button type="button" id="Deny" class="btn btn-danger me-1" @onclick='() => SendReplyToBorrower("Deny", context)'><i class="fa-solid fa-xmark" /></button>
+                <button type="button" id="Accept" class="btn btn-success me-1" @onclick='() => SendReplyToBorrower("Accept", context)'><i class="fa-solid fa-check" /></button>
                 <a href="/request/view?id=@context.Id" type="button" class="btn btn-secondary me-1"><i class="fa-solid fa-align-left" /></a>
             </div>
         </TemplateColumn>
@@ -53,30 +53,25 @@
 
 
 @code {
-    IQueryable<Contract>? IncomingRequests;
-
+    private List<Contract>? IncomingRequests { get; set; } = new();
+    // [Parameter]
+    // public EventCallback<IQueryable<Contract>> OnRequestReply { get; set; }
     PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
-
     string? tempMessage;
     string? messageClass;
-
     string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza, hardcoded.
+
 
     protected override async Task OnInitializedAsync()
     {
-        var requestsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
-
-        // TODO: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each component
-        IncomingRequests = requestsFromAPI.Where(r => r.Owner.Id == tempUserId).Where(r => r.AcceptedByOwner is null && r.DeniedByOwner is null).AsQueryable();
+        await GetAndFilterRequests();
 
         pagination.TotalItemCountChanged += (sender, eventArgs) => StateHasChanged();
     }
 
 
-    private async Task SendReplyToBorrower(string buttonName, int contractId)
+    private async Task SendReplyToBorrower(string buttonName, Contract contract)
     {
-        Contract contract = await _client.ApiBorrowingViewRequestAsync(contractId);
-
         // TODO: Move this block to mapper
         ContractReplyDTO contractReplyDTO = new()
             {
@@ -99,16 +94,30 @@
             {
                 contractReplyDTO.AcceptedByOwner = DateTime.Now;
             }
-            await _client.ApiBorrowingRespondToRequestAsync(contractId, contractReplyDTO);
+            await _client.ApiBorrowingRespondToRequestAsync(contract.Id, contractReplyDTO);
+
+            GetAndFilterRequests();
 
             tempMessage = $"You have responded {buttonName} to the request from {contract.Borrower.FirstName} {contract.Borrower.LastName}";
             messageClass = "text-success";
+
+            // await OnRequestReply.InvokeAsync(IncomingRequests);
         }
         catch (Exception ex)
         {
             tempMessage = $"An error occurred: {ex.Message}";
             messageClass = "text-danger";
-        }
+        }        
+    }
+
+
+    // TODO: Do this server side: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each inbox-component
+    private async Task GetAndFilterRequests()
+    {
+        var requestsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
+
+        IncomingRequests = requestsFromAPI.Where(r => r.Owner.Id == tempUserId).Where(r => r.AcceptedByOwner is null && r.DeniedByOwner is null).OrderBy(r => r.Created).ToList();
+        StateHasChanged();
     }
 
 

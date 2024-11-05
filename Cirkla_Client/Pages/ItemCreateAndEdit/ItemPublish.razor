@@ -12,7 +12,7 @@
             <div class="row mb-3">
                 <label for="name" class="col-sm-2 col-form-label">Name </label>
                 <div class="col-sm-10">
-                    <InputText id="name" @bind-Value="Item.Name" class="form-control w-25" />
+                    <InputText id="name" @bind-Value="Item.Name" class="form-control" />
                     <ValidationMessage For="() => Item.Name" class="text-danger" />
                 </div>
             </div>
@@ -24,31 +24,31 @@
             <div class="row mb-3">
                 <label for="Model" class="col-sm-2 col-form-label">Model </label>
                 <div class="col-sm-10">
-                    <InputText id="model" @bind-Value="Item.Model" class="form-control w-25" placeholder="Maker, model and year, if applicable" />
+                    <InputText id="model" @bind-Value="Item.Model" class="form-control" placeholder="Maker, model and year, if applicable" />
                     <ValidationMessage For="() => Item.Model" class="text-danger" />
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="specifications" class="col-sm-2 col-form-label">Specifications </label>
                 <div class="col-sm-10">
-                    <InputTextArea id="specifications" @bind-Value="Item.Specifications" class="form-control-lg fs-6 w-25" rows="4" placeholder="Good to know technical details and characteristics" />
+                    <InputTextArea id="specifications" @bind-Value="Item.Specifications" class="form-control fs-6" rows="4" placeholder="Good to know technical details and characteristics" />
                     <ValidationMessage For="() => Item.Specifications" class="=text-danger" />
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="description" class="col-sm-2 col-form-label">Description </label>
                 <div class="col-sm-10">
-                    <InputTextArea id="description" @bind-Value="Item.Description" class="form-control-lg fs-6 w-25" rows="4" placeholder="General description" />
+                    <InputTextArea id="description" @bind-Value="Item.Description" class="form-control fs-6" rows="4" placeholder="General description" />
                     <ValidationMessage For="() => Item.Description" class="text-danger" />
                 </div>
             </div>
             <CascadingValue Value="ItemPicture">
                 <AddItemPicture OnPictureAdded="AddPictureToList" />
             </CascadingValue>
-            <div class="row">
-                <div class="col-sm-10 offset-sm-3">
-                <input class="btn btn-secondary me-2" type="reset" value="Reset" />
-                <button class="btn btn-primary me-2" type="button" @onclick="(() => OnValidSubmit())">Publish</button>
+            <div class="row align-content-end">
+                <div class="col-sm-10 ms-auto">
+                    <input class="btn btn-secondary" type="reset" value="Reset" />
+                    <button class="btn btn-primary" type="button" @onclick="(() => OnValidSubmit())">Publish</button>
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">

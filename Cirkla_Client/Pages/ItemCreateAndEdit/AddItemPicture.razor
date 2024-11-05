@@ -1,13 +1,13 @@
-﻿    <fieldset id="add-picture" disabled="@IsAddingPicture">
-        <div class="row mb-3">
-            <label for="item-picture-url" class="col-sm-2 col-form-label">Picture url </label>
-            <div class="input-group w-25">
-                <InputText id="item-picture-url" @bind-Value="ItemPicture.Url" class="form-control" placeholder="Enter full url" />
-                <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
-                <button class="btn btn-outline-primary" style="color:#fff; background-color:#186F65; border-color:#186F65" type="button" @onclick="@(() => AddPicture())">Add</button>
-            </div>
+﻿<fieldset id="add-picture" class="row mb-3" disabled="@IsAddingPicture">
+    <label for="item-picture-url" class="col-sm-2 col-form-label">Picture url </label>
+    <div class="col-sm-10">
+        <div class="input-group">
+            <InputText id="item-picture-url" @bind-Value="ItemPicture.Url" class="form-control" placeholder="Enter full url" />
+            <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
+            <button class="btn btn-outline-primary" style="color:#fff; background-color:#186F65; border-color:#186F65" type="button" @onclick="@(() => AddPicture())">Add</button>
         </div>
-    </fieldset>
+    </div>
+</fieldset>
 
 
 @code {
