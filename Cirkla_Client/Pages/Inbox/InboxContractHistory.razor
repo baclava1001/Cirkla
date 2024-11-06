@@ -1,4 +1,6 @@
 ﻿@inject IClient _client;
+@inject ComponentNotificationService _componentNotificationService;
+
 
 @if (MyPendingRequests is null)
 {
@@ -30,13 +32,6 @@
                 <span>Archived</span>
             }
         </TemplateColumn>
-@*         <TemplateColumn>
-            <div class="d-flex justify-content-between">
-                <button type="button" id="Deny" class="btn btn-danger me-1" @onclick='() => SendReplyToBorrower("Deny", context.Id)'><i class="fa-solid fa-xmark" /></button>
-                <button type="button" id="Accept" class="btn btn-success me-1" @onclick='() => SendReplyToBorrower("Accept", context.Id)'><i class="fa-solid fa-check" /></button>
-                <a href="/request/view?id=@context.Id" type="button" class="btn btn-secondary me-1"><i class="fa-solid fa-align-left"></i></a>
-            </div>
-        </TemplateColumn> *@
     </QuickGrid>
 </div>
 
@@ -58,6 +53,7 @@
 </div>
 
 @code {
+    // TODO: Change to List and convert inside Quickgrid!
     IQueryable<Contract>? MyPendingRequests;
 
     PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
@@ -70,45 +66,11 @@
 
         // TODO: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each component
         MyPendingRequests = requestsFromAPI.Where(r => r.Borrower.Id == tempUserId || r.Owner.Id == tempUserId).Where(r => r.EndTime < DateTime.Now).OrderBy(r => r.Created).AsQueryable();
-        StateHasChanged();
 
         pagination.TotalItemCountChanged += (sender, eventArgs) => StateHasChanged();
+
+        _componentNotificationService.OnNotify += StateHasChanged;
     }
-
-
-    // private async Task SendReplyToBorrower(string buttonName, int contractId)
-    // {
-    //     Contract contract = await _client.ApiBorrowingViewRequestAsync(contractId);
-
-    //     // TODO: Move this block to mapper
-    //     ContractReplyDTO contractReplyDTO = new()
-    //         {
-    //             Id = contract.Id,
-    //             ItemId = contract.Item.Id,
-    //             OwnerId = contract.Owner.Id,
-    //             BorrowerId = contract.Borrower.Id,
-    //             StartTime = contract.StartTime,
-    //             EndTime = contract.EndTime,
-    //             Created = contract.Created
-    //         };
-
-    //     try
-    //     {
-    //         if (buttonName == "Deny")
-    //         {
-    //             contractReplyDTO.DeniedByOwner = DateTime.Now;
-    //         }
-    //         else if (buttonName == "Accept")
-    //         {
-    //             contractReplyDTO.AcceptedByOwner = DateTime.Now;
-    //         }
-    //         await _client.ApiBorrowingRespondToRequestAsync(contractId, contractReplyDTO);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine($"An error occurred: {ex.Message}");
-    //     }
-    // }
 
 
     private async Task GoToPageAsync(int pageIndex)
@@ -121,4 +83,9 @@
 
     private string? AriaCurrentValue(int pageIndex)
         => pagination.CurrentPageIndex == pageIndex ? "page" : null;
+
+    private void Dispose()
+    {
+        _componentNotificationService.OnNotify -= StateHasChanged;
+    }
 }
