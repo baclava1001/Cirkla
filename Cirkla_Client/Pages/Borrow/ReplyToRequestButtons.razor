@@ -1,0 +1,46 @@
+﻿@inject IClient _client;
+
+
+<div class="d-flex">
+    <a href="/inventory" class="btn btn-secondary me-2" type="button">Back</a>
+    <button type="button" id="Deny" class="btn btn-danger me-2" @onclick='() => SendReplyToBorrower("Deny")'>Deny(icon)</button>
+    <button type="button" id="Accept" class="btn btn-success me-2" @onclick='() => SendReplyToBorrower("Accept")'>Accept(icon)</button>
+</div>
+
+
+@code {
+    [CascadingParameter]
+    public Contract? Contract { get; set; }
+
+    private async Task SendReplyToBorrower(string buttonName)
+    {
+        // TODO: Move to mapper
+        ContractReplyDTO contractReplyDTO = new()
+            {
+                Id = Contract.Id,
+                ItemId = Contract.Item.Id,
+                OwnerId = Contract.Owner.Id,
+                BorrowerId = Contract.Borrower.Id,
+                StartTime = Contract.StartTime,
+                EndTime = Contract.EndTime,
+                Created = Contract.Created
+            };
+
+        try
+        {
+            if (buttonName == "Deny")
+            {
+                contractReplyDTO.DeniedByOwner = DateTime.Now;
+            }
+            else if (buttonName == "Accept")
+            {
+                contractReplyDTO.AcceptedByOwner = DateTime.Now;
+            }
+            await _client.ApiBorrowingRespondToRequestAsync(Contract.Id, contractReplyDTO);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+}

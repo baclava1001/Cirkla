@@ -113,15 +113,13 @@
     // TODO: Do this server side: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each inbox-component
     private async Task GetAndFilterRequests()
     {
-        Console.WriteLine("Incoming rendered");
         var requestsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
 
         IncomingRequests = requestsFromAPI.Where(r => r.Owner.Id == tempUserId).Where(r => r.AcceptedByOwner is null && r.DeniedByOwner is null).OrderByDescending(r => r.Created).ToList();
         
         StateHasChanged();
 
-        _componentNotificationService.NotifyStateChanged(); // Notifys InboxContractHistory component
-        Console.WriteLine("Incoming sent notification to history");
+        _componentNotificationService.NotifyStateChanged(); // Notify InboxContractHistory component whenever this component rerenders
     }
 
 
