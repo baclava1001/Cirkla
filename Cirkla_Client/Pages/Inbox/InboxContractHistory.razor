@@ -58,24 +58,14 @@
     private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
     private string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza, hardcoded.
 
-
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("History rendered");
         await GetAndFilterContracts(); // TODO: Replace this method with separate serverside controller
-
         pagination.TotalItemCountChanged += (sender, eventArgs) => StateHasChanged();
-
         _componentNotificationService.OnNotify += TriggerRerender;
-        Console.WriteLine("History subscribed");
     }
 
-
-    private async Task GoToPageAsync(int pageIndex)
-    {
-        await pagination.SetCurrentPageIndexAsync(pageIndex);
-    }
-
+    private async Task GoToPageAsync(int pageIndex) => await pagination.SetCurrentPageIndexAsync(pageIndex);
 
     private string? PageButtonClass(int pageIndex)
         => pagination.CurrentPageIndex == pageIndex ? "current" : null;
@@ -95,15 +85,13 @@
 
     private async void TriggerRerender()
     {
-        Console.WriteLine("OnNotify triggered"); // Debugging output
         await GetAndFilterContracts(); // Reload data
-        await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged); // Nudge component to rerender
     }
 
 
     public void Dispose()
     {
         _componentNotificationService.OnNotify -= StateHasChanged;
-        Console.WriteLine("History component unsubscribed");
     }
 }
