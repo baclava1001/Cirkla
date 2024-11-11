@@ -1,4 +1,5 @@
 ﻿@page "/request/view"
+@page "/request/review"
 @inject IClient _client;
 @inject NavigationManager _navigationManager;
 
@@ -43,9 +44,13 @@
             {
                 <dd class="col-sm-10">Waiting for reply from owner</dd>
             }
-            <CascadingValue Value="Contract">
-                <AccepDenyButtons />
-            </CascadingValue>
+
+            @if (route == "/request/review" && Contract.AcceptedByOwner is null && Contract.DeniedByOwner is null)
+            {
+                <CascadingValue Value="Contract">
+                    <ReplyToRequestButtons />
+                </CascadingValue>
+            }
         </dl>
     }
     @if(!string.IsNullOrEmpty(tempMessage))
@@ -64,20 +69,29 @@
     [CascadingParameter]
     public Contract? Contract { get; set; }
 
-    private string requestNumber;
+    private string? route;
+    private string? requestNumber;
     private string? tempMessage;
     private string? messageClass;
 
     protected override async Task OnInitializedAsync()
+    {
+        await GetRequestDataFromApi();
+        route = await CaptureUrlRoute();
+    }
+
+
+
+    private async Task GetRequestDataFromApi()
     {
         try
         {
             Contract = await _client.ApiBorrowingViewRequestAsync(Id);
             requestNumber = $"#{Contract.Id}";
         }
-        catch(ApiException ex)
+        catch (ApiException ex)
         {
-            if(ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
             {
                 messageClass = "text-success";
                 tempMessage = "Here's the request!";
@@ -92,6 +106,14 @@
                 tempMessage = ex.Message.ToString();
             }
         }
+    }
+
+
+    private async Task<string> CaptureUrlRoute()
+    {
+        var uri = new Uri(_navigationManager.Uri);
+        string capturedRoute = uri.AbsolutePath;
+        return capturedRoute;
     }
 }
 
