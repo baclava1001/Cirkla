@@ -29,28 +29,14 @@
             <div class="d-flex justify-content-between">
                 <button type="button" id="Deny" class="btn btn-danger me-1" @onclick='() => SendReplyToBorrower("Deny", context)'><i class="fa-solid fa-xmark" /></button>
                 <button type="button" id="Accept" class="btn btn-success me-1" @onclick='() => SendReplyToBorrower("Accept", context)'><i class="fa-solid fa-check" /></button>
-                <a href="/request/view?id=@context.Id" type="button" class="btn btn-secondary me-1"><i class="fa-solid fa-align-left" /></a>
+                <a href="/request/review?id=@context.Id" type="button" class="btn btn-secondary me-1"><i class="fa-solid fa-align-left" /></a>
             </div>
         </TemplateColumn>
     </QuickGrid>
 </div>
 
-<div class="page-buttons mb-5">
-    Page:
-    @if (pagination.TotalItemCount.HasValue)
-    {
-        for (var pageIndex = 0; pageIndex <= pagination.LastPageIndex; pageIndex++)
-        {
-            var capturedIndex = pageIndex;
-            <button @onclick="@(() => GoToPageAsync(capturedIndex))"
-                    class="@PageButtonClass(capturedIndex)"
-                    aria-current="@AriaCurrentValue(capturedIndex)"
-                    aria-label="Go to page @(pageIndex + 1)">
-                @(pageIndex + 1)
-            </button>
-        }
-    }
-</div>
+<Paginator State="pagination" />
+
 
 
 @code {

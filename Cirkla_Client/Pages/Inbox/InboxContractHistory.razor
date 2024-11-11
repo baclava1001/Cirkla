@@ -36,22 +36,7 @@
     </QuickGrid>
 </div>
 
-<div class="page-buttons mb-5">
-    Page:
-    @if (pagination.TotalItemCount.HasValue)
-    {
-        for (var pageIndex = 0; pageIndex <= pagination.LastPageIndex; pageIndex++)
-        {
-            var capturedIndex = pageIndex;
-            <button @onclick="@(() => GoToPageAsync(capturedIndex))"
-                    class="@PageButtonClass(capturedIndex)"
-                    aria-current="@AriaCurrentValue(capturedIndex)"
-                    aria-label="Go to page @(pageIndex + 1)">
-                @(pageIndex + 1)
-            </button>
-        }
-    }
-</div>
+<Paginator State="pagination" />
 
 @code {
     private List<Contract>? MyContractHistory { get; set; }
