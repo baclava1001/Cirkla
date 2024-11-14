@@ -1,38 +1,33 @@
 ﻿<nav class="navbar navbar-expand navbar-dark fixed-top" style="background-color:#186F65; width:100%">
     <div class="container-fluid">
-        <a class="navbar-brand mb-0 h1" href="/" ><img src="/Images/Daco_4205028.png" class="img-fluid" style="min-height:50px; min-width:50px; max-height:60px"/>irkla</a>
-@*         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button> *@
-
-@*         <div class="@NavMenuCssClass justify-content-evenly"> *@
-            <ul class="navbar-nav nav-pills mb-2 mb-lg-0 justify-content-evenly">
-                <li class="nav-item p-2 mx-3">
-                    <NavLink class="nav-link px-3" href="cirkla">
+        <a class="navbar-brand mb-0 me-3 h1" href="/" ><img src="/Images/Daco_4205028.png" class="img-fluid" style="min-height:50px; min-width:50px; max-height:60px"/>irkla</a>
+            <ul class="navbar-nav nav-pills">
+                <li class="nav-item p-1">
+                    <NavLink class="nav-link px-sm-3 px-md-5" href="cirkla">
                         <span class="d-none d-lg-block">Cirkla</span>
                         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #ffffff;" /></span>
-                        <span class="d-block d-md-none"><i class="fa-solid fa-magnifying-glass fa-lg" style="color: #ffffff;" /></span>
+                        <span class="d-block d-md-none"><i class="fa-solid fa-magnifying-glass fa-xl" style="color: #ffffff;" /></span>
                     </NavLink>
                 </li>
-                <li class="nav-item p-2 mx-3">
-                    <NavLink class="nav-link px-3" href="inventory">
+                <li class="nav-item p-1">
+                    <NavLink class="nav-link px-sm-3 px-md-5" href="inventory">
                         <span class="d-none d-lg-block">My inventory</span>
                         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-warehouse fa-2xl" style="color: #ffffff;" /></span>
-                        <span class="d-block d-md-none"><i class="fa-solid fa-warehouse fa-lg" style="color: #ffffff;" /></span>
+                        <span class="d-block d-md-none"><i class="fa-solid fa-warehouse fa-xl" style="color: #ffffff;" /></span>
                     </NavLink>
                 </li>
-                <li class="nav-item p-2 mx-3">
-                    <NavLink class="nav-link px-3" href="inbox">
+                <li class="nav-item p-1">
+                    <NavLink class="nav-link px-sm-3 px-md-5" href="inbox">
                         <span class="d-none d-lg-block">Inbox</span>
                         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-envelope fa-2xl" style="color: #ffffff;" /></span>
-                        <span class="d-block d-md-none"><i class="fa-solid fa-envelope fa-lg" style="color: #ffffff;" /></span>
+                        <span class="d-block d-md-none"><i class="fa-solid fa-envelope fa-xl" style="color: #ffffff;" /></span>
                     </NavLink>
                 </li>
-                <li class="nav-item p-2 mx-3">
-                    <NavLink class="nav-link px-3" href="login">
+                <li class="nav-item p-1">
+                    <NavLink class="nav-link px-sm-3 px-md-5" href="login">
                         <span class="d-none d-lg-block">Login</span>
                         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-door-open fa-2xl" style="color: #ffffff;" /></span>
-                        <span class="d-block d-md-none"><i class="fa-solid fa-door-open fa-lg" style="color: #ffffff;" /></span>
+                        <span class="d-block d-md-none"><i class="fa-solid fa-door-open fa-xl" style="color: #ffffff;" /></span>
                     </NavLink>
                 </li>
             </ul>
@@ -44,13 +39,4 @@
 
 @code {
     // TODO: Add user name in top right corner instead of login button when logged in
-
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
 }

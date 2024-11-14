@@ -1,7 +1,7 @@
-﻿using Cirkla_API.Repositories;
-using Cirkla_DAL.Models.Contract;
+﻿using Cirkla_DAL.Models.Contract;
 using Cirkla_API.DTOs.Contracts;
 using Cirkla_API.Helpers;
+using Cirkla_DAL.Repositories;
 
 namespace Cirkla_API.Services
 {
@@ -48,9 +48,27 @@ namespace Cirkla_API.Services
             return contract;
         }
 
-        public async Task<IEnumerable<Contract>> GetRequestsForInbox(string userId)
+        public async Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId)
         {
-            IEnumerable<Contract> contracts = await _contractRepository.GetAllContracts(userId);
+            IEnumerable<Contract> contracts = await _contractRepository.GetIncomingRequestsForInbox(userId);
+            return contracts;
+        }
+
+        public async Task<IEnumerable<Contract>> GetMyPendingRequests(string userId)
+        {
+            IEnumerable<Contract> contracts = await _contractRepository.GetUsersPendingRequests(userId);
+            return contracts;
+        }
+
+        public async Task<IEnumerable<Contract>> GetMyRequestHistory(string userId)
+        {
+            IEnumerable<Contract> contracts = await _contractRepository.GetUsersRequestHistory(userId);
+            return contracts;
+        }
+
+        public async Task<IEnumerable<Contract>> GetMyContractHistory(string userId)
+        {
+            IEnumerable<Contract> contracts = await _contractRepository.GetUsersContractHistory(userId);
             return contracts;
         }
 

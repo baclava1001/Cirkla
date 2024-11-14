@@ -4,7 +4,7 @@ using Cirkla_API.DTOs.Users;
 using Cirkla_DAL.Models.Contract;
 using Cirkla_API.DTOs.Contracts;
 using Cirkla_API.Services;
-using Cirkla_API.Repositories;
+using Cirkla_DAL.Repositories;
 
 namespace Cirkla_API.Helpers
 {

@@ -119,6 +119,13 @@ body {
     padding: 1px;
 }
 
+
+.disabled-date {
+    pointer-events: none;
+    background-color: #f0f0f0;
+    color: #ccc;
+}
+
 footer {
     background-color: rgba(252, 224, 155, 0.6);
 }
@@ -129,12 +136,13 @@ footer {
 
 
 .full-page-image-wrapper {
-    min-height:100%;
+    min-width:100%;
+    height:100%;
 }
 
 .full-page-image {
-    height: auto;
-    max-width: 100%;
+    height: 100%;
+    width: 100%;
     object-fit:cover;
     object-position:center;
 }

@@ -43,7 +43,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpGet("ViewRequest{id}")]
+        [HttpGet("ViewRequestSummary{id}")]
         public async Task<ActionResult<Contract>> ViewRequestSummary(int id)
         {
             Contract contract = new();
@@ -56,23 +56,6 @@ namespace Cirkla_API.Controllers
                 ex.Message.ToString();
             }
             return Ok(contract);
-        }
-
-
-        // TODO: Return thin DTO:s with bare minimum - each request/contract will be accessible from their details page (ViewRequestSummary)
-        [HttpGet("RequestsToInbox")]
-        public async Task<ActionResult<IEnumerable<Contract>>> RequestsToInbox(string userId)
-        {
-            IEnumerable<Contract> contracts = null;
-            try
-            {
-                contracts = await _borrowingService.GetRequestsForInbox(userId);
-            }
-            catch(Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contracts);
         }
 
 

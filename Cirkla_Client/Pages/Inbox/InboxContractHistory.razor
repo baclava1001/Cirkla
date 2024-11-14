@@ -1,51 +1,62 @@
-﻿@inject IClient _client;
+﻿@page "/inbox/contracthistory"
+@inject IClient _client;
 @inject ComponentNotificationService _componentNotificationService;
 @implements IDisposable;
 
+<InboxTabs />
 
 @if (MyContractHistory is null)
 {
-    <p><em>Loading...</em></p>
+    <p class="mt-4"><em>Loading...</em></p>
 }
-<h4 class="mt-3">Contract history</h4>
-<div class="overflow-auto">
-    <QuickGrid Class="table table-hover table-striped mt-3" Items="MyContractHistory?.AsQueryable()" Pagination="pagination" @onchange="StateHasChanged">
-        <TemplateColumn Title="From">
-            <ChildContent>
-                <span>@context.Borrower.FirstName @context.Borrower.LastName</span>
-            </ChildContent>
-        </TemplateColumn>
-        <PropertyColumn Property="contract => contract.Borrower.ZipCode" Title="Zip code" Sortable="true" />
-        <PropertyColumn Property="contract => contract.Item.Name" Title="Item" Sortable="true" />
-        <PropertyColumn Property="contract => contract.StartTime.ToShortDateString()" Title="Start date" Sortable="true" />
-        <PropertyColumn Property="contract => contract.EndTime.ToShortDateString()" Title="End date" Sortable="true" />
-        <PropertyColumn Property="contract => contract.Created.ToShortDateString()" Title="Request sent" Sortable="true" />
-        <TemplateColumn Context="contract" Title="">
-            <img src="@contract.Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @contract.Item.Name" class="img-thumbnail" />
-        </TemplateColumn>
-        <TemplateColumn Context="contract" Title="Status">
-            @if (contract.EndTime > DateTime.Now && contract.AcceptedByOwner is not null)
-            {
-                <span>Active</span>
-            }
-            else
-            {
-                <span>Archived</span>
-            }
-        </TemplateColumn>
-    </QuickGrid>
-</div>
+else if (!MyContractHistory.Any())
+{
+    <p class="mt-4"><em>Nothing to see here at the moment</em></p>
+}
+else
+{
+    <h4 class="mt-3">Contract history</h4>
+    <div class="overflow-auto">
+        <QuickGrid Class="table table-hover table-striped mt-3" Items="MyContractHistory" Pagination="pagination" @onchange="StateHasChanged">
+            <TemplateColumn Title="From">
+                <ChildContent>
+                    <span>@context.Borrower.FirstName @context.Borrower.LastName</span>
+                </ChildContent>
+            </TemplateColumn>
+            <PropertyColumn Property="contract => contract.Borrower.ZipCode" Title="Zip code" Sortable="true" />
+            <PropertyColumn Property="contract => contract.Item.Name" Title="Item" Sortable="true" />
+            <PropertyColumn Property="contract => contract.StartTime.ToShortDateString()" Title="Start date" Sortable="true" />
+            <PropertyColumn Property="contract => contract.EndTime.ToShortDateString()" Title="End date" Sortable="true" />
+            <PropertyColumn Property="contract => contract.Created.ToShortDateString()" Title="Request sent" Sortable="true" />
+            <TemplateColumn Context="contract" Title="">
+                <img src="@contract.Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @contract.Item.Name" class="img-thumbnail" />
+            </TemplateColumn>
+            <TemplateColumn Context="contract" Title="Status">
+                @if (contract.EndTime > DateTime.Now && contract.AcceptedByOwner is not null)
+                {
+                    <span>Active</span>
+                }
+                else
+                {
+                    <span>Archived</span>
+                }
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
 
-<Paginator State="pagination" />
+    <Paginator State="pagination" />
+}
+
+
 
 @code {
-    private List<Contract>? MyContractHistory { get; set; }
+    private IQueryable<Contract>? MyContractHistory { get; set; }
     private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
     private string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza, hardcoded.
 
     protected override async Task OnInitializedAsync()
     {
-        await GetAndFilterContracts(); // TODO: Replace this method with separate serverside controller
+        await GetAndFilterContracts();
         pagination.TotalItemCountChanged += (sender, eventArgs) => StateHasChanged();
         _componentNotificationService.OnNotify += TriggerRerender;
     }
@@ -61,10 +72,8 @@
 
     private async Task GetAndFilterContracts()
     {
-        var contractsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
-
-        // TODO: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each component
-        MyContractHistory = contractsFromAPI.Where(c => c.Borrower.Id == tempUserId || c.Owner.Id == tempUserId).Where(c => c.AcceptedByOwner is not null || c.DeniedByOwner is not null).OrderByDescending(c => c.Created).ToList();
+        var contractsFromAPI = await _client.ApiInboxMyContractHistoryAsync(tempUserId); // TODO: Send in logged in user's id.
+        MyContractHistory = contractsFromAPI.AsQueryable();
     }
 
 

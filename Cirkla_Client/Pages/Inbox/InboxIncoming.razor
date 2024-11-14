@@ -1,14 +1,23 @@
-﻿@inject IClient _client;
+﻿@page "/inbox/incomingrequests"
+@inject IClient _client;
 @inject ComponentNotificationService _componentNotificationService;
 
-@if (IncomingRequests is null)
+<InboxTabs />
+
+@if(IncomingRequests is null)
 {
-    <p><em>Loading...</em></p>
+    <p class="mt-4"><em>Loading...</em></p>
 }
+else if(!IncomingRequests.Any())
+{
+    <p class="mt-4"><em>Nothing to see here at the moment</em></p>
+}
+else
+{
 <h4 class="mt-3 mb-3">Incoming requests</h4>
 @if (!string.IsNullOrEmpty(tempMessage))
 {
-    <p class="@messageClass mt-3 mb-3">@tempMessage</p>
+<p class="@messageClass mt-3 mb-3">@tempMessage</p>
 }
 <div class="overflow-auto">
     <QuickGrid Class="table table-hover table-striped" Items="IncomingRequests?.AsQueryable()" Pagination="pagination">
@@ -36,6 +45,7 @@
 </div>
 
 <Paginator State="pagination" />
+}
 
 
 
@@ -99,7 +109,7 @@
     // TODO: Do this server side: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each inbox-component
     private async Task GetAndFilterRequests()
     {
-        var requestsFromAPI = await _client.ApiBorrowingRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
+        var requestsFromAPI = await _client.ApiInboxRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
 
         IncomingRequests = requestsFromAPI.Where(r => r.Owner.Id == tempUserId).Where(r => r.AcceptedByOwner is null && r.DeniedByOwner is null).OrderByDescending(r => r.Created).ToList();
         
