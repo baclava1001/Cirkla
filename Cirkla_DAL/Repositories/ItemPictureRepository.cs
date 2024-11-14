@@ -1,8 +1,7 @@
-﻿using Cirkla_DAL;
-using Cirkla_DAL.Models.ItemPictures;
+﻿using Cirkla_DAL.Models.ItemPictures;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_API.Repositories
+namespace Cirkla_DAL.Repositories
 {
     public class ItemPictureRepository : IItemPictureRepository
     {

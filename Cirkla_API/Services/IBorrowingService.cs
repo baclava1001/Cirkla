@@ -8,7 +8,11 @@ namespace Cirkla_API.Services
     {
         Task<Contract> AskForItem(ContractCreateDTO contractCreateDTO);
         Task<Contract> ViewRequestSummary(int id);
-        Task<IEnumerable<Contract>> GetRequestsForInbox(string userId);
+        Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId);
+        Task<IEnumerable<Contract>> GetMyPendingRequests(string userId);
+        Task<IEnumerable<Contract>> GetMyRequestHistory(string userId);
+        Task<IEnumerable<Contract>> GetMyContractHistory(string userId);
+
         Task<Contract> RespondToRequest(int id, ContractReplyDTO contractReplyDTO);
     }
 }

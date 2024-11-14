@@ -1,9 +1,9 @@
 using Cirkla_API.Helpers;
-using Cirkla_API.Repositories;
 using Cirkla_API.Services;
 using Cirkla_DAL;
 using Cirkla_DAL.Constants;
 using Cirkla_DAL.Models.Users;
+using Cirkla_DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

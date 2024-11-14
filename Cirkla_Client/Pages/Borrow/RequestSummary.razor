@@ -86,7 +86,7 @@
     {
         try
         {
-            Contract = await _client.ApiBorrowingViewRequestAsync(Id);
+            Contract = await _client.ApiBorrowingViewRequestSummaryAsync(Id);
             requestNumber = $"#{Contract.Id}";
         }
         catch (ApiException ex)

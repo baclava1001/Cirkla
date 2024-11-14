@@ -1,4 +1,4 @@
-﻿using Cirkla_API.Repositories;
+﻿using Cirkla_DAL.Repositories;
 using Cirkla_DAL.Models.Users;
 
 namespace Cirkla_API.Services

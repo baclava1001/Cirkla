@@ -1,0 +1,50 @@
+﻿<ul class="nav nav-tabs justify-content-lg-start justify-content-md-evenly">
+    <li class="nav-item">
+        @if (Url == "/inbox/incomingrequests")
+        {
+            <a class="nav-link active" href="/inbox/incomingrequests">Incoming requests</a>
+        }
+        else
+        {
+            <a class="nav-link" href="/inbox/incomingrequests">Incoming requests</a>
+        }
+    </li>
+    <li class="nav-item">
+        @if (Url == "/inbox/mypendingrequests")
+        {
+            <a class="nav-link active" href="/inbox/mypendingrequests">My pending requests</a>
+        }
+        else
+        {
+            <a class="nav-link" href="/inbox/mypendingrequests">My pending requests</a>
+        }
+    </li>
+    <li class="nav-item">
+        @if (Url == "/inbox/contracthistory")
+        {
+            <a class="nav-link active" href="/inbox/contracthistory">Contract history</a>
+        }
+        else
+        {
+            <a class="nav-link" href="/inbox/contracthistory">Contract history</a>
+        }
+    </li>
+    <li class="nav-item">
+        @if (Url == "/inbox/myrequesthistory")
+        {
+            <a class="nav-link active" href="/inbox/myrequesthistory">My request history</a>
+        }
+        else
+        {
+            <a class="nav-link" href="/inbox/myrequesthistory">My request history</a>
+        }
+    </li>
+</ul>
+
+
+@code {
+    // TODO: Add number of "unread requests" to "Incoming" and "My requests" tabs
+
+    [Parameter]
+    public string? Url { get; set; }
+}
