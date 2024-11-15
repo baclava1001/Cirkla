@@ -10,6 +10,7 @@ namespace Cirkla_API.Services
         Task<Contract> ViewRequestSummary(int id);
         Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId);
         Task<IEnumerable<Contract>> GetMyPendingRequests(string userId);
+        Task<IEnumerable<Contract>> GetMyAnsweredRequests(string userId);
         Task<IEnumerable<Contract>> GetMyRequestHistory(string userId);
         Task<IEnumerable<Contract>> GetMyContractHistory(string userId);
 

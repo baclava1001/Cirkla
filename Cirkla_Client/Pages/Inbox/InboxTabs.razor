@@ -26,6 +26,10 @@ else if (selectedChild == "MyPendingRequests")
 {
     <InboxMyPendingRequests OnNumberOfPendingChanged="HandlePendingChanged" />
 }
+else if (selectedChild == "MyAnsweredRequests")
+{
+    <InboxMyAnsweredRequests OnNumberOfAnsweredChanged="HandleAnsweredChanged" />
+}
 else if (selectedChild == "ContractHistory")
 {
     <InboxContractHistory />
@@ -51,6 +55,11 @@ else if (selectedChild == "ContractHistory")
     }
 
     private void HandlePendingChanged(int value)
+    {
+        numberOfPending = value;
+    }
+
+    private void HandleAnsweredChanged(int value)
     {
         numberOfPending = value;
     }

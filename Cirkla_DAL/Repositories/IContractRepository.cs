@@ -8,6 +8,7 @@ namespace Cirkla_DAL.Repositories
         Task<IEnumerable<Contract>> GetAllContracts();
         Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId);
         Task<IEnumerable<Contract>> GetUsersPendingRequests(string userId);
+        Task<IEnumerable<Contract>> GetUsersAnsweredRequests(string userId);
         Task<IEnumerable<Contract>> GetUsersRequestHistory(string userId);
         Task<IEnumerable<Contract>> GetUsersContractHistory(string userId);
         Task<Contract> GetContract(int id);

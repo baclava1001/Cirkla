@@ -49,6 +49,22 @@ namespace Cirkla_API.Controllers
         }
 
 
+        [HttpGet("MyAnsweredRequests")]
+        public async Task<ActionResult<IEnumerable<Contract>>> MyAnsweredRequests(string userId)
+        {
+            IEnumerable<Contract> contracts = null;
+            try
+            {
+                contracts = await _borrowingService.GetMyAnsweredRequests(userId);
+            }
+            catch (Exception ex)
+            {
+                ex.Message.ToString();
+            }
+            return Ok(contracts);
+        }
+
+
         [HttpGet("MyRequestHistory")]
         public async Task<ActionResult<IEnumerable<Contract>>> MyRequestHistory(string userId)
         {

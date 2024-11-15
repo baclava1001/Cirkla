@@ -55,6 +55,19 @@ namespace Cirkla_DAL.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Contract>> GetUsersAnsweredRequests(string userId)
+        {
+            return await _context.Contracts
+                .Include(c => c.Item)
+                .Include(c => c.Item.Pictures)
+                .Include(c => c.Owner)
+                .Include(c => c.Borrower)
+                .Where(c => c.Borrower.Id == userId)
+                .Where(c => c.AcceptedByOwner != null || c.DeniedByOwner != null && c.EndTime < DateTime.Now)
+                .OrderByDescending(c => c.Created)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Contract>> GetUsersRequestHistory(string userId)
         {
             return await _context.Contracts
