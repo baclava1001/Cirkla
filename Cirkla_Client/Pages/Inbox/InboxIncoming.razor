@@ -1,8 +1,10 @@
-﻿@page "/inbox/incomingrequests"
+﻿@* @page "/inbox/incomingrequests" *@
 @inject IClient _client;
 @inject ComponentNotificationService _componentNotificationService;
 
-<InboxTabs />
+<PageTitle>Incoming</PageTitle>
+<h4 class="mt-3 mb-3">Incoming requests</h4>
+
 
 @if(IncomingRequests is null)
 {
@@ -14,13 +16,13 @@ else if(!IncomingRequests.Any())
 }
 else
 {
-<h4 class="mt-3 mb-3">Incoming requests</h4>
+
 @if (!string.IsNullOrEmpty(tempMessage))
 {
 <p class="@messageClass mt-3 mb-3">@tempMessage</p>
 }
 <div class="overflow-auto">
-    <QuickGrid Class="table table-hover table-striped" Items="IncomingRequests?.AsQueryable()" Pagination="pagination">
+    <QuickGrid Class="table table-hover table-striped" Items="IncomingRequests" Pagination="pagination">
         <TemplateColumn Title="From">
             <ChildContent>
                 <span>@context.Borrower.FirstName @context.Borrower.LastName</span>
@@ -50,11 +52,15 @@ else
 
 
 @code {
-    private List<Contract>? IncomingRequests { get; set; }
+    private IQueryable<Contract>? IncomingRequests { get; set; }
     private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
     private string? tempMessage;
     private string? messageClass;
     private string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza, hardcoded.
+
+    // Declare eventcallback ("Walkie-talkie-channel")
+    [Parameter]
+    public EventCallback<int> OnNumberOfRequestsChanged { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -95,8 +101,6 @@ else
 
             tempMessage = $"You have responded {buttonName} to the request from {contract.Borrower.FirstName} {contract.Borrower.LastName}";
             messageClass = "text-success";
-
-            // await OnRequestReply.InvokeAsync(IncomingRequests);
         }
         catch (Exception ex)
         {
@@ -110,8 +114,9 @@ else
     private async Task GetAndFilterRequests()
     {
         var requestsFromAPI = await _client.ApiInboxRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
-
-        IncomingRequests = requestsFromAPI.Where(r => r.Owner.Id == tempUserId).Where(r => r.AcceptedByOwner is null && r.DeniedByOwner is null).OrderByDescending(r => r.Created).ToList();
+        // Notify parent with "Walkie talkie"
+        OnNumberOfRequestsChanged.InvokeAsync(requestsFromAPI.Count());
+        IncomingRequests = requestsFromAPI.AsQueryable();
         
         StateHasChanged();
 
