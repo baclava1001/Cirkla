@@ -48,6 +48,8 @@ namespace Cirkla_API.Services
             return contract;
         }
 
+
+        // TODO: Extract methods to a separate InboxService
         public async Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId)
         {
             IEnumerable<Contract> contracts = await _contractRepository.GetIncomingRequestsForInbox(userId);
@@ -57,6 +59,12 @@ namespace Cirkla_API.Services
         public async Task<IEnumerable<Contract>> GetMyPendingRequests(string userId)
         {
             IEnumerable<Contract> contracts = await _contractRepository.GetUsersPendingRequests(userId);
+            return contracts;
+        }
+
+        public async Task<IEnumerable<Contract>> GetMyAnsweredRequests(string userId)
+        {
+            IEnumerable<Contract> contracts = await _contractRepository.GetUsersAnsweredRequests(userId);
             return contracts;
         }
 
