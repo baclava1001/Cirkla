@@ -1,5 +1,5 @@
 ﻿using Cirkla_API.Services;
-using Cirkla_DAL.Models.Items;
+using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Controllers

@@ -1,6 +1,6 @@
-﻿using Cirkla_DAL.Models.ItemPictures;
+﻿using Cirkla_DAL.Models;
 
-namespace Cirkla_DAL.Repositories
+namespace Cirkla_DAL.Repositories.ItemPictures
 {
     public interface IItemPictureRepository
     {

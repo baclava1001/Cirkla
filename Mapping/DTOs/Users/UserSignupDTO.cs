@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cirkla_API.DTOs.Users
+namespace Mapping.DTOs.Users
 {
-    public class UserPostDTO : UserLoginDTO
+    public class UserSignupDTO : UserLoginDTO
     {
         [Required]
         public string FirstName { get; set; }
@@ -15,7 +15,7 @@ namespace Cirkla_API.DTOs.Users
         [Url]
         public string? ProfilePictureURL { get; set; }
 
-        // From UserLoginDTO:
+        // Inherits from UserLoginDTO:
         // string Email
         // string password
     }

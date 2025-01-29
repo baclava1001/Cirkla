@@ -1,5 +1,5 @@
-﻿using Cirkla_DAL.Models.Items;
-using Cirkla_DAL.Repositories;
+﻿using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.Items;
 
 namespace Cirkla_API.Services
 {

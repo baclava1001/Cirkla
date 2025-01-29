@@ -1,8 +1,6 @@
-﻿using Cirkla_DAL.Models.Users;
-using Cirkla_DAL.Models.Items;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cirkla_API.DTOs.Contracts
+namespace Mapping.DTOs.Contracts
 {
     /// <summary>
     /// Hides away complex objects and takes only their Id:s

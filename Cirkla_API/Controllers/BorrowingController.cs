@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Cirkla_DAL.Models.Contract;
-using Cirkla_API.DTOs.Contracts;
+using Mapping.DTOs.Contracts;
 using Cirkla_API.Services;
-using Cirkla_API.Helpers;
 using NuGet.Protocol;
 using Azure;
+using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Controllers
 {

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Cirkla_DAL.Models.Items;
-using Cirkla_DAL.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Cirkla_DAL.Models.Contract
+namespace Cirkla_DAL.Models
 {
     public class Contract
     {

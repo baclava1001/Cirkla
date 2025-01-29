@@ -1,6 +1,6 @@
-﻿using Cirkla_DAL.Models.Contract;
-using Cirkla_API.DTOs.Contracts;
+﻿using Mapping.DTOs.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services
 {

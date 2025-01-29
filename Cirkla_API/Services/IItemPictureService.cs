@@ -1,4 +1,4 @@
-﻿using Cirkla_DAL.Models.ItemPictures;
+﻿using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services
 {

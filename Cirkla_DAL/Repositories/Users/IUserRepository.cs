@@ -1,6 +1,6 @@
-﻿using Cirkla_DAL.Models.Users;
+﻿using Cirkla_DAL.Models;
 
-namespace Cirkla_DAL.Repositories
+namespace Cirkla_DAL.Repositories.Users
 {
     public interface IUserRepository
     {

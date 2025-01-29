@@ -1,6 +1,6 @@
-﻿using Cirkla_DAL.Models.Items;
+﻿using Cirkla_DAL.Models;
 
-namespace Cirkla_DAL.Repositories
+namespace Cirkla_DAL.Repositories.Items
 {
     public interface IItemRepository
     {

@@ -1,8 +1,7 @@
-﻿using Cirkla_DAL.Models.Items;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cirkla_DAL.Models.Users
+namespace Cirkla_DAL.Models
 {
     public class User : IdentityUser
     {
