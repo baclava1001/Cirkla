@@ -1,4 +1,4 @@
-﻿namespace Cirkla_API.DTOs.Contracts
+﻿namespace Mapping.DTOs.Contracts
 {
     public class ContractReplyDTO : ContractCreateDTO
     {

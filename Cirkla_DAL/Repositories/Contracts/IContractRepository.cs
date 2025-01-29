@@ -1,6 +1,6 @@
-﻿using Cirkla_DAL.Models.Contract;
+﻿using Cirkla_DAL.Models;
 
-namespace Cirkla_DAL.Repositories
+namespace Cirkla_DAL.Repositories.Contracts
 {
     public interface IContractRepository
     {

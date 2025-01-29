@@ -1,9 +1,7 @@
-﻿using Cirkla_DAL.Models.ItemPictures;
-using Cirkla_DAL.Models.Users;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Cirkla_DAL.Models.Items
+namespace Cirkla_DAL.Models
 {
     public class Item
     {

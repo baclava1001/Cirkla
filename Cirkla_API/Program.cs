@@ -1,9 +1,12 @@
-using Cirkla_API.Helpers;
+using Mapping.Mappers;
 using Cirkla_API.Services;
 using Cirkla_DAL;
 using Cirkla_DAL.Constants;
-using Cirkla_DAL.Models.Users;
-using Cirkla_DAL.Repositories;
+using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.ItemPictures;
+using Cirkla_DAL.Repositories.Items;
+using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,8 +34,6 @@ namespace Cirkla_API
             builder.Services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
-
-            builder.Services.AddScoped<IMapper, Mapper>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProfileService, ProfileService>();

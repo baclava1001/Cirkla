@@ -1,24 +1,31 @@
-﻿using Cirkla_DAL.Models.Contract;
-using Cirkla_API.DTOs.Contracts;
-using Cirkla_API.Helpers;
-using Cirkla_DAL.Repositories;
+﻿using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.Items;
+using Cirkla_DAL.Repositories.Users;
+using Mapping.Mappers;
+using Mapping.DTOs.Contracts;
 
 namespace Cirkla_API.Services
 {
     public class BorrowingService : IBorrowingService
     {
-        private readonly IMapper _mapper;
         private readonly IContractRepository _contractRepository;
+        private readonly IItemRepository _itemRepository;
+        private readonly IUserRepository _userRepository;
 
-        public BorrowingService(IMapper mapper, IContractRepository contractRepository)
+        public BorrowingService(IContractRepository contractRepository, IItemRepository itemRepository, IUserRepository userRepository)
         {
-            _mapper = mapper;
             _contractRepository = contractRepository;
+            _itemRepository = itemRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<Contract> AskForItem(ContractCreateDTO contractDTOFromClient)
         {
-            Contract contract = await _mapper.MapContractCreateDtoToContract(contractDTOFromClient);
+            Contract contract = await Mapper.MapContractCreateDtoToContract(contractDTOFromClient);
+            contract.Item = await _itemRepository.GetItem(contractDTOFromClient.ItemId);
+            contract.Owner = await _userRepository.Get(contractDTOFromClient.OwnerId);
+            contract.Borrower = await _userRepository.Get(contractDTOFromClient.BorrowerId);
 
             if (contract is null)
             {
@@ -87,7 +94,10 @@ namespace Cirkla_API.Services
                 throw new NullReferenceException();
             }
 
-            Contract contract = await _mapper.MapContractReplyDtoToContract(contractReplyDTO);
+            Contract contract = await Mapper.MapContractReplyDtoToContract(contractReplyDTO);
+            contract.Item = await _itemRepository.GetItem(contractReplyDTO.ItemId);
+            contract.Owner = await _userRepository.Get(contractReplyDTO.OwnerId);
+            contract.Borrower = await _userRepository.Get(contractReplyDTO.BorrowerId);
 
             try
             {

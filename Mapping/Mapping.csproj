@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Cirkla_DAL\Cirkla_DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\ItemPictures\" />
+    <Folder Include="DTOs\Items\" />
+  </ItemGroup>
+
 </Project>

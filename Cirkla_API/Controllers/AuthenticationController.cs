@@ -1,5 +1,4 @@
-﻿using Cirkla_DAL.Models.Users;
-using Cirkla_DAL.Constants;
+﻿using Cirkla_DAL.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +7,10 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Cirkla_API.Constants;
-using Cirkla_API.DTOs.Users;
-using Cirkla_API.Helpers;
+
+using Cirkla_DAL.Models;
+using Mapping.DTOs.Users;
+using Mapping.Mappers;
 
 namespace Cirkla_API.Controllers
 {
@@ -17,12 +18,10 @@ namespace Cirkla_API.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration)
         {
-            _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
         }
@@ -30,14 +29,14 @@ namespace Cirkla_API.Controllers
 
         [HttpPost]
         [Route("Signup")]
-        public async Task<IActionResult> Register(UserPostDTO userPostDTO)
+        public async Task<IActionResult> Register(UserSignupDTO userSignupDTO)
         {
             // TODO: Move logic to a separate service
             try
             {
-                User user = await _mapper.MapUserPostDtoToUser(userPostDTO);
+                User user = await Mapper.MapUserPostDtoToUser(userSignupDTO);
                 // Password is hashed and added to the user object below
-                var result = await _userManager.CreateAsync(user, userPostDTO.Password);
+                var result = await _userManager.CreateAsync(user, userSignupDTO.Password);
 
                 if (!result.Succeeded)
                 {

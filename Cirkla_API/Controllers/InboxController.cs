@@ -1,5 +1,5 @@
 ﻿using Cirkla_API.Services;
-using Cirkla_DAL.Models.Contract;
+using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

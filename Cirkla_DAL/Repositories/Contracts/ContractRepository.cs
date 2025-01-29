@@ -1,7 +1,7 @@
-﻿using Cirkla_DAL.Models.Contract;
+﻿using Cirkla_DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_DAL.Repositories
+namespace Cirkla_DAL.Repositories.Contracts
 {
     public class ContractRepository : IContractRepository
     {

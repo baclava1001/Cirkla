@@ -1,4 +1,4 @@
-﻿using Cirkla_DAL.Models.Users;
+﻿using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services
 {
