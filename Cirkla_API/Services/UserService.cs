@@ -4,7 +4,7 @@ using Cirkla_DAL.Repositories.Users;
 namespace Cirkla_API.Services
 {
     /// <summary>
-    /// Simple CRUD-service for internal in other classes
+    /// Simple CRUD-service for internal use in other classes
     /// </summary>
     public class UserService : IUserService
     {
@@ -19,7 +19,7 @@ namespace Cirkla_API.Services
         {
             try
             {
-                await _userRepository.Add(user);
+                await _userRepository.Create(user);
                 await _userRepository.SaveChanges();
                 return user;
             }
@@ -29,7 +29,7 @@ namespace Cirkla_API.Services
             }
         }
 
-        public async Task<bool> DeleteUser(string id)
+        public async Task<bool> Delete(string id)
         {
             User user = new();
 
@@ -44,7 +44,7 @@ namespace Cirkla_API.Services
 
             try
             {
-                await _userRepository.Remove(user);
+                await _userRepository.Delete(user);
                 await _userRepository.SaveChanges();
             }
             catch(Exception ex)
@@ -55,7 +55,7 @@ namespace Cirkla_API.Services
             return true;
         }
 
-        public async Task<User> GetUser(string id)
+        public async Task<User> GetById(string id)
         {
             User user = new();
 
@@ -70,7 +70,7 @@ namespace Cirkla_API.Services
             return user;
         }
 
-        public async Task<IEnumerable<User>> ListAllUsers()
+        public async Task<IEnumerable<User>> GetAll()
         {
             IEnumerable<User> users;
 
@@ -86,7 +86,7 @@ namespace Cirkla_API.Services
             return users;
         }
 
-        public async Task<User> UpdateUser(string id, User user)
+        public async Task<User> Update(string id, User user)
         {
             if (user is null || id != user.Id)
             {

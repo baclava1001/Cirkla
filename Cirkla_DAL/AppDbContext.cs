@@ -38,8 +38,7 @@ namespace Cirkla_DAL
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //TODO: Extract seeding to a separate file
-
+            //TODO: Extract seeding to a separate file and make it only run in development
             builder.Entity<User>().HasData(GetUsers());
             builder.Entity<Item>().HasData(GetItems());
             builder.Entity<ItemPicture>().HasData(GetItemPictures());

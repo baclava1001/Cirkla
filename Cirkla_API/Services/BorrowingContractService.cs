@@ -7,23 +7,24 @@ using Mapping.DTOs.Contracts;
 
 namespace Cirkla_API.Services
 {
-    public class BorrowingService : IBorrowingService
+    public class BorrowingContractService : IBorrowingContractService
     {
         private readonly IContractRepository _contractRepository;
         private readonly IItemRepository _itemRepository;
         private readonly IUserRepository _userRepository;
 
-        public BorrowingService(IContractRepository contractRepository, IItemRepository itemRepository, IUserRepository userRepository)
+        public BorrowingContractService(IContractRepository contractRepository, IItemRepository itemRepository, IUserRepository userRepository)
         {
             _contractRepository = contractRepository;
             _itemRepository = itemRepository;
             _userRepository = userRepository;
         }
 
-        public async Task<Contract> AskForItem(ContractCreateDTO contractDTOFromClient)
+
+        public async Task<Contract> SendRequest(ContractCreateDTO contractDTOFromClient)
         {
             Contract contract = await Mapper.MapContractCreateDtoToContract(contractDTOFromClient);
-            contract.Item = await _itemRepository.GetItem(contractDTOFromClient.ItemId);
+            contract.Item = await _itemRepository.Get(contractDTOFromClient.ItemId);
             contract.Owner = await _userRepository.Get(contractDTOFromClient.OwnerId);
             contract.Borrower = await _userRepository.Get(contractDTOFromClient.BorrowerId);
 
@@ -34,7 +35,7 @@ namespace Cirkla_API.Services
                 
             try
             {
-                await _contractRepository.Add(contract);
+                await _contractRepository.Create(contract);
                 await _contractRepository.SaveChanges();
             }
             catch(Exception ex)
@@ -44,9 +45,10 @@ namespace Cirkla_API.Services
             return contract;
         }
 
+
         public async Task<Contract> ViewRequestSummary(int id)
         {
-            Contract contract = await _contractRepository.GetContract(id);
+            Contract contract = await _contractRepository.GetById(id);
 
             if (contract is null)
             {
@@ -63,11 +65,13 @@ namespace Cirkla_API.Services
             return contracts;
         }
 
+
         public async Task<IEnumerable<Contract>> GetMyPendingRequests(string userId)
         {
             IEnumerable<Contract> contracts = await _contractRepository.GetUsersPendingRequests(userId);
             return contracts;
         }
+
 
         public async Task<IEnumerable<Contract>> GetMyAnsweredRequests(string userId)
         {
@@ -75,17 +79,20 @@ namespace Cirkla_API.Services
             return contracts;
         }
 
+
         public async Task<IEnumerable<Contract>> GetMyRequestHistory(string userId)
         {
             IEnumerable<Contract> contracts = await _contractRepository.GetUsersRequestHistory(userId);
             return contracts;
         }
 
+
         public async Task<IEnumerable<Contract>> GetMyContractHistory(string userId)
         {
             IEnumerable<Contract> contracts = await _contractRepository.GetUsersContractHistory(userId);
             return contracts;
         }
+
 
         public async Task<Contract> RespondToRequest(int id, ContractReplyDTO contractReplyDTO)
         {
@@ -95,7 +102,7 @@ namespace Cirkla_API.Services
             }
 
             Contract contract = await Mapper.MapContractReplyDtoToContract(contractReplyDTO);
-            contract.Item = await _itemRepository.GetItem(contractReplyDTO.ItemId);
+            contract.Item = await _itemRepository.Get(contractReplyDTO.ItemId);
             contract.Owner = await _userRepository.Get(contractReplyDTO.OwnerId);
             contract.Borrower = await _userRepository.Get(contractReplyDTO.BorrowerId);
 

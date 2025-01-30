@@ -17,11 +17,11 @@ namespace Cirkla_API.Services
             _logger = logger;
         }
 
-        public async Task<Item> CreateItem(Item item)
+        public async Task<Item> Create(Item item)
         {
             try
             {
-                await _itemRepository.Add(item);
+                await _itemRepository.Create(item);
                 await _itemRepository.SaveChanges();
                 return item;
             }
@@ -32,23 +32,23 @@ namespace Cirkla_API.Services
             }
         }
 
-        public async Task<bool> DeleteItem(int id)
+        public async Task<bool> Delete(int id)
         {
-            Item item = await _itemRepository.GetItem(id);
+            Item item = await _itemRepository.Get(id);
 
             if (item is null)
             {
                 return false;
                 // return NotFound("Can not find item at this time.");
             }
-            await _itemRepository.Remove(item);
+            await _itemRepository.Delete(item);
             await _itemRepository.SaveChanges();
             return true;
         }
 
-        public async Task<Item> GetItem(int id)
+        public async Task<Item> GetById(int id)
         {
-            Item item = await _itemRepository.GetItem(id);
+            Item item = await _itemRepository.Get(id);
             
             if(item is null)
             {
@@ -57,9 +57,9 @@ namespace Cirkla_API.Services
             return item;
         }
 
-        public async Task<IEnumerable<Item>> ListAllItems()
+        public async Task<IEnumerable<Item>> GetAll()
         {
-            IEnumerable<Item> items = await _itemRepository.GetAllItems();
+            IEnumerable<Item> items = await _itemRepository.GetAll();
 
             if (!items.Any())
             {
@@ -68,9 +68,9 @@ namespace Cirkla_API.Services
             return items;
         }
 
-        public async Task<IEnumerable<Item>> ListAllItems(string userId)
+        public async Task<IEnumerable<Item>> GetAllItemsForUser(string userId)
         {
-            IEnumerable<Item> items = await _itemRepository.GetAllItems(userId);
+            IEnumerable<Item> items = await _itemRepository.GetAllByOwnerId(userId);
 
             if (!items.Any())
             {
@@ -81,7 +81,7 @@ namespace Cirkla_API.Services
 
 
 
-        public async Task<Item> UpdateItem(int id, Item item)
+        public async Task<Item> Update(int id, Item item)
         {
             if (item is null || id != item.Id)
             {

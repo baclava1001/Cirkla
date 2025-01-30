@@ -9,11 +9,11 @@ namespace Cirkla_API.Controllers
     [ApiController]
     public class InboxController : ControllerBase
     {
-        private readonly IBorrowingService _borrowingService;
+        private readonly IBorrowingContractService _borrowingContractService;
 
-        public InboxController(IBorrowingService borrowingService)
+        public InboxController(IBorrowingContractService borrowingContractService)
         {
-            _borrowingService = borrowingService;
+            _borrowingContractService = borrowingContractService;
         }
 
         // TODO: Return thin DTO:s with bare minimum - each request/contract will be accessible from their details page (ViewRequestSummary)
@@ -23,7 +23,7 @@ namespace Cirkla_API.Controllers
             IEnumerable<Contract> contracts = null;
             try
             {
-                contracts = await _borrowingService.GetIncomingRequestsForInbox(userId);
+                contracts = await _borrowingContractService.GetIncomingRequestsForInbox(userId);
             }
             catch (Exception ex)
             {
@@ -39,7 +39,7 @@ namespace Cirkla_API.Controllers
             IEnumerable<Contract> contracts = null;
             try
             {
-                contracts = await _borrowingService.GetMyPendingRequests(userId);
+                contracts = await _borrowingContractService.GetMyPendingRequests(userId);
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace Cirkla_API.Controllers
             IEnumerable<Contract> contracts = null;
             try
             {
-                contracts = await _borrowingService.GetMyAnsweredRequests(userId);
+                contracts = await _borrowingContractService.GetMyAnsweredRequests(userId);
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace Cirkla_API.Controllers
             IEnumerable<Contract> contracts = null;
             try
             {
-                contracts = await _borrowingService.GetMyRequestHistory(userId);
+                contracts = await _borrowingContractService.GetMyRequestHistory(userId);
             }
             catch (Exception ex)
             {
@@ -87,7 +87,7 @@ namespace Cirkla_API.Controllers
             IEnumerable<Contract> contracts = null;
             try
             {
-                contracts = await _borrowingService.GetMyContractHistory(userId);
+                contracts = await _borrowingContractService.GetMyContractHistory(userId);
             }
             catch (Exception ex)
             {

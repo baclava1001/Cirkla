@@ -7,6 +7,8 @@ namespace Cirkla_API.Services
     {
         private readonly IUserRepository _userRepository;
 
+
+        // TODO: Add some error handling and logging
         public ProfileService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
@@ -14,7 +16,7 @@ namespace Cirkla_API.Services
 
         public async Task<bool> CreateProfile(User user)
         {
-            await _userRepository.Add(user);
+            await _userRepository.Create(user);
             await _userRepository.SaveChanges();
             return true;
         }
@@ -22,7 +24,7 @@ namespace Cirkla_API.Services
         public async Task<bool> DeleteProfile(string id)
         {
             User user = await _userRepository.Get(id);
-            await _userRepository.Remove(user);
+            await _userRepository.Delete(user);
             await _userRepository.SaveChanges();
             return true;
         }

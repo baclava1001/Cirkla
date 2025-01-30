@@ -12,13 +12,13 @@ namespace Cirkla_DAL.Repositories.Items
             _context = context;
         }
 
-        public async Task<Item> Add(Item item)
+        public async Task<Item> Create(Item item)
         {
             await _context.AddAsync(item);
             return item;
         }
 
-        public async Task<IEnumerable<Item>> GetAllItems()
+        public async Task<IEnumerable<Item>> GetAll()
         {
             return await _context.Items
                 .Include(i => i.Pictures)
@@ -26,7 +26,7 @@ namespace Cirkla_DAL.Repositories.Items
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Item>> GetAllItems(string ownerId)
+        public async Task<IEnumerable<Item>> GetAllByOwnerId(string ownerId)
         {
             return _context.Items
                 .Include(i => i.Pictures)
@@ -35,7 +35,7 @@ namespace Cirkla_DAL.Repositories.Items
                 .ToList();
         }
 
-        public async Task<Item> GetItem(int id)
+        public async Task<Item> Get(int id)
         {
             return await _context.Items
                 .Include(i => i.Pictures)
@@ -43,7 +43,7 @@ namespace Cirkla_DAL.Repositories.Items
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public Task<Item> Remove(Item item)
+        public Task<Item> Delete(Item item)
         {
             _context.Remove(item);
             return Task.FromResult(item);

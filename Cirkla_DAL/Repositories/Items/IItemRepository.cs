@@ -4,11 +4,11 @@ namespace Cirkla_DAL.Repositories.Items
 {
     public interface IItemRepository
     {
-        Task<Item> Add(Item item);
-        Task<IEnumerable<Item>> GetAllItems();
-        Task<IEnumerable<Item>> GetAllItems(string userId);
-        Task<Item> GetItem(int id);
-        Task<Item> Remove(Item item);
+        Task<Item> Create(Item item);
+        Task<IEnumerable<Item>> GetAll();
+        Task<IEnumerable<Item>> GetAllByOwnerId(string userId);
+        Task<Item> Get(int id);
+        Task<Item> Delete(Item item);
         Task<Item> Update(Item item);
         Task SaveChanges();
     }

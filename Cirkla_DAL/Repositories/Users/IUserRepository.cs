@@ -4,10 +4,10 @@ namespace Cirkla_DAL.Repositories.Users
 {
     public interface IUserRepository
     {
-        Task<User> Add(User user);
+        Task<User> Create(User user);
         Task<IEnumerable<User>> GetAll();
         Task<User> Get(string id);
-        Task<User> Remove(User user);
+        Task<User> Delete(User user);
         Task<User> Update(User user);
         Task SaveChanges();
     }

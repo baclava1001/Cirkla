@@ -21,9 +21,9 @@ namespace Cirkla_API.Controllers
         // TODO: Null-checks and other error-handling
 
         [HttpPost]
-        public async Task<ActionResult<ItemPicture>> AddItemPictureAsync(ItemPicture itemPicture)
+        public async Task<ActionResult<ItemPicture>> Create(ItemPicture itemPicture)
         {
-            if (await _itemPictureService.AddItemPictureAsync(itemPicture) == false)
+            if (await _itemPictureService.Create(itemPicture) == false)
             {
                 return BadRequest();
             }
@@ -33,26 +33,26 @@ namespace Cirkla_API.Controllers
 
         // Gets all images belonging to a specific item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemPicture>>> ListItemPicturesAsync(int itemId)
+        public async Task<ActionResult<IEnumerable<ItemPicture>>> GetAllPicturesForItem(int itemId)
         {
-            IEnumerable<ItemPicture> itemPictures = await _itemPictureService.ListItemPicturesAsync(itemId);
+            IEnumerable<ItemPicture> itemPictures = await _itemPictureService.GetAllPicturesForItem(itemId);
             // TODO: Ersätt med mappad DTO
             return Ok(itemPictures);
         }
 
         // Gets a specific image
         [HttpGet("{id}")]
-        public async Task<ActionResult<ItemPicture>> GetItemPictureByIdAsync(int id)
+        public async Task<ActionResult<ItemPicture>> GetById(int id)
         {
-            ItemPicture itemPicture = await _itemPictureService.FindItemPictureByIdAsync(id);
+            ItemPicture itemPicture = await _itemPictureService.GetById(id);
             // TODO: Ersätt med mappad DTO
             return Ok(itemPicture);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItemPictureAsync(int id, ItemPicture itemPicture)
+        public async Task<IActionResult> Update(int id, ItemPicture itemPicture)
         {
-            if (await _itemPictureService.ChangeItemPicture(id, itemPicture) == false)
+            if (await _itemPictureService.Update(id, itemPicture) == false)
             {
                 return BadRequest();
             }
@@ -61,7 +61,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItemPictureAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (await _itemPictureService.DeleteItemPicture(id) == false)
             {

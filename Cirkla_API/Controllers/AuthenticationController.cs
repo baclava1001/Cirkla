@@ -29,7 +29,7 @@ namespace Cirkla_API.Controllers
 
         [HttpPost]
         [Route("Signup")]
-        public async Task<IActionResult> Register(UserSignupDTO userSignupDTO)
+        public async Task<IActionResult> Signup(UserSignupDTO userSignupDTO)
         {
             // TODO: Move logic to a separate service
             try
