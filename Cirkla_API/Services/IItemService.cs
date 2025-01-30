@@ -4,11 +4,11 @@ namespace Cirkla_API.Services
 {
     public interface IItemService
     {
-        Task<Item> CreateItem(Item item);
-        Task<IEnumerable<Item>> ListAllItems();
-        Task<IEnumerable<Item>> ListAllItems(string ownerId);
-        Task<Item> GetItem(int id);
-        Task<bool> DeleteItem(int id);
-        Task<Item> UpdateItem(int id, Item item);
+        Task<Item> Create(Item item);
+        Task<IEnumerable<Item>> GetAll();
+        Task<IEnumerable<Item>> GetAllItemsForUser(string ownerId);
+        Task<Item> GetById(int id);
+        Task<bool> Delete(int id);
+        Task<Item> Update(int id, Item item);
     }
 }

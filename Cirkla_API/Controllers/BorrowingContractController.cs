@@ -10,19 +10,21 @@ namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BorrowingController : ControllerBase
-    {
-        private readonly IBorrowingService _borrowingService;
 
-        public BorrowingController(IBorrowingService borrowingService)
+    /// <summary>BorrowingContracts are how a borrower communicates with an owner of an item</summary>
+    public class BorrowingContractController : ControllerBase
+    {
+        private readonly IBorrowingContractService _borrowingContractService;
+
+        public BorrowingContractController(IBorrowingContractService borrowingContractService)
         {
-            _borrowingService = borrowingService;
+            _borrowingContractService = borrowingContractService;
         }
 
 
         // Ask to borrow = create contract for item owner to review
-        [HttpPost("AskToBorrow")]
-        public async Task<ActionResult<Contract>> AskToBorrow(ContractCreateDTO contractDTOFromClient)
+        [HttpPost("SendRequest")]
+        public async Task<ActionResult<Contract>> SendRequest(ContractCreateDTO contractDTOFromClient)
         {
             if(contractDTOFromClient is null)
             {
@@ -31,7 +33,7 @@ namespace Cirkla_API.Controllers
 
             try
             {
-                Contract contract = await _borrowingService.AskForItem(contractDTOFromClient);
+                Contract contract = await _borrowingContractService.SendRequest(contractDTOFromClient);
                 // return CreatedAtAction("ViewRequestSummary", new { id = contract.Id }, contract);
                 return Ok(contract); // Returns 200 instead of 201 because NSwag
             }
@@ -48,7 +50,7 @@ namespace Cirkla_API.Controllers
             Contract contract = new();
             try
             {
-                contract = await _borrowingService.ViewRequestSummary(id);
+                contract = await _borrowingContractService.ViewRequestSummary(id);
             }
             catch(Exception ex)
             {
@@ -64,7 +66,7 @@ namespace Cirkla_API.Controllers
         {
             try
             {
-                Contract contract = await _borrowingService.RespondToRequest(id, contractReplyDTO);
+                Contract contract = await _borrowingContractService.RespondToRequest(id, contractReplyDTO);
                 return Ok(contract);
             }
             catch(Exception ex)

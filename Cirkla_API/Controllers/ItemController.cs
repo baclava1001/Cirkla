@@ -20,35 +20,35 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Item>> CreateItem(Item item)
+        public async Task<ActionResult<Item>> Create(Item item)
         {
             if (item is null)
             {
                 return BadRequest();
             }
-            await _itemService.CreateItem(item);
+            await _itemService.Create(item);
             // TODO: Return CreatedAtAction method instead with 201 status code
             return Ok(item);
         }
 
         [HttpGet("ByUserId")]
-        public async Task<ActionResult<IEnumerable<Item>>> ListAllItems(string ownerId)
+        public async Task<ActionResult<IEnumerable<Item>>> GetAllItemsForUser(string ownerId)
         {
-            IEnumerable<Item> items = await _itemService.ListAllItems(ownerId);
+            IEnumerable<Item> items = await _itemService.GetAllItemsForUser(ownerId);
             return Ok(items);
         }
 
         [HttpGet("All")]
-        public async Task<ActionResult<IEnumerable<Item>>> ListAllItems()
+        public async Task<ActionResult<IEnumerable<Item>>> GetAll()
         {
-            IEnumerable<Item> items = await _itemService.ListAllItems();
+            IEnumerable<Item> items = await _itemService.GetAll();
             return Ok(items);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Item>> GetItemById(int id)
+        public async Task<ActionResult<Item>> Get(int id)
         {
-            Item item = await _itemService.GetItem(id);
+            Item item = await _itemService.GetById(id);
 
             if (item is null)
             {
@@ -59,11 +59,11 @@ namespace Cirkla_API.Controllers
 
         // TODO: Fix always returns success code even when operation not successful
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItem(int id, Item item)
+        public async Task<IActionResult> Update(int id, Item item)
         {
             try
             {
-                await _itemService.UpdateItem(id, item);
+                await _itemService.Update(id, item);
                 Response.Headers.Append("Updated-Item-Id", item.Id.ToString());
                 return NoContent();
             }
@@ -75,9 +75,9 @@ namespace Cirkla_API.Controllers
 
         // TODO: Fix always returns success code even when Item does not exist
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (await _itemService.DeleteItem(id) == false)
+            if (await _itemService.Delete(id) == false)
             {
                 return BadRequest();
             }

@@ -5,9 +5,9 @@ namespace Cirkla_API.Services
     public interface IUserService
     {
         Task<User> Create(User user);
-        Task<IEnumerable<User>> ListAllUsers();
-        Task<User> GetUser(string id);
-        Task<bool> DeleteUser(string id);
-        Task<User> UpdateUser(string id, User user);
+        Task<IEnumerable<User>> GetAll();
+        Task<User> GetById(string id);
+        Task<bool> Delete(string id);
+        Task<User> Update(string id, User user);
     }
 }

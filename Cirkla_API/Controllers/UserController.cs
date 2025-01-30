@@ -18,19 +18,19 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> AddUserAsync(User user)
+        public async Task<ActionResult<User>> Create(User user)
         {
             _logger.LogInformation("Adding user.");
             if (user is null)
             {
                 return BadRequest();
             }
-            await _userRepository.Add(user);
+            await _userRepository.Create(user);
             return Ok(user);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync()
+        public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
             _logger.LogInformation("Listing all users.");
             IEnumerable<User> userList = await _userRepository.GetAll();
@@ -44,7 +44,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserByIdAsync(string id)
+        public async Task<ActionResult<User>> GetById(string id)
         {
             _logger.LogInformation("Retrieving user by id.");
             User user = await _userRepository.Get(id);
@@ -58,7 +58,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserAsync(string id, User user)
+        public async Task<IActionResult> Update(string id, User user)
         {
             _logger.LogInformation("Updating user info by id.");
             if (user is null || id != user.Id)
@@ -73,7 +73,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting user by id.");
             User user = await _userRepository.Get(id);
@@ -83,7 +83,7 @@ namespace Cirkla_API.Controllers
                 return BadRequest("Can not find user at this time.");
             }
 
-            await _userRepository.Remove(user);
+            await _userRepository.Delete(user);
             await _userRepository.SaveChanges();
             Response.Headers.Append("Removed-User-Id", user.Id);
             return NoContent();

@@ -22,10 +22,10 @@ namespace Cirkla_API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Create services to the container.
             // TODO: Try using Service decoration to contain services: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
 
-            // TODO: Add iLogger configuration
+            // TODO: Create iLogger configuration
 
             builder.Services.AddDbContext<AppDbContext>
                 (options => options.UseSqlServer(builder.Configuration
@@ -36,7 +36,7 @@ namespace Cirkla_API
                 .AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IProfileService, ProfileService>();
+            // builder.Services.AddScoped<IProfileService, ProfileService>();
 
             builder.Services.AddScoped<IItemRepository, ItemRepository>();
             builder.Services.AddScoped<IItemService, ItemService>();
@@ -45,7 +45,7 @@ namespace Cirkla_API
             builder.Services.AddScoped<IItemPictureService, ItemPictureService>();
 
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
-            builder.Services.AddScoped<IBorrowingService, BorrowingService>();
+            builder.Services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
             builder.Services.AddCors(options =>
             {

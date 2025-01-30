@@ -13,13 +13,13 @@ namespace Cirkla_DAL.Repositories.Contracts
         }
 
 
-        public async Task<Contract> Add(Contract contract)
+        public async Task<Contract> Create(Contract contract)
         {
             await _context.AddAsync(contract);
             return contract;
         }
 
-        public async Task<IEnumerable<Contract>> GetAllContracts()
+        public async Task<IEnumerable<Contract>> GetAll()
         {
             return await _context.Contracts
                 .Include(c => c.Item)
@@ -94,7 +94,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .ToListAsync();
         }
 
-        public async Task<Contract> GetContract(int id)
+        public async Task<Contract> GetById(int id)
         {
             return _context.Contracts
                 .Include(c => c.Item)
@@ -104,7 +104,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .FirstOrDefault(c => c.Id == id);
         }
 
-        public async Task<Contract> Remove(Contract contract)
+        public async Task<Contract> Delete(Contract contract)
         {
             _context.Remove(contract);
             return await Task.FromResult(contract);

@@ -4,10 +4,10 @@ namespace Cirkla_API.Services
 {
     public interface IItemPictureService
     {
-        Task<bool> AddItemPictureAsync(ItemPicture itemPicture);
-        Task<IEnumerable<ItemPicture>> ListItemPicturesAsync(int itemId);
-        Task<ItemPicture> FindItemPictureByIdAsync(int id);
+        Task<bool> Create(ItemPicture itemPicture);
+        Task<IEnumerable<ItemPicture>> GetAllPicturesForItem(int itemId);
+        Task<ItemPicture> GetById(int id);
         Task<bool> DeleteItemPicture(int id);
-        Task<bool> ChangeItemPicture(int id, ItemPicture itemPicture);
+        Task<bool> Update(int id, ItemPicture itemPicture);
     }
 }

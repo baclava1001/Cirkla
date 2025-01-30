@@ -12,44 +12,48 @@ namespace Cirkla_API.Services
             _itemPictureRepository = itemPictureRepository;
         }
 
-        public async Task<bool> AddItemPictureAsync(ItemPicture itemPicture)
+
+        public async Task<bool> Create(ItemPicture itemPicture)
         {
             if (itemPicture is null)
             {
                 return false;
             }
-            await _itemPictureRepository.AddAsync(itemPicture);
-            await _itemPictureRepository.SaveChangesAsync();
+            await _itemPictureRepository.Create(itemPicture);
+            await _itemPictureRepository.SaveChanges();
             return true;
         }
 
-        public async Task<bool> ChangeItemPicture(int id, ItemPicture itemPicture)
+
+        public async Task<bool> Update(int id, ItemPicture itemPicture)
         {
             if (itemPicture is null || id != itemPicture.Id)
             {
                 return false;
             }
             await _itemPictureRepository.Update(itemPicture);
-            await _itemPictureRepository.SaveChangesAsync();
+            await _itemPictureRepository.SaveChanges();
             return true;
         }
 
+
         public async Task<bool> DeleteItemPicture(int id)
         {
-            ItemPicture itemPicture = await _itemPictureRepository.GetByIdAsync(id);
+            ItemPicture itemPicture = await _itemPictureRepository.GetById(id);
 
             if (itemPicture is null)
             {
                 // return NotFound("Can not find picture at this time.");
             }
-            await _itemPictureRepository.Remove(itemPicture);
-            await _itemPictureRepository.SaveChangesAsync();
+            await _itemPictureRepository.Delete(itemPicture);
+            await _itemPictureRepository.SaveChanges();
             return true;
         }
 
-        public async Task<ItemPicture> FindItemPictureByIdAsync(int id)
+
+        public async Task<ItemPicture> GetById(int id)
         {
-            ItemPicture itemPicture = await _itemPictureRepository.GetByIdAsync(id);
+            ItemPicture itemPicture = await _itemPictureRepository.GetById(id);
 
             if (itemPicture is null)
             {
@@ -58,10 +62,11 @@ namespace Cirkla_API.Services
             return itemPicture;
         }
 
+
         // Gets all images belonging to a specific item
-        public async Task<IEnumerable<ItemPicture>> ListItemPicturesAsync(int itemId)
+        public async Task<IEnumerable<ItemPicture>> GetAllPicturesForItem(int itemId)
         {
-            IEnumerable<ItemPicture> itemPictureList = await _itemPictureRepository.GetAllAsync(itemId);
+            IEnumerable<ItemPicture> itemPictureList = await _itemPictureRepository.GetAll(itemId);
 
             if (!itemPictureList.Any())
             {

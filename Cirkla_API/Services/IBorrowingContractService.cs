@@ -4,9 +4,9 @@ using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services
 {
-    public interface IBorrowingService
+    public interface IBorrowingContractService
     {
-        Task<Contract> AskForItem(ContractCreateDTO contractCreateDTO);
+        Task<Contract> SendRequest(ContractCreateDTO contractCreateDTO);
         Task<Contract> ViewRequestSummary(int id);
         Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId);
         Task<IEnumerable<Contract>> GetMyPendingRequests(string userId);

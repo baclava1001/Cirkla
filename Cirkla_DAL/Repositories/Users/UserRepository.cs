@@ -5,7 +5,7 @@ namespace Cirkla_DAL.Repositories.Users
 {
     public class UserRepository : IUserRepository
     {
-        // TODO: Add transactions?
+        // TODO: Create transactions?
         private readonly AppDbContext _context;
 
         public UserRepository(AppDbContext context)
@@ -13,7 +13,7 @@ namespace Cirkla_DAL.Repositories.Users
             _context = context;
         }
 
-        public async Task<User> Add(User user)
+        public async Task<User> Create(User user)
         {
             await _context.AddAsync(user);
             return user;
@@ -32,7 +32,7 @@ namespace Cirkla_DAL.Repositories.Users
                 .FindAsync(id);
         }
 
-        public async Task<User> Remove(User user)
+        public async Task<User> Delete(User user)
         {
             _context.Users.Remove(user);
             return user;
