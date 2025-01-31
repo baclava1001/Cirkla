@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cirkla_DAL.Constants
+namespace Cirkla_API.Common.Constants
 {
     public static class ApiRoles
     {

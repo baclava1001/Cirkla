@@ -1,4 +1,4 @@
-﻿namespace Cirkla_API.Constants
+﻿namespace Cirkla_API.Common.Constants
 {
     public static class CustomClaimTypes
     {
