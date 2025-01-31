@@ -1,4 +1,5 @@
-﻿using Cirkla_API.Services;
+﻿using Cirkla_API.Helpers;
+using Cirkla_API.Services;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,6 @@ namespace Cirkla_API.Controllers
     public class ItemPictureController : ControllerBase
     {
         private readonly IItemPictureService _itemPictureService;
-        // TODO: Plugga på om ILogger
         private readonly ILogger<ItemPictureController> _logger;
 
         public ItemPictureController(IItemPictureService itemPictureService, ILogger<ItemPictureController> logger)
@@ -18,57 +18,47 @@ namespace Cirkla_API.Controllers
             _logger = logger;
         }
 
-        // TODO: Null-checks and other error-handling
 
         [HttpPost]
-        public async Task<ActionResult<ItemPicture>> Create(ItemPicture itemPicture)
+        public async Task<IActionResult> Create(ItemPicture itemPicture)
         {
-            if (await _itemPictureService.Create(itemPicture) == false)
-            {
-                return BadRequest();
-            }
-            // TODO: Return Created method instead
-            return Ok(itemPicture);
+            _logger.LogInformation("Creating new item picture");
+            var result = await _itemPictureService.Create(itemPicture);
+            return result.ToHttpResponse();
         }
 
         // Gets all images belonging to a specific item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemPicture>>> GetAllPicturesForItem(int itemId)
+        public async Task<IActionResult> GetAllPicturesForItem(int itemId)
         {
-            IEnumerable<ItemPicture> itemPictures = await _itemPictureService.GetAllPicturesForItem(itemId);
-            // TODO: Ersätt med mappad DTO
-            return Ok(itemPictures);
+            _logger.LogInformation("Getting all item pictures for item with ID {ItemId}", itemId);
+            var result = await _itemPictureService.GetAllPicturesForItem(itemId);
+            return result.ToHttpResponse();
         }
 
         // Gets a specific image
         [HttpGet("{id}")]
-        public async Task<ActionResult<ItemPicture>> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            ItemPicture itemPicture = await _itemPictureService.GetById(id);
-            // TODO: Ersätt med mappad DTO
-            return Ok(itemPicture);
+            _logger.LogInformation("Getting item picture with ID {Id}", id);
+            var result = await _itemPictureService.GetById(id);
+            return result.ToHttpResponse();
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ItemPicture itemPicture)
         {
-            if (await _itemPictureService.Update(id, itemPicture) == false)
-            {
-                return BadRequest();
-            }
-            Response.Headers.Append("Updated-ItemPicture-Id", itemPicture.Id.ToString());
-            return NoContent();
+            _logger.LogInformation("Updating item picture with ID {Id}", id);
+            var result = await _itemPictureService.Update(id, itemPicture);
+            return result.ToHttpResponse();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _itemPictureService.DeleteItemPicture(id) == false)
-            {
-                return BadRequest();
-            }
-            Response.Headers.Append("Removed-ItemPicture-Id", id.ToString());
-            return NoContent();
+            _logger.LogInformation("Deleting item picture with ID {Id}", id);
+            var result = await _itemPictureService.DeleteItemPicture(id);
+            return result.ToHttpResponse();
         }
     }
 }
