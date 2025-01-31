@@ -1,13 +1,14 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Common;
+using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services
 {
     public interface IUserService
     {
-        Task<User> Create(User user);
-        Task<IEnumerable<User>> GetAll();
-        Task<User> GetById(string id);
-        Task<bool> Delete(string id);
-        Task<User> Update(string id, User user);
+        Task<ServiceResult<User>> Create(User user);
+        Task<ServiceResult<IEnumerable<User>>> GetAll();
+        Task<ServiceResult<User>> GetById(string id);
+        Task<ServiceResult<User>> Delete(string id);
+        Task<ServiceResult<User>> Update(string id, User user);
     }
 }

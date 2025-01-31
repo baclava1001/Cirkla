@@ -1,4 +1,6 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Helpers;
+using Cirkla_API.Services;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,85 +10,53 @@ namespace Cirkla_API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            _userRepository = userRepository;
+            _userService = userService;
             _logger = logger;
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Create(User user)
+        public async Task<IActionResult> Create(User user)
         {
             _logger.LogInformation("Adding user.");
-            if (user is null)
-            {
-                return BadRequest();
-            }
-            await _userRepository.Create(user);
-            return Ok(user);
+            var result = await _userService.Create(user);
+            return result.ToHttpResponse();
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             _logger.LogInformation("Listing all users.");
-            IEnumerable<User> userList = await _userRepository.GetAll();
-
-            if (!userList.Any())
-            {
-                return NotFound("No user registered.");
-            }
-            // TODO: Ersätt med mappad DTO
-            return Ok(userList);
+            var result = await _userService.GetAll();
+            return result.ToHttpResponse();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
             _logger.LogInformation("Retrieving user by id.");
-            User user = await _userRepository.Get(id);
-
-            if (user is null)
-            {
-                return NotFound("Can not find user at this time.");
-            }
-            // TODO: Ersätt med mappad DTO
-            return Ok(user);
+            var result = await _userService.GetById(id);
+            return result.ToHttpResponse();
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, User user)
         {
             _logger.LogInformation("Updating user info by id.");
-            if (user is null || id != user.Id)
-            {
-                return BadRequest("Can not update information.");
-            }
-
-            await _userRepository.Update(user);
-            await _userRepository.SaveChanges();
-            Response.Headers.Append("Updated-User-Id", user.Id);
-            return NoContent();
+            var result = await _userService.Update(id, user);
+            return result.ToHttpResponse();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting user by id.");
-            User user = await _userRepository.Get(id);
-
-            if (user is null)
-            {
-                return BadRequest("Can not find user at this time.");
-            }
-
-            await _userRepository.Delete(user);
-            await _userRepository.SaveChanges();
-            Response.Headers.Append("Removed-User-Id", user.Id);
-            return NoContent();
+            var result = await _userService.Delete(id);
+            return result.ToHttpResponse();
         }
     }
 }

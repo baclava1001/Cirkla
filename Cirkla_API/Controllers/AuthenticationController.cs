@@ -1,16 +1,15 @@
-﻿using Cirkla_DAL.Constants;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using Cirkla_API.Constants;
 
 using Cirkla_DAL.Models;
 using Mapping.DTOs.Users;
 using Mapping.Mappers;
+using Cirkla_API.Common.Constants;
 
 namespace Cirkla_API.Controllers
 {

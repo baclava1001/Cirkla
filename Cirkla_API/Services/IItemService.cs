@@ -1,14 +1,15 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Common;
+using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services
 {
     public interface IItemService
     {
-        Task<Item> Create(Item item);
-        Task<IEnumerable<Item>> GetAll();
-        Task<IEnumerable<Item>> GetAllItemsForUser(string ownerId);
-        Task<Item> GetById(int id);
-        Task<bool> Delete(int id);
-        Task<Item> Update(int id, Item item);
+        Task<ServiceResult<Item>> Create(Item item);
+        Task<ServiceResult<IEnumerable<Item>>> GetAll();
+        Task<ServiceResult<IEnumerable<Item>>> GetAllItemsForUser(string ownerId);
+        Task<ServiceResult<Item>> GetById(int id);
+        Task<ServiceResult<Item>> Delete(int id);
+        Task<ServiceResult<Item>> Update(int id, Item item);
     }
 }

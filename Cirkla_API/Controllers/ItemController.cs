@@ -1,4 +1,5 @@
-﻿using Cirkla_API.Services;
+﻿using Cirkla_API.Helpers;
+using Cirkla_API.Services;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,69 +21,56 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Item>> Create(Item item)
+        public async Task<IActionResult> Create(Item item)
         {
-            if (item is null)
-            {
-                return BadRequest();
-            }
-            await _itemService.Create(item);
-            // TODO: Return CreatedAtAction method instead with 201 status code
-            return Ok(item);
+            var result = await _itemService.Create(item);
+            return result.ToHttpResponse();
         }
+
 
         [HttpGet("ByUserId")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetAllItemsForUser(string ownerId)
+        public async Task<IActionResult> GetAllItemsForUser(string ownerId)
         {
-            IEnumerable<Item> items = await _itemService.GetAllItemsForUser(ownerId);
-            return Ok(items);
+            _logger.LogInformation("Listing all items belonging to user with ID {ownerId}", ownerId);
+            var result = await _itemService.GetAllItemsForUser(ownerId);
+            return result.ToHttpResponse();
         }
+
 
         [HttpGet("All")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            IEnumerable<Item> items = await _itemService.GetAll();
-            return Ok(items);
+            _logger.LogInformation("Listing all items");
+            var result = await _itemService.GetAll();
+            return result.ToHttpResponse();
         }
+
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Item>> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            Item item = await _itemService.GetById(id);
-
-            if (item is null)
-            {
-                return NotFound("No item found.");
-            }
-            return Ok(item);
+            _logger.LogInformation("Retrieving item with ID {ItemId}", id);
+            var result = await _itemService.GetById(id);
+            return result.ToHttpResponse();
         }
+
 
         // TODO: Fix always returns success code even when operation not successful
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Item item)
         {
-            try
-            {
-                await _itemService.Update(id, item);
-                Response.Headers.Append("Updated-Item-Id", item.Id.ToString());
-                return NoContent();
-            }
-            catch(Exception ex)
-            {
-                return BadRequest();
-            }
+            _logger.LogInformation("Updating item with ID {ItemId}", id);
+            var result = await _itemService.Update(id, item);
+            return result.ToHttpResponse();
         }
 
-        // TODO: Fix always returns success code even when Item does not exist
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _itemService.Delete(id) == false)
-            {
-                return BadRequest();
-            }
-            Response.Headers.Append("Removed-Item-Id", id.ToString());
-            return NoContent();
+            _logger.LogInformation("Deleting item with ID {ItemId}", id);
+            var result = await _itemService.Delete(id);
+            return result.ToHttpResponse();
         }
     }
 }

@@ -1,7 +1,6 @@
-using Mapping.Mappers;
+using Cirkla_API.Common.Constants;
 using Cirkla_API.Services;
 using Cirkla_DAL;
-using Cirkla_DAL.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.ItemPictures;
@@ -24,8 +23,6 @@ namespace Cirkla_API
 
             // Create services to the container.
             // TODO: Try using Service decoration to contain services: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
-
-            // TODO: Create iLogger configuration
 
             builder.Services.AddDbContext<AppDbContext>
                 (options => options.UseSqlServer(builder.Configuration
