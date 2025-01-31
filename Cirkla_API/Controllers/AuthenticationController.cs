@@ -33,7 +33,7 @@ namespace Cirkla_API.Controllers
             // TODO: Move logic to a separate service
             try
             {
-                User user = await Mapper.MapUserPostDtoToUser(userSignupDTO);
+                User user = await Mapper.MapToUser(userSignupDTO);
                 // Password is hashed and added to the user object below
                 var result = await _userManager.CreateAsync(user, userSignupDTO.Password);
 

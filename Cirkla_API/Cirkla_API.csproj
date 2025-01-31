@@ -19,6 +19,8 @@
     <Compile Remove="Controllers\ProfileController.cs" />
     <Compile Remove="Services\IProfileService.cs" />
     <Compile Remove="Services\ProfileService.cs" />
+    <Compile Remove="Services\Users\IProfileService.cs" />
+    <Compile Remove="Services\Users\ProfileService.cs" />
   </ItemGroup>
 
   <ItemGroup>

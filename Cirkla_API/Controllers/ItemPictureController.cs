@@ -1,5 +1,5 @@
 ﻿using Cirkla_API.Helpers;
-using Cirkla_API.Services;
+using Cirkla_API.Services.ItemPictures;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 

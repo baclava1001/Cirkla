@@ -1,4 +1,6 @@
-﻿using Cirkla_API.Services;
+﻿using Cirkla_API.Helpers;
+using Cirkla_API.Services.BorrowingContracts;
+using Cirkla_API.Services.Inbox;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,91 +13,59 @@ namespace Cirkla_API.Controllers
     ///<summary>Gets the requests and contracts for the user's inbox.</summary>
     public class InboxController : ControllerBase
     {
-        private readonly IBorrowingContractService _borrowingContractService;
+        private readonly IInboxService _inboxService;
+        private readonly ILogger _logger;
 
-        public InboxController(IBorrowingContractService borrowingContractService)
+        public InboxController(IInboxService inboxService, ILogger logger)
         {
-            _borrowingContractService = borrowingContractService;
+            _inboxService = inboxService;
+            _logger = logger;
         }
+
 
         // TODO: Return thin DTO:s with bare minimum - each request/contract will be accessible from their details page (ViewRequestSummary)
         [HttpGet("RequestsToInbox")]
-        public async Task<ActionResult<IEnumerable<Contract>>> IncomingRequestsToInbox(string userId)
+        public async Task<IActionResult> IncomingRequestsToInbox(string userId)
         {
-            IEnumerable<Contract> contracts = null;
-            try
-            {
-                contracts = await _borrowingContractService.GetIncomingRequestsForInbox(userId);
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contracts);
+            _logger.LogInformation("Getting requests to user for inbox");
+            var result = await _inboxService.GetIncomingRequestsForInbox(userId);
+            return result.ToHttpResponse();
         }
 
 
         [HttpGet("MyPendingRequests")]
-        public async Task<ActionResult<IEnumerable<Contract>>> MyPendingRequests(string userId)
+        public async Task<IActionResult> MyPendingRequests(string userId)
         {
-            IEnumerable<Contract> contracts = null;
-            try
-            {
-                contracts = await _borrowingContractService.GetMyPendingRequests(userId);
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contracts);
+            _logger.LogInformation("Getting user's pending requests");
+            var result = await _inboxService.GetIncomingRequestsForInbox(userId);
+            return result.ToHttpResponse();
         }
 
 
         [HttpGet("MyAnsweredRequests")]
-        public async Task<ActionResult<IEnumerable<Contract>>> MyAnsweredRequests(string userId)
+        public async Task<IActionResult> MyAnsweredRequests(string userId)
         {
-            IEnumerable<Contract> contracts = null;
-            try
-            {
-                contracts = await _borrowingContractService.GetMyAnsweredRequests(userId);
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contracts);
+            _logger.LogInformation("Getting user's answered requests");
+            var result = await _inboxService.GetIncomingRequestsForInbox(userId);
+            return result.ToHttpResponse();
         }
 
 
         [HttpGet("MyRequestHistory")]
-        public async Task<ActionResult<IEnumerable<Contract>>> MyRequestHistory(string userId)
+        public async Task<IActionResult> MyRequestHistory(string userId)
         {
-            IEnumerable<Contract> contracts = null;
-            try
-            {
-                contracts = await _borrowingContractService.GetMyRequestHistory(userId);
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contracts);
+            _logger.LogInformation("Getting user's request history");
+            var result = await _inboxService.GetIncomingRequestsForInbox(userId);
+            return result.ToHttpResponse();
         }
 
 
         [HttpGet("MyContractHistory")]
-        public async Task<ActionResult<IEnumerable<Contract>>> MyContractHistory(string userId)
+        public async Task<IActionResult> MyContractHistory(string userId)
         {
-            IEnumerable<Contract> contracts = null;
-            try
-            {
-                contracts = await _borrowingContractService.GetMyContractHistory(userId);
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contracts);
+            _logger.LogInformation("Getting user's finalizied borrowing contract history");
+            var result = await _inboxService.GetIncomingRequestsForInbox(userId);
+            return result.ToHttpResponse();
         }
     }
 }

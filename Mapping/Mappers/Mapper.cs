@@ -4,13 +4,10 @@ using Mapping.DTOs.Contracts;
 
 namespace Mapping.Mappers
 {
-
-    // TODO: Make mapper static, not a service - and send in whole objects as arguments
-    // TODO: Fix user inheriting IdentityUser
-    // TODO: Separate mappers for each Model
+    // TODO: Make separate mappers for each Model
     public static class Mapper
     {
-        public static async Task<User> MapUserPostDtoToUser(UserSignupDTO userSignupDto)
+        public static async Task<User> MapToUser(UserSignupDTO userSignupDto)
         {
             return new User
             {
@@ -26,7 +23,7 @@ namespace Mapping.Mappers
         }
 
 
-        public static async Task<Contract> MapContractCreateDtoToContract(ContractCreateDTO contractCreateDTO)
+        public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO)
         {
             return new Contract
             {
@@ -37,7 +34,7 @@ namespace Mapping.Mappers
             };
         }
 
-        public static async Task<Contract> MapContractReplyDtoToContract(ContractReplyDTO contractReplyDTO)
+        public static async Task<Contract> MapToContract(ContractReplyDTO contractReplyDTO)
         {
             return new Contract
             {

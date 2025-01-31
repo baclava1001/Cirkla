@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Mapping.DTOs.Contracts;
-using Cirkla_API.Services;
 using NuGet.Protocol;
 using Azure;
+using Cirkla_API.Helpers;
 using Cirkla_DAL.Models;
+using Cirkla_API.Services.BorrowingContracts;
 
 namespace Cirkla_API.Controllers
 {
@@ -15,64 +16,41 @@ namespace Cirkla_API.Controllers
     public class BorrowingContractController : ControllerBase
     {
         private readonly IBorrowingContractService _borrowingContractService;
+        private readonly ILogger _logger;
 
-        public BorrowingContractController(IBorrowingContractService borrowingContractService)
+        public BorrowingContractController(IBorrowingContractService borrowingContractService, ILogger logger)
         {
             _borrowingContractService = borrowingContractService;
+            _logger = logger;
         }
 
 
         // Ask to borrow = create contract for item owner to review
         [HttpPost("SendRequest")]
-        public async Task<ActionResult<Contract>> SendRequest(ContractCreateDTO contractDTOFromClient)
+        public async Task<IActionResult> SendRequest(ContractCreateDTO contractDTOFromClient)
         {
-            if(contractDTOFromClient is null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                Contract contract = await _borrowingContractService.SendRequest(contractDTOFromClient);
-                // return CreatedAtAction("ViewRequestSummary", new { id = contract.Id }, contract);
-                return Ok(contract); // Returns 200 instead of 201 because NSwag
-            }
-            catch(Exception ex)
-            {
-                return BadRequest();
-            }
+            _logger.LogInformation("Sending request to borrow item (creating new contract)");
+            var result = await _borrowingContractService.SendRequest(contractDTOFromClient);
+            return result.ToHttpResponse();
         }
 
 
         [HttpGet("ViewRequestSummary{id}")]
-        public async Task<ActionResult<Contract>> ViewRequestSummary(int id)
+        public async Task<IActionResult> ViewRequestSummary(int id)
         {
-            Contract contract = new();
-            try
-            {
-                contract = await _borrowingContractService.ViewRequestSummary(id);
-            }
-            catch(Exception ex)
-            {
-                ex.Message.ToString();
-            }
-            return Ok(contract);
+            _logger.LogInformation("Fetching request summary");
+            var result = await _borrowingContractService.ViewRequestSummary(id);
+            return result.ToHttpResponse();
         }
 
 
-        // TODO: Refactor to only patch a date
+        // TODO: Refactor to only patch a date instead of put whole object?
         [HttpPut("RespondToRequest{id}")]
-        public async Task<ActionResult<Contract>> RespondToRequest(int id, ContractReplyDTO contractReplyDTO)
+        public async Task<IActionResult> RespondToRequest(int id, ContractReplyDTO contractReplyDTO)
         {
-            try
-            {
-                Contract contract = await _borrowingContractService.RespondToRequest(id, contractReplyDTO);
-                return Ok(contract);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest($"Failed to update contract: {ex.Message.ToString()}");
-            }
+            _logger.LogInformation("Responding to request");
+            var result = await _borrowingContractService.RespondToRequest(id, contractReplyDTO);
+            return result.ToHttpResponse();
         }
     }
 }

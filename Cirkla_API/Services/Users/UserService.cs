@@ -4,7 +4,7 @@ using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_API.Services
+namespace Cirkla_API.Services.Users
 {
     /// <summary>
     /// Simple CRUD-service for internal use in other classes
@@ -22,7 +22,8 @@ namespace Cirkla_API.Services
 
         public async Task<ServiceResult<User>> Create(User user)
         {
-            if (user == null) {
+            if (user == null)
+            {
                 _logger.LogWarning("Attempted creating a user with null value");
                 return ServiceResult<User>.Fail("User is null", ErrorType.ValidationError);
             }
@@ -33,12 +34,12 @@ namespace Cirkla_API.Services
                 await _userRepository.SaveChanges();
                 return ServiceResult<User>.Success(createdUser);
             }
-            catch(DbUpdateException ex)
+            catch (DbUpdateException ex)
             {
                 _logger.LogError(ex, "Failed writing new user to database");
                 return ServiceResult<User>.Fail("Error saving new user", ErrorType.InternalError);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error creating new user");
                 return ServiceResult<User>.Fail("Internal server error", ErrorType.InternalError);
@@ -62,7 +63,7 @@ namespace Cirkla_API.Services
                 {
                     return ServiceResult<User>.Fail("User not found", ErrorType.NotFound);
                 }
-                    
+
                 await _userRepository.Delete(user);
                 await _userRepository.SaveChanges();
 
@@ -104,12 +105,12 @@ namespace Cirkla_API.Services
             try
             {
                 var users = await _userRepository.GetAll();
+                if (users == null)
+                {
+                    _logger.LogWarning("No users found");
+                    return ServiceResult<IEnumerable<User>>.Fail("No users found", ErrorType.NotFound);
+                }
                 return ServiceResult<IEnumerable<User>>.Success(users);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error getting all users");
-                return ServiceResult<IEnumerable<User>>.Fail("Internal error, could not get users", ErrorType.InternalError);
             }
             catch (Exception ex)
             {
@@ -120,7 +121,7 @@ namespace Cirkla_API.Services
 
         public async Task<ServiceResult<User>> Update(string id, User user)
         {
-            if(string.IsNullOrEmpty(id) || user.Id != id)
+            if (string.IsNullOrEmpty(id) || user.Id != id)
             {
                 _logger.LogWarning("User with ID {UserId} not found", id);
                 return ServiceResult<User>.Fail("User not found", ErrorType.ValidationError);
