@@ -7,6 +7,8 @@ namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    ///<summary>Gets the requests and contracts for the user's inbox.</summary>
     public class InboxController : ControllerBase
     {
         private readonly IBorrowingContractService _borrowingContractService;

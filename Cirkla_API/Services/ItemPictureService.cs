@@ -1,78 +1,146 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Common;
+using Cirkla_API.Common.Constants;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.ItemPictures;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services
 {
     public class ItemPictureService : IItemPictureService
     {
-        IItemPictureRepository _itemPictureRepository;
+        private readonly IItemPictureRepository _itemPictureRepository;
+        private readonly ILogger<ItemPictureService> _logger;
 
-        public ItemPictureService(IItemPictureRepository itemPictureRepository)
+        public ItemPictureService(IItemPictureRepository itemPictureRepository, ILogger<ItemPictureService> logger)
         {
             _itemPictureRepository = itemPictureRepository;
+            _logger = logger;
         }
 
 
-        public async Task<bool> Create(ItemPicture itemPicture)
+        public async Task<ServiceResult<ItemPicture>> Create(ItemPicture itemPicture)
         {
             if (itemPicture is null)
             {
-                return false;
+                return ServiceResult<ItemPicture>.Fail("Item picture is null", ErrorType.NotFound);
             }
-            await _itemPictureRepository.Create(itemPicture);
-            await _itemPictureRepository.SaveChanges();
-            return true;
+
+            try
+            {
+                ItemPicture createdItemPicture = await _itemPictureRepository.Create(itemPicture);
+                await _itemPictureRepository.SaveChanges();
+                return ServiceResult<ItemPicture>.Success(createdItemPicture);
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Failed writing new item picture to database");
+                return ServiceResult<ItemPicture>.Fail("Error saving new item picture", ErrorType.InternalError);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error creating new item picture");
+                return ServiceResult<ItemPicture>.Fail("Internal server error", ErrorType.InternalError);
+            }
         }
 
 
-        public async Task<bool> Update(int id, ItemPicture itemPicture)
+        public async Task<ServiceResult<ItemPicture>> Update(int id, ItemPicture itemPicture)
         {
             if (itemPicture is null || id != itemPicture.Id)
             {
-                return false;
+                _logger.LogWarning("Attempted updating an item picture with null value or ID mismatch");
+                return ServiceResult<ItemPicture>.Fail("Item picture is not valid", ErrorType.ValidationError);
             }
-            await _itemPictureRepository.Update(itemPicture);
-            await _itemPictureRepository.SaveChanges();
-            return true;
+
+            try
+            {
+                ItemPicture updatedItemPicture = await _itemPictureRepository.Update(itemPicture);
+                await _itemPictureRepository.SaveChanges();
+                return ServiceResult<ItemPicture>.Success(updatedItemPicture);
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Failed writing updated item picture with {id} to database", id);
+                return ServiceResult<ItemPicture>.Fail("Error saving updated item picture", ErrorType.InternalError);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error updating item picture with id {id}", id);
+                return ServiceResult<ItemPicture>.Fail("Internal server error", ErrorType.InternalError);
+            }
         }
 
 
-        public async Task<bool> DeleteItemPicture(int id)
+        public async Task<ServiceResult<ItemPicture>> DeleteItemPicture(int id)
         {
             ItemPicture itemPicture = await _itemPictureRepository.GetById(id);
 
             if (itemPicture is null)
             {
-                // return NotFound("Can not find picture at this time.");
+                _logger.LogWarning("Attempted to delete a non-existent item picture with ID {ItemId}", id);
+                return ServiceResult<ItemPicture>.Fail("Item picture not found", ErrorType.NotFound);
             }
-            await _itemPictureRepository.Delete(itemPicture);
-            await _itemPictureRepository.SaveChanges();
-            return true;
+
+            try
+            {
+                await _itemPictureRepository.Delete(itemPicture);
+                await _itemPictureRepository.SaveChanges();
+                return ServiceResult<ItemPicture>.Success(itemPicture);
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Failed deleting item picture with ID {ItemId} from database", id);
+                return ServiceResult<ItemPicture>.Fail("Error deleting item picture", ErrorType.InternalError);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error deleting item picture with ID {ItemId}", id);
+                return ServiceResult<ItemPicture>.Fail("Internal server error", ErrorType.InternalError);
+            }
         }
 
 
-        public async Task<ItemPicture> GetById(int id)
+        public async Task<ServiceResult<ItemPicture>> GetById(int id)
         {
-            ItemPicture itemPicture = await _itemPictureRepository.GetById(id);
-
-            if (itemPicture is null)
+            try
             {
-                //return NotFound("No picture found.");
+                ItemPicture itemPicture = await _itemPictureRepository.GetById(id);
+
+                if (itemPicture is null)
+                {
+                    _logger.LogWarning("Item picture with ID {ItemId} not found", id);
+                    return ServiceResult<ItemPicture>.Fail("Item picture not found", ErrorType.NotFound);
+                }
+                return ServiceResult<ItemPicture>.Success(itemPicture);
             }
-            return itemPicture;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error getting item picture with ID {ItemId}", id);
+                return ServiceResult<ItemPicture>.Fail("Internal server error", ErrorType.InternalError);
+            }
         }
 
 
         // Gets all images belonging to a specific item
-        public async Task<IEnumerable<ItemPicture>> GetAllPicturesForItem(int itemId)
+        public async Task<ServiceResult<IEnumerable<ItemPicture>>> GetAllPicturesForItem(int itemId)
         {
-            IEnumerable<ItemPicture> itemPictureList = await _itemPictureRepository.GetAll(itemId);
-
-            if (!itemPictureList.Any())
+            try
             {
-                // return NotFound("No picture found.");
+                IEnumerable<ItemPicture> itemPictureList = await _itemPictureRepository.GetAll(itemId);
+
+                if (!itemPictureList.Any())
+                {
+                    _logger.LogWarning("No item pictures found for item with ID {ItemId}", itemId);
+                    return ServiceResult<IEnumerable<ItemPicture>>.Fail("No item pictures found", ErrorType.NotFound);
+                }
+                return ServiceResult<IEnumerable<ItemPicture>>.Success(itemPictureList);
             }
-            return itemPictureList;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error getting item pictures for item with ID {ItemId}", itemId);
+                return ServiceResult<IEnumerable<ItemPicture>>.Fail("Internal server error", ErrorType.InternalError);
+            }
+
         }
     }
 }
