@@ -4,7 +4,7 @@ using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Items;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_API.Services
+namespace Cirkla_API.Services.Items
 {
     public class ItemService : IItemService
     {

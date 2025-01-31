@@ -1,5 +1,7 @@
 using Cirkla_API.Common.Constants;
-using Cirkla_API.Services;
+using Cirkla_API.Services.BorrowingContracts;
+using Cirkla_API.Services.ItemPictures;
+using Cirkla_API.Services.Items;
 using Cirkla_DAL;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
@@ -12,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using Cirkla_API.Services.Inbox;
 
 namespace Cirkla_API
 {
@@ -22,7 +25,7 @@ namespace Cirkla_API
             var builder = WebApplication.CreateBuilder(args);
 
             // Create services to the container.
-            // TODO: Try using Service decoration to contain services: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
+            // TODO: Try using Service decoration/Container to contain services: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
 
             builder.Services.AddDbContext<AppDbContext>
                 (options => options.UseSqlServer(builder.Configuration
@@ -33,7 +36,7 @@ namespace Cirkla_API
                 .AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            // builder.Services.AddScoped<IProfileService, ProfileService>();
+            // builder.Services.AddScoped<IProfileService, ProfileService>(); <= remove?
 
             builder.Services.AddScoped<IItemRepository, ItemRepository>();
             builder.Services.AddScoped<IItemService, ItemService>();
@@ -42,6 +45,7 @@ namespace Cirkla_API
             builder.Services.AddScoped<IItemPictureService, ItemPictureService>();
 
             builder.Services.AddScoped<IContractRepository, ContractRepository>();
+            builder.Services.AddScoped<IInboxService, InboxService>();
             builder.Services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
             builder.Services.AddCors(options =>

@@ -1,5 +1,5 @@
 ﻿using Cirkla_API.Helpers;
-using Cirkla_API.Services;
+using Cirkla_API.Services.Users;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Mvc;

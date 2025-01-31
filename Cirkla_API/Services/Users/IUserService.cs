@@ -1,7 +1,7 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
 
-namespace Cirkla_API.Services
+namespace Cirkla_API.Services.Users
 {
     public interface IUserService
     {

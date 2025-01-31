@@ -4,7 +4,7 @@ using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.ItemPictures;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cirkla_API.Services
+namespace Cirkla_API.Services.ItemPictures
 {
     public class ItemPictureService : IItemPictureService
     {
@@ -60,12 +60,12 @@ namespace Cirkla_API.Services
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, "Failed writing updated item picture with {id} to database", id);
+                _logger.LogError(ex, "Failed writing updated item picture with ID {Id} to database", id);
                 return ServiceResult<ItemPicture>.Fail("Error saving updated item picture", ErrorType.InternalError);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error updating item picture with id {id}", id);
+                _logger.LogError(ex, "Unexpected error updating item picture with ID {Id}", id);
                 return ServiceResult<ItemPicture>.Fail("Internal server error", ErrorType.InternalError);
             }
         }
