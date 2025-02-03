@@ -5,7 +5,6 @@ namespace Cirkla_DAL.Repositories.Users
 {
     public class UserRepository : IUserRepository
     {
-        // TODO: Create transactions?
         private readonly AppDbContext _context;
 
         public UserRepository(AppDbContext context)
