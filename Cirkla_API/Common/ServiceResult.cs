@@ -6,13 +6,13 @@ namespace Cirkla_API.Common;
 public class ServiceResult<T>
 {
     public bool IsError { get; set; }
-    public ErrorType? Error { get; set; }
+    public ErrorType Error { get; set; }
     public string? ErrorMessage { get; set; }
     public T? Payload { get; set; }
 
     private ServiceResult(bool isError, ErrorType error, string? errorMessage, T? payload)
     {
-        IsError = false;
+        IsError = isError;
         Error = error;
         ErrorMessage = errorMessage;
         Payload = payload;

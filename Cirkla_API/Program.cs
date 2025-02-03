@@ -24,6 +24,7 @@ namespace Cirkla_API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Logging.AddConsole();
             // Create services to the container.
             // TODO: Try using Service decoration/Container to contain services: https://dev.to/giannoudis/service-registration-and-decoration-in-aspnet-core-379d
 

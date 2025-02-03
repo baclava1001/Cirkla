@@ -36,7 +36,7 @@
             {
                 contractReplyDTO.AcceptedByOwner = DateTime.Now;
             }
-            await _client.ApiBorrowingRespondToRequestAsync(Contract.Id, contractReplyDTO);
+            await _client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractReplyDTO);
         }
         catch (Exception ex)
         {

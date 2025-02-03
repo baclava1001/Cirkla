@@ -52,11 +52,11 @@ else
 
 
 @code {
-    private IQueryable<Contract>? IncomingRequests { get; set; }
+    private IQueryable<Contract>? IncomingRequests { get; set; } = null;
     private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
     private string? tempMessage;
     private string? messageClass;
-    private string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza, hardcoded.
+    private string tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is use 'Liza Minelli', hardcoded.
 
     // Declare eventcallback ("Walkie-talkie-channel")
     [Parameter]
@@ -95,7 +95,7 @@ else
             {
                 contractReplyDTO.AcceptedByOwner = DateTime.Now;
             }
-            await _client.ApiBorrowingRespondToRequestAsync(contract.Id, contractReplyDTO);
+            await _client.ApiBorrowingContractRespondToRequestAsync(contract.Id, contractReplyDTO);
 
             await GetAndFilterRequests();
 
@@ -110,10 +110,16 @@ else
     }
 
 
-    // TODO: Do this server side: Create an inbox controller with an endpoint that takes two inputs and returns the right requests/contracts to each inbox-component
     private async Task GetAndFilterRequests()
     {
-        var requestsFromAPI = await _client.ApiInboxRequestsToInboxAsync(tempUserId); // TODO: Send in logged in user's id.
+        var requestsFromAPI = await _client.ApiInboxRequestsToInboxAsync(tempUserId);
+        if (!requestsFromAPI.Any())
+        {
+            tempMessage = "No requests found";
+            messageClass = "text-warning";
+            return;
+        };
+
         // Notify parent with "Walkie talkie"
         OnNumberOfRequestsChanged.InvokeAsync(requestsFromAPI.Count());
         IncomingRequests = requestsFromAPI.AsQueryable();
@@ -124,6 +130,7 @@ else
     }
 
 
+    // Methods for pagination
     private async Task GoToPageAsync(int pageIndex)
     {
         await pagination.SetCurrentPageIndexAsync(pageIndex);
