@@ -15,9 +15,9 @@ namespace Cirkla_API.Services.BorrowingContracts
         private readonly IContractRepository _contractRepository;
         private readonly IItemRepository _itemRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ILogger _logger;
+        private readonly ILogger<BorrowingContractService> _logger;
 
-        public BorrowingContractService(IContractRepository contractRepository, IItemRepository itemRepository, IUserRepository userRepository, ILogger logger)
+        public BorrowingContractService(IContractRepository contractRepository, IItemRepository itemRepository, IUserRepository userRepository, ILogger<BorrowingContractService> logger)
         {
             _contractRepository = contractRepository;
             _itemRepository = itemRepository;

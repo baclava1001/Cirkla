@@ -12,13 +12,13 @@ namespace Cirkla_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    /// <summary>BorrowingContracts are how a borrower communicates with an owner of an item</summary>
+    /// <summary>BorrowingContracts are the mediators of communication between a borrower and the owner of an item</summary>
     public class BorrowingContractController : ControllerBase
     {
         private readonly IBorrowingContractService _borrowingContractService;
-        private readonly ILogger _logger;
+        private readonly ILogger<BorrowingContractController> _logger;
 
-        public BorrowingContractController(IBorrowingContractService borrowingContractService, ILogger logger)
+        public BorrowingContractController(IBorrowingContractService borrowingContractService, ILogger<BorrowingContractController> logger)
         {
             _borrowingContractService = borrowingContractService;
             _logger = logger;
@@ -27,6 +27,10 @@ namespace Cirkla_API.Controllers
 
         // Ask to borrow = create contract for item owner to review
         [HttpPost("SendRequest")]
+        [ProducesResponseType(typeof(Contract), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SendRequest(ContractCreateDTO contractDTOFromClient)
         {
             _logger.LogInformation("Sending request to borrow item (creating new contract)");
@@ -36,6 +40,10 @@ namespace Cirkla_API.Controllers
 
 
         [HttpGet("ViewRequestSummary{id}")]
+        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ViewRequestSummary(int id)
         {
             _logger.LogInformation("Fetching request summary");
@@ -46,6 +54,10 @@ namespace Cirkla_API.Controllers
 
         // TODO: Refactor to only patch a date instead of put whole object?
         [HttpPut("RespondToRequest{id}")]
+        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RespondToRequest(int id, ContractReplyDTO contractReplyDTO)
         {
             _logger.LogInformation("Responding to request");

@@ -10,7 +10,6 @@ namespace Cirkla_API.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
-        // TODO: Plugga på om ILogger
         private readonly ILogger<ItemController> _logger;
 
         public ItemController(IItemService itemService, ILogger<ItemController> logger)
@@ -21,6 +20,10 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost]
+        [ProducesResponseType(typeof(Item), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(Item item)
         {
             var result = await _itemService.Create(item);
@@ -29,6 +32,10 @@ namespace Cirkla_API.Controllers
 
 
         [HttpGet("ByUserId")]
+        [ProducesResponseType(typeof(IEnumerable<Item>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllItemsForUser(string ownerId)
         {
             _logger.LogInformation("Listing all items belonging to user with ID {ownerId}", ownerId);
@@ -38,6 +45,10 @@ namespace Cirkla_API.Controllers
 
 
         [HttpGet("All")]
+        [ProducesResponseType(typeof(IEnumerable<Item>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll()
         {
             _logger.LogInformation("Listing all items");
@@ -47,6 +58,10 @@ namespace Cirkla_API.Controllers
 
 
         [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(Item), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
             _logger.LogInformation("Retrieving item with ID {ItemId}", id);
@@ -55,8 +70,11 @@ namespace Cirkla_API.Controllers
         }
 
 
-        // TODO: Fix always returns success code even when operation not successful
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Item), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, Item item)
         {
             _logger.LogInformation("Updating item with ID {ItemId}", id);
@@ -66,6 +84,10 @@ namespace Cirkla_API.Controllers
 
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(Item), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
             _logger.LogInformation("Deleting item with ID {ItemId}", id);

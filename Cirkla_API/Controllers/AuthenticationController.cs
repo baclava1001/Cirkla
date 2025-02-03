@@ -19,17 +19,22 @@ namespace Cirkla_API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration)
+        private readonly ILogger<AuthenticationController> _logger;
+        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
 
         [HttpPost]
         [Route("Signup")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Signup(UserSignupDTO userSignupDTO)
         {
+            _logger.LogInformation("Signing up user");
             // TODO: Move logic to a separate service
             try
             {
@@ -50,6 +55,7 @@ namespace Cirkla_API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while signing up user with {Email}", userSignupDTO.Email);
                 return Problem("Something went wrong while signing up.", statusCode: 500);
             }
         }
@@ -57,8 +63,11 @@ namespace Cirkla_API.Controllers
 
         [HttpPost]
         [Route("Login")]
+        [ProducesResponseType(typeof(UserAuthResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserAuthResponseDTO>> Login(UserLoginDTO userLoginDTO)
         {
+            _logger.LogInformation("Logging in user with {Email}", userLoginDTO.Email);
             // TODO: Extract logic to separate service
             try
             {
@@ -67,6 +76,7 @@ namespace Cirkla_API.Controllers
 
                 if (user == null || !passwordValid)
                 {
+                    _logger.LogWarning("Failed login attempt for {Email}", userLoginDTO.Email);
                     return Unauthorized(userLoginDTO);
                 }
 
@@ -83,6 +93,7 @@ namespace Cirkla_API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while signing in user with {Email}", userLoginDTO.Email);
                 return Problem("Something went wrong while signing in.", statusCode: 500);
             }
         }
@@ -91,6 +102,7 @@ namespace Cirkla_API.Controllers
         // TODO: Move token logic to separate class
         private async Task<string> GenerateToken(User user)
         {
+            _logger.LogInformation("Generating access token for user with {Email}", user.Email);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
