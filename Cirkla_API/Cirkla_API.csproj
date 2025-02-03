@@ -48,6 +48,10 @@
     <ProjectReference Include="..\Mapping\Mapping.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Startup\" />
+  </ItemGroup>
+
 	<!--
 <Target Name="NSwag" AfterTargets="Build">
 		<Exec Command="$(NSwagExe) aspnetcore2openapi /assembly:$(TargetDir)Cirkla_API.dll /output:swagger.json" />
