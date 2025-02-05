@@ -3,25 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_DAL.Repositories.Contracts
 {
-    public class ContractRepository : IContractRepository
+    public class ContractRepository(AppDbContext context) : IContractRepository
     {
-        private readonly AppDbContext _context;
-
-        public ContractRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-
         public async Task<Contract> Create(Contract contract)
         {
-            await _context.AddAsync(contract);
+            await context.AddAsync(contract);
             return contract;
         }
 
         public async Task<IEnumerable<Contract>> GetAll()
         {
-            return await _context.Contracts
+            return await context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -31,7 +23,7 @@ namespace Cirkla_DAL.Repositories.Contracts
 
         public async Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId)
         {
-            return await _context.Contracts
+            return await context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -44,7 +36,7 @@ namespace Cirkla_DAL.Repositories.Contracts
 
         public async Task<IEnumerable<Contract>> GetUsersPendingRequests(string userId)
         {
-            return await _context.Contracts
+            return await context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -57,7 +49,7 @@ namespace Cirkla_DAL.Repositories.Contracts
 
         public async Task<IEnumerable<Contract>> GetUsersAnsweredRequests(string userId)
         {
-            return await _context.Contracts
+            return await context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -70,7 +62,7 @@ namespace Cirkla_DAL.Repositories.Contracts
 
         public async Task<IEnumerable<Contract>> GetUsersRequestHistory(string userId)
         {
-            return await _context.Contracts
+            return await context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -83,7 +75,7 @@ namespace Cirkla_DAL.Repositories.Contracts
 
         public async Task<IEnumerable<Contract>> GetUsersContractHistory(string userId)
         {
-            return await _context.Contracts
+            return await context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -94,9 +86,9 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .ToListAsync();
         }
 
-        public async Task<Contract> GetById(int id)
+        public async Task<Contract?> GetById(int id)
         {
-            return _context.Contracts
+            return context.Contracts
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
@@ -104,20 +96,20 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .FirstOrDefault(c => c.Id == id);
         }
 
-        public async Task<Contract> Delete(Contract contract)
+        public async Task<Contract?> Delete(Contract contract)
         {
-            _context.Remove(contract);
+            context.Remove(contract);
             return await Task.FromResult(contract);
         }
 
         public async Task SaveChanges()
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
-        public async Task<Contract> Update(Contract contract)
+        public async Task<Contract?> Update(Contract contract)
         {
-            _context.Update(contract);
+            context.Update(contract);
             return await Task.FromResult(contract);
         }
     }

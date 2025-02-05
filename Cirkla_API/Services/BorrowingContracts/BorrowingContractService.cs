@@ -1,11 +1,11 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Common;
+using Cirkla_API.Common.Constants;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
-using Mapping.Mappers;
 using Mapping.DTOs.Contracts;
-using Cirkla_API.Common;
-using Cirkla_API.Common.Constants;
+using Mapping.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.BorrowingContracts
@@ -29,10 +29,25 @@ namespace Cirkla_API.Services.BorrowingContracts
         // Sends a request to borrow an item, by creating a new contract.
         public async Task<ServiceResult<Contract>> SendRequest(ContractCreateDTO contractDTOFromClient)
         {
-            var contract = await Mapper.MapToContract(contractDTOFromClient);
-            contract.Item = await _itemRepository.Get(contractDTOFromClient.ItemId);
-            contract.Owner = await _userRepository.Get(contractDTOFromClient.OwnerId);
-            contract.Borrower = await _userRepository.Get(contractDTOFromClient.BorrowerId);
+            // TODO: Add validation check for Endtime > StartTime
+            
+            if (contractDTOFromClient is null)
+            {
+                _logger.LogWarning("Attempted creating a new borrowing contract with null value");
+                return ServiceResult<Contract>.Fail("Request not valid", ErrorType.ValidationError);
+            }
+
+            var item = await _itemRepository.Get(contractDTOFromClient.ItemId);
+            var owner = await _userRepository.Get(contractDTOFromClient.OwnerId);
+            var borrower = await _userRepository.Get(contractDTOFromClient.BorrowerId);
+
+            var contract = await Mapper.MapToContract(contractDTOFromClient, item, owner, borrower);
+
+            if (contract.Item is null || contract.Owner is null || contract.Borrower is null)
+            {
+                _logger.LogWarning("Invalid contract details");
+                return ServiceResult<Contract>.Fail("Invalid contract details", ErrorType.NotFound);
+            }
 
             try
             {

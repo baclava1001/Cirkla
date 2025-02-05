@@ -11,9 +11,9 @@ namespace Cirkla_DAL.Repositories.Contracts
         Task<IEnumerable<Contract>> GetUsersAnsweredRequests(string userId);
         Task<IEnumerable<Contract>> GetUsersRequestHistory(string userId);
         Task<IEnumerable<Contract>> GetUsersContractHistory(string userId);
-        Task<Contract> GetById(int id);
-        Task<Contract> Delete(Contract contract);
-        Task<Contract> Update(Contract contract);
+        Task<Contract?> GetById(int id);
+        Task<Contract?> Delete(Contract contract);
+        Task<Contract?> Update(Contract contract);
         Task SaveChanges();
     }
 }

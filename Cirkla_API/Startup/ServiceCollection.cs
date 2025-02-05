@@ -16,7 +16,6 @@ namespace Cirkla_API.Startup;
 
 public static class ServiceCollectionExtensions
     {
-        // This method extends IServiceCollection and registers services related to the Item API
         public static IServiceCollection RegisterAll(this IServiceCollection services)
         {
 
@@ -59,6 +58,6 @@ public static class ServiceCollectionExtensions
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 
-        return services; // Return the IServiceCollection for method chaining
+        return services;
         }
     }
