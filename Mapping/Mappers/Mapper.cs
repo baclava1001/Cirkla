@@ -5,6 +5,7 @@ using Mapping.DTOs.Contracts;
 namespace Mapping.Mappers
 {
     // TODO: Make separate mappers for each Model
+    // TODO: Turn into a service instead?
     public static class Mapper
     {
         public static async Task<User> MapToUser(UserSignupDTO userSignupDto)
@@ -23,16 +24,20 @@ namespace Mapping.Mappers
         }
 
 
-        public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO)
+        public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO, Item item, User owner, User borrower)
         {
             return new Contract
             {
-                // Id set by EF Core
+                // Id is set later by EF Core
+                Item = item,
+                Owner = owner,
+                Borrower = borrower,
                 StartTime = contractCreateDTO.StartTime,
                 EndTime = contractCreateDTO.EndTime,
                 Created = contractCreateDTO.Created
             };
         }
+
 
         public static async Task<Contract> MapToContract(ContractReplyDTO contractReplyDTO)
         {

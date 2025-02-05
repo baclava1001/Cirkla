@@ -19,6 +19,8 @@ namespace Cirkla_API.Controllers
         }
 
 
+        // TODO: Add modelstate validation in all controller methods
+
         [HttpPost]
         [ProducesResponseType(typeof(Item), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
