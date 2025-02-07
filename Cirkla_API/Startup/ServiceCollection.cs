@@ -11,6 +11,8 @@ using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
+using Cirkla_API.Services.Authentication;
+using Cirkla_API.Services.TokenGenerator;
 
 namespace Cirkla_API.Startup;
 
@@ -25,6 +27,8 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<AppDbContext>();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ICustomAuthenticationService, CustomAuthenticationService>();
         // builder.Services.AddScoped<IProfileService, ProfileService>(); <= remove?
 
         services.AddScoped<IItemRepository, ItemRepository>();

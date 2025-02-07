@@ -49,6 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\TokenGenerator\" />
     <Folder Include="Startup\" />
   </ItemGroup>
 
