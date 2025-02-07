@@ -15,7 +15,7 @@ namespace Test.CirklaApi.Services
     {
         private readonly Mock<ILogger<TokenService>> _loggerMock = new();
         private readonly Mock<IConfiguration> _configurationMock;
-        private readonly Mock<UserManager<User>> _userManagerMock = UserManagerMocker.Mock<User>();
+        private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly TokenService _tokenService;
 
         public TokenServiceTest()
@@ -25,6 +25,8 @@ namespace Test.CirklaApi.Services
             _configurationMock.Setup(c => c["JwtSettings:Issuer"]).Returns("testIssuer");
             _configurationMock.Setup(c => c["JwtSettings:Audience"]).Returns("testAudience");
             _configurationMock.Setup(c => c["JwtSettings:DurationInMinutes"]).Returns("60"); // Must be a valid integer string
+                
+            _userManagerMock = UserManagerMocker.Mock<User>();
 
             _tokenService = new TokenService(
                 _userManagerMock.Object,
@@ -32,6 +34,7 @@ namespace Test.CirklaApi.Services
                 _loggerMock.Object
             );
         }
+
 
         [Fact]
         public async Task GenerateToken_ReturnsToken_WhenUserIsValid()
