@@ -34,6 +34,11 @@ public class CustomAuthenticationService : ICustomAuthenticationService
         try
         {
             User user = await Mapper.MapToUser(userSignupDTO);
+            if (user == null)
+            {
+                _logger.LogError("Failed to map UserSignupDTO to User for {Email}", userSignupDTO.Email);
+                return ServiceResult<User>.Fail("Could not sign up user", ErrorType.ValidationError);
+            }
 
             // Password is hashed and added to the user object below
             var result = await _userManager.CreateAsync(user, userSignupDTO.Password);
@@ -44,9 +49,9 @@ public class CustomAuthenticationService : ICustomAuthenticationService
             {
                 foreach (var error in result.Errors)
                 {
-                   errorMessage = error.Code + " " + error.Description + "\n";
+                    errorMessage = string.Join("\n", result.Errors.Select(e => $"{e.Code}: {e.Description}"));
                 }
-                _logger.LogWarning("Failed signup attempt for {Email}, {errorMessage}", userSignupDTO.Email);
+                _logger.LogWarning("Failed signup attempt for {Email}, {ErrorMessage}", userSignupDTO.Email, errorMessage);
                 return ServiceResult<User>.Fail("Could not sign up user", ErrorType.ValidationError);
             }
             await _userManager.AddToRoleAsync(user, ApiRoles.User);
@@ -65,21 +70,34 @@ public class CustomAuthenticationService : ICustomAuthenticationService
     {
         try
         {
-            User user = await _userManager.FindByEmailAsync(userLoginDTO.Email);
-            bool passwordValid = await _userManager.CheckPasswordAsync(user, userLoginDTO.Password);
-
-            if (user == null || !passwordValid)
+            var user = await _userManager.FindByEmailAsync(userLoginDTO.Email);
+            
+            if (user == null)
             {
-                _logger.LogWarning("Failed login attempt for {Email}", userLoginDTO.Email);
+                _logger.LogWarning("Failed login attempt for {Email}: User not found", userLoginDTO.Email);
                 return ServiceResult<UserAuthResponseDTO>.Fail("Unable to log in", ErrorType.ValidationError);
             }
 
-            string tokenString = await _tokenService.GenerateToken(user);
+            bool passwordIsValid = await _userManager.CheckPasswordAsync(user, userLoginDTO.Password);
+
+            if (!passwordIsValid)
+            {
+                _logger.LogWarning("Failed login attempt for {Email}: Invalid password", userLoginDTO.Email);
+                return ServiceResult<UserAuthResponseDTO>.Fail("Unable to log in", ErrorType.ValidationError);
+            }
+
+            var tokenResult = await _tokenService.GenerateToken(user);
+
+            if (tokenResult.IsError)
+            {
+                _logger.LogWarning("Failed to generate token for {Email}", user.Email);
+                return ServiceResult<UserAuthResponseDTO>.Fail("Unable to generate token", ErrorType.InternalError);
+            }
 
             var response = new UserAuthResponseDTO
             {
                 Email = user.Email,
-                Token = tokenString,
+                Token = tokenResult.Payload,
                 Id = user.Id
             };
 

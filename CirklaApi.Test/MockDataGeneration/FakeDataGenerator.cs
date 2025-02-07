@@ -28,6 +28,7 @@ public static class FakeDataGenerator
             .RuleFor(u => u.FirstName, f => f.Name.FirstName())
             .RuleFor(u => u.LastName, f => f.Name.LastName())
             .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
+            .RuleFor(u => u.UserName, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
             .RuleFor(u => u.Address, f => f.Address.StreetAddress())
             .RuleFor(u => u.ZipCode, f => f.Address.ZipCode())
             .RuleFor(u => u.ProfilePictureURL, f => f.Internet.Avatar());

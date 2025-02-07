@@ -1,8 +1,9 @@
+using Cirkla_API.Common;
 using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services.TokenGenerator;
 
 public interface ITokenService
 {
-    Task<string> GenerateToken(User user);
+    Task<ServiceResult<string>> GenerateToken(User user);
 }

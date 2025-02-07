@@ -22,11 +22,6 @@ namespace Test.CirklaApi.Services
         private readonly Mock<ILogger<BorrowingContractService>> _loggerMock = new();
         private readonly BorrowingContractService _borrowingContractService;
 
-        private Contract contract;
-        private ContractCreateDTO contractCreateDTO;
-        private ContractReplyDTO contractReplyDTO;
-
-
         public BorrowingContractServiceTest()
         {
             _borrowingContractService = new BorrowingContractService(
@@ -44,9 +39,9 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsSuccess_WhenContractIsValid()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -56,14 +51,15 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(
+            contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
             result.Payload.Id = contract.Id; // Fake EF Core Id assignment
 
             // Assert
@@ -79,9 +75,9 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenStartDateIsBeforeEndDate()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.RequestInvalidStartDateBeforeEndDate);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.RequestInvalidStartDateBeforeEndDate);
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -91,15 +87,15 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -114,9 +110,9 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenStartDateIsBeforeCreatedDate()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.RequestInvalidStartDateBeforeCreatedDate);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.RequestInvalidStartDateBeforeCreatedDate);
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -126,15 +122,15 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -149,10 +145,10 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenItemIsNull()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
             contract.Item = null;
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item?.Id ?? 0,
                 OwnerId = contract.Owner.Id,
@@ -162,14 +158,14 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync((Item)null);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync((Item)null);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -184,10 +180,10 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenOwnerIsNull()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
             contract.Owner = null;
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner?.Id ?? string.Empty,
@@ -197,14 +193,14 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync((User)null);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync((User)null);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -218,10 +214,10 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenBorrowerIsNull()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
             contract.Borrower = null;
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -231,14 +227,14 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync((User)null);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync((User)null);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -253,9 +249,9 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenContractRepositoryCreateThrowsDbUpdateException()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -265,14 +261,14 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ThrowsAsync(new DbUpdateException("Database update error"));
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -287,9 +283,9 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenContractRepositoryCreateThrowsException()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -299,14 +295,14 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ThrowsAsync(new Exception("Database error"));
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -321,9 +317,9 @@ namespace Test.CirklaApi.Services
         public async Task SendRequest_ReturnsError_WhenSaveChangesFails()
         {
             // Arrange
-            contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
+            var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Request);
 
-            contractCreateDTO = new ContractCreateDTO
+            var contractCreateDto = new ContractCreateDTO
             {
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
@@ -333,14 +329,14 @@ namespace Test.CirklaApi.Services
                 Created = contract.Created
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractCreateDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractCreateDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractCreateDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractCreateDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Create(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).ThrowsAsync(new Exception("Save changes error"));
 
             // Act
-            var result = await _borrowingContractService.SendRequest(contractCreateDTO);
+            var result = await _borrowingContractService.SendRequest(contractCreateDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -422,7 +418,7 @@ namespace Test.CirklaApi.Services
             // Arrange
             var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Accepted);
 
-            contractReplyDTO = new ContractReplyDTO()
+            var contractReplyDto = new ContractReplyDTO()
             {
                 Id = contract.Id,
                 ItemId = contract.Item.Id,
@@ -435,14 +431,14 @@ namespace Test.CirklaApi.Services
                 DeniedByOwner = contract.DeniedByOwner
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractReplyDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractReplyDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Update(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.RespondToRequest(contractReplyDTO.Id, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(contractReplyDto.Id, contractReplyDto);
 
             // Assert
             Assert.False(result.IsError);
@@ -459,7 +455,7 @@ namespace Test.CirklaApi.Services
             // Arrange
             var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Denied);
 
-            contractReplyDTO = new ContractReplyDTO()
+            var contractReplyDto = new ContractReplyDTO()
             {
                 Id = contract.Id,
                 ItemId = contract.Item.Id,
@@ -472,14 +468,14 @@ namespace Test.CirklaApi.Services
                 DeniedByOwner = contract.DeniedByOwner
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractReplyDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractReplyDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Update(It.IsAny<Contract>())).ReturnsAsync(contract);
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.RespondToRequest(contractReplyDTO.Id, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(contractReplyDto.Id, contractReplyDto);
 
             // Assert
             Assert.False(result.IsError);
@@ -494,10 +490,10 @@ namespace Test.CirklaApi.Services
         public async Task RespondToRequest_ReturnsError_WhenContractReplyDTOIsNull()
         {
             // Arrange
-            contractReplyDTO = null;
+            ContractReplyDTO contractReplyDto = null;
 
             // Act
-            var result = await _borrowingContractService.RespondToRequest(1, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(1, contractReplyDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -514,7 +510,7 @@ namespace Test.CirklaApi.Services
             // Arrange
             var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Denied);
 
-            contractReplyDTO = new ContractReplyDTO()
+            var contractReplyDto = new ContractReplyDTO()
             {
                 Id = contract.Id,
                 ItemId = contract.Item.Id,
@@ -528,7 +524,7 @@ namespace Test.CirklaApi.Services
             };
 
             // Act
-            var result = await _borrowingContractService.RespondToRequest(contractReplyDTO.Id + 1, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(contractReplyDto.Id + 1, contractReplyDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -545,7 +541,7 @@ namespace Test.CirklaApi.Services
             // Arrange
             var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Accepted);
 
-            contractReplyDTO = new ContractReplyDTO()
+            var contractReplyDto = new ContractReplyDTO()
             {
                 Id = contract.Id,
                 ItemId = contract.Item.Id,
@@ -558,14 +554,14 @@ namespace Test.CirklaApi.Services
                 DeniedByOwner = contract.DeniedByOwner
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractReplyDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractReplyDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Update(It.IsAny<Contract>())).ThrowsAsync(new DbUpdateException("Database update error"));
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.RespondToRequest(contractReplyDTO.Id, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(contractReplyDto.Id, contractReplyDto);
 
             // Assert
             Assert.True(result.IsError);
@@ -582,7 +578,7 @@ namespace Test.CirklaApi.Services
             // Arrange
             var contract = FakeDataGenerator.GenerateContract(FakeDataGenerator.ContractState.Accepted);
 
-            contractReplyDTO = new ContractReplyDTO()
+            var contractReplyDto = new ContractReplyDTO()
             {
                 Id = contract.Id,
                 ItemId = contract.Item.Id,
@@ -595,14 +591,14 @@ namespace Test.CirklaApi.Services
                 DeniedByOwner = contract.DeniedByOwner
             };
 
-            _itemRepoMock.Setup(r => r.Get(contractReplyDTO.ItemId)).ReturnsAsync(contract.Item);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.OwnerId)).ReturnsAsync(contract.Owner);
-            _userRepoMock.Setup(r => r.Get(contractReplyDTO.BorrowerId)).ReturnsAsync(contract.Borrower);
+            _itemRepoMock.Setup(r => r.Get(contractReplyDto.ItemId)).ReturnsAsync(contract.Item);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.OwnerId)).ReturnsAsync(contract.Owner);
+            _userRepoMock.Setup(r => r.Get(contractReplyDto.BorrowerId)).ReturnsAsync(contract.Borrower);
             _contractRepoMock.Setup(r => r.Update(It.IsAny<Contract>())).ThrowsAsync(new Exception("Database error"));
             _contractRepoMock.Setup(r => r.SaveChanges()).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _borrowingContractService.RespondToRequest(contractReplyDTO.Id, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(contractReplyDto.Id, contractReplyDto);
 
             // Assert
             Assert.True(result.IsError);
