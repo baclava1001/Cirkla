@@ -5,7 +5,7 @@ namespace Test.CirklaApi.MockDataGeneration;
 
 public static class FakeDataGenerator
 {
-    // Instances of Faker that hold the rules for generating a certain type of fake object
+    // Instances of Faker hold the rules for generating a certain type of fake object
     private static readonly Faker<User> userFaker;
     private static readonly Faker<Item> itemFaker;
     private static readonly Faker<ItemPicture> itemPictureFaker;
@@ -13,12 +13,16 @@ public static class FakeDataGenerator
     private static readonly Faker<Contract> acceptedContractFaker;
     private static readonly Faker<Contract> deniedContractFaker;
     private static readonly Faker<Contract> completedContractFaker;
+    private static readonly Faker<Contract> requestInvalidStartDateBeforeEndDateFaker;
+    private static readonly Faker<Contract> requestInvalidStartDateBeforeCreatedDateFaker;
 
+    // Rules defined in constructor
     static FakeDataGenerator()
     {
         // Defined randomizer seed to get random but still consistent results
         Randomizer.Seed = new Random(123);
 
+        // Valid fakes for User, Item, ItemPicture and Contract
         userFaker = new Faker<User>()
             .RuleFor(u => u.Id, f => Guid.NewGuid().ToString())
             .RuleFor(u => u.FirstName, f => f.Name.FirstName())
@@ -43,68 +47,90 @@ public static class FakeDataGenerator
             .RuleFor(i => i.OwnerId, f => Guid.NewGuid().ToString())
             .RuleFor(i => i.Pictures, f => itemPictureFaker.Generate(3));
 
-        requestFaker = CreateContractFaker();
-        
-        acceptedContractFaker = CreateContractFaker()
-            .RuleFor(c => c.AcceptedByOwner, (f, c) => f.Random.Bool() ? f.Date.Between(c.Created, c.StartTime) : (DateTime?)null);
-        
-        deniedContractFaker = CreateContractFaker()
+        requestFaker = CreateBaseContractFaker()
+            .RuleFor(c => c.StartTime, (f, c) => c.Created.AddDays(f.Random.Int(7, 21)))
+            .RuleFor(c => c.EndTime, (f, c) => c.StartTime.AddDays(f.Random.Int(5, 15)));
+
+        acceptedContractFaker = CreateBaseContractFaker()
+            .RuleFor(c => c.StartTime, f => DateTime.UtcNow.AddDays(f.Random.Int(7, 21)))
+            .RuleFor(c => c.EndTime, (f, c) => c.StartTime.AddDays(f.Random.Int(5, 15)))
+            .RuleFor(c => c.AcceptedByOwner,
+                (f, c) => f.Random.Bool() ? f.Date.Between(c.Created, c.StartTime) : (DateTime?)null);
+
+        deniedContractFaker = CreateBaseContractFaker()
+            .RuleFor(c => c.StartTime, f => DateTime.UtcNow.AddDays(f.Random.Int(7, 21)))
+            .RuleFor(c => c.EndTime, (f, c) => c.StartTime.AddDays(f.Random.Int(5, 15)))
             .RuleFor(c => c.DeniedByOwner, (f, c) => f.Date.Between(c.Created, c.StartTime));
-        
-        completedContractFaker = CreateContractFaker()
+
+        completedContractFaker = CreateBaseContractFaker()
             .RuleFor(c => c.StartTime, f => DateTime.UtcNow.AddDays(-f.Random.Int(7, 21)))
             .RuleFor(c => c.EndTime, (f, c) => c.StartTime.AddDays(f.Random.Int(5, 15)) < DateTime.UtcNow
                 ? c.StartTime.AddDays(f.Random.Int(5, 15))
                 : DateTime.UtcNow.AddDays(-f.Random.Int(5, 15)));
+
+        // Invalid Contract fakes
+        requestInvalidStartDateBeforeEndDateFaker = CreateBaseContractFaker()
+            .RuleFor(c => c.StartTime, f => DateTime.UtcNow.AddDays(f.Random.Int(7, 21)))
+            .RuleFor(c => c.EndTime, (f, c) => c.StartTime.AddDays(-f.Random.Int(1, 5)));
+
+        requestInvalidStartDateBeforeCreatedDateFaker = CreateBaseContractFaker()
+            .RuleFor(c => c.Created, f => DateTime.UtcNow.AddDays(f.Random.Int(1, 5))) // Override Created to a future date
+            .RuleFor(c => c.StartTime, (f, c) => c.Created.AddDays(-f.Random.Int(1, 5))); // Set StartTime to a date before Created
+
     }
 
-    // Create a base contract faker (request), that can be reused and modified for different contract states
-    private static Faker<Contract> CreateContractFaker()
+    // Create a base contract faker, that can be reused for different contract states
+    private static Faker<Contract> CreateBaseContractFaker()
     {
         return new Faker<Contract>()
             .RuleFor(c => c.Id, f => f.Random.Int(1, 10000))
             .RuleFor(c => c.Item, f => itemFaker.Generate())
             .RuleFor(c => c.Owner, f => userFaker.Generate())
             .RuleFor(c => c.Borrower, f => userFaker.Generate())
-            .RuleFor(c => c.StartTime, f => DateTime.UtcNow.AddDays(f.Random.Int(7, 21)))
-            .RuleFor(c => c.Created, (f, c) => c.StartTime.AddDays(-f.Random.Int(1, 14)))
-            .RuleFor(c => c.EndTime, (f, c) => c.StartTime.AddDays(f.Random.Int(5, 15)))
+            .RuleFor(c => c.Created, f => DateTime.UtcNow)
             .RuleFor(c => c.AcceptedByOwner, (DateTime?)null)
             .RuleFor(c => c.DeniedByOwner, (DateTime?)null);
     }
 
-    public enum ContractType
+    public enum ContractState
     {
         Request,
         Accepted,
         Denied,
-        Completed
+        Completed,
+        // Invalid types
+        RequestInvalidStartDateBeforeEndDate,
+        RequestInvalidStartDateBeforeCreatedDate
     }
 
-    private static readonly Dictionary<ContractType, Func<Contract>> ContractGenerator = new()
+    private static readonly Dictionary<ContractState, Func<Contract>> ContractGenerator = new()
     {
-        { ContractType.Request, () => requestFaker.Generate() },
-        { ContractType.Accepted, () => acceptedContractFaker.Generate() },
-        { ContractType.Denied, () => deniedContractFaker.Generate() },
-        { ContractType.Completed, () => completedContractFaker.Generate() }
+        { ContractState.Request, () => requestFaker.Generate() },
+        { ContractState.Accepted, () => acceptedContractFaker.Generate() },
+        { ContractState.Denied, () => deniedContractFaker.Generate() },
+        { ContractState.Completed, () => completedContractFaker.Generate() },
+        { ContractState.RequestInvalidStartDateBeforeEndDate, () => requestInvalidStartDateBeforeEndDateFaker.Generate() },
+        { ContractState.RequestInvalidStartDateBeforeCreatedDate, () => requestInvalidStartDateBeforeCreatedDateFaker.Generate() }
     };
 
-    private static readonly Dictionary<ContractType, Func<int, List<Contract>>> ContractListGenerator = new()
+    private static readonly Dictionary<ContractState, Func<int, List<Contract>>> ContractListGenerator = new()
     {
-        { ContractType.Request, count => requestFaker.Generate(count) },
-        { ContractType.Accepted, count => acceptedContractFaker.Generate(count) },
-        { ContractType.Denied, count => deniedContractFaker.Generate(count) },
-        { ContractType.Completed, count => completedContractFaker.Generate(count) }
+        { ContractState.Request, count => requestFaker.Generate(count) },
+        { ContractState.Accepted, count => acceptedContractFaker.Generate(count) },
+        { ContractState.Denied, count => deniedContractFaker.Generate(count) },
+        { ContractState.Completed, count => completedContractFaker.Generate(count) },
+        { ContractState.RequestInvalidStartDateBeforeEndDate, count => requestInvalidStartDateBeforeEndDateFaker.Generate(count) },
+        { ContractState.RequestInvalidStartDateBeforeCreatedDate, count => requestInvalidStartDateBeforeCreatedDateFaker.Generate(count) }
     };
 
-    public static Contract GenerateContract(ContractType type)
+    public static Contract GenerateContract(ContractState state)
     {
-        return ContractGenerator[type]();
+        return ContractGenerator[state]();
     }
 
-    public static List<Contract> GenerateContracts(int count, ContractType type)
+    public static List<Contract> GenerateContracts(ContractState state, int count)
     {
-        return ContractListGenerator[type](count);
+        return ContractListGenerator[state](count);
     }
 
     public static Item GenerateItem()
