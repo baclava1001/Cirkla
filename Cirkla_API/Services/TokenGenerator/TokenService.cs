@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Identity;
@@ -21,36 +22,68 @@ public class TokenService : ITokenService
         _logger = logger;
     }
 
-    public async Task<string> GenerateToken(User user)
+    public async Task<ServiceResult<string>> GenerateToken(User user)
     {
-        _logger.LogInformation("Generating access token for user with {Email}", user.Email);
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
+        if (user == null)
+        {
+            _logger.LogWarning("Attempted to generate a token for a null user.");
+            return ServiceResult<string>.Fail("User cannot be null", ErrorType.ValidationError);
+        }
 
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        try
+        {
+            _logger.LogInformation("Generating access token for user with {Email}", user.Email);
 
-        var roles = await _userManager.GetRolesAsync(user);
-        var roleClaims = roles.Select(q => new Claim(ClaimTypes.Role, q)).ToList();
+            var key = _configuration["JwtSettings:Key"];
+            var issuer = _configuration["JwtSettings:Issuer"];
+            var audience = _configuration["JwtSettings:Audience"];
+            var durationString = _configuration["JwtSettings:DurationInMinutes"];
 
-        var userClaims = await _userManager.GetClaimsAsync(user);
-
-        var claims = new List<Claim>
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience) || string.IsNullOrWhiteSpace(durationString))
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(CustomClaimTypes.UserId, user.Id)
+                _logger.LogError("JWT configuration settings are missing or invalid.");
+                return ServiceResult<string>.Fail("Invalid JWT configuration", ErrorType.InternalError);
             }
-            .Union(roleClaims)
-            .Union(userClaims);
 
-        var token = new JwtSecurityToken(
-            issuer: _configuration["JwtSettings:Issuer"],
-            audience: _configuration["JwtSettings:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_configuration["JwtSettings:DurationInMinutes"])),
-            signingCredentials: credentials
-        );
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleClaims = roles?.Select(r => new Claim(ClaimTypes.Role, r)).ToList() ?? new List<Claim>();
+
+            var userClaims = await _userManager.GetClaimsAsync(user) ?? new List<Claim>();
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                new Claim(CustomClaimTypes.UserId, user.Id ?? "")
+            }
+                .Union(roleClaims)
+                .Union(userClaims);
+
+            if (!int.TryParse(durationString, out var durationMinutes))
+            {
+                _logger.LogError("Invalid JWT duration configuration.");
+                return ServiceResult<string>.Fail("Invalid JWT duration configuration", ErrorType.InternalError);
+            }
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(durationMinutes),
+                signingCredentials: credentials
+            );
+
+            return ServiceResult<string>.Success(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while generating JWT token.");
+            return ServiceResult<string>.Fail("An error occurred while generating the token", ErrorType.InternalError);
+        }
     }
+
 }
