@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Inbox\**" />
+    <Content Remove="Pages\Inbox\**" />
+    <EmbeddedResource Remove="Pages\Inbox\**" />
+    <None Remove="Pages\Inbox\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Pages\Cirkla.razor" />
     <Content Remove="Pages\ItemCreateAndEdit\ReplyButtons.razor" />
   </ItemGroup>
@@ -18,8 +25,9 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.10" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" />
+	  <PackageReference Include="MudBlazor" Version="8.2.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>

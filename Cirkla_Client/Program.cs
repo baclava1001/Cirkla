@@ -6,6 +6,7 @@ using Cirkla_Client.Services;
 using Blazored.LocalStorage;
 using Cirkla_API.Providers;
 using System.IdentityModel.Tokens.Jwt;
+using MudBlazor.Services;
 
 namespace Cirkla_Client
 {
@@ -23,6 +24,8 @@ namespace Cirkla_Client
             builder.Services.AddSingleton<ComponentNotificationService>();
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddMudServices();
+
 
             builder.Services.AddScoped(sp => new HttpClient
             {
