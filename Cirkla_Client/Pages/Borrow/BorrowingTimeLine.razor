@@ -1,0 +1,145 @@
+@page "/borrowing-timeline"
+@inject IClient _client;
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var contract in contracts)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        Borrowing @contract.Item.Name from @contract.Owner.FirstName
+                    </div>
+                    <div class="card-body d-flex">
+                        <div class="timeline">
+                            <div class="timeline-item @GetTimelineClass(contract.Created)">
+                                <div class="milestone">Request</div>
+                            </div>
+                            <div class="timeline-item @GetTimelineClass(contract.AcceptedByOwner)">
+                                <div class="milestone">Reply</div>
+                            </div>
+                            <div class="timeline-item @GetTimelineClass(contract.StartTime)">
+                                <div class="milestone">Cirkla</div>
+                            </div>
+                            <div class="timeline-item @GetTimelineClass(contract.EndTime)">
+                                <div class="milestone">Return</div>
+                            </div>
+                        </div>
+                        <div class="item-info ml-4">
+                            <img src="@contract.Item.Pictures?.FirstOrDefault()?.Url" alt="@contract.Item.Name" class="img-thumbnail" />
+                            <p class="card-text">Latest Update: @GetLatestUpdate(contract)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #007bff;
+    }
+
+    .timeline-item {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .timeline-item.inactive .milestone {
+        background: gray;
+    }
+
+    .milestone {
+        background: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 50%;
+        position: relative;
+        left: -20px;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .img-thumbnail {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+@code {
+    private List<Contract> contracts = new List<Contract>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Mock data for now
+        contracts = new List<Contract>
+        {
+            new Contract
+            {
+                Id = 1,
+                Item = new Item { Name = "Item 1", Pictures = new List<ItemPicture> { new ItemPicture { Url = "https://via.placeholder.com/150" } } },
+                Owner = new User { FirstName = "Owner 1" },
+                Borrower = new User { FirstName = "Borrower 1" },
+                Created = DateTime.Now,
+                StartTime = DateTime.Now.AddDays(1),
+                EndTime = DateTime.Now.AddDays(10),
+                AcceptedByOwner = DateTime.Now.AddDays(2),
+                DeniedByOwner = null
+            },
+            new Contract
+            {
+                Id = 2,
+                Item = new Item { Name = "Item 2", Pictures = new List<ItemPicture> { new ItemPicture { Url = "https://via.placeholder.com/150" } } },
+                Owner = new User { FirstName = "Owner 2" },
+                Borrower = new User { FirstName = "Borrower 2" },
+                Created = DateTime.Now,
+                StartTime = DateTime.Now.AddDays(3),
+                EndTime = DateTime.Now.AddDays(12),
+                AcceptedByOwner = null,
+                DeniedByOwner = DateTime.Now.AddDays(4)
+            }
+        };
+
+        // Uncomment and use the following line to fetch data from an API
+        // contracts = await Http.GetFromJsonAsync<List<Contract>>("api/contracts");
+    }
+
+    private string GetTimelineClass(DateTime? dateTime)
+    {
+        return dateTime.HasValue ? "active" : "inactive";
+    }
+
+    private string GetLatestUpdate(Contract contract)
+    {
+        @*if (contract.EndTime.HasValue && contract.EndTime.Value <= DateTime.Now)
+        {
+            return "Returned";
+        }
+        if (contract.StartTime.HasValue && contract.StartTime.Value <= DateTime.Now)
+        {
+            return "In Progress";
+        }
+        if (contract.AcceptedByOwner.HasValue && contract.AcceptedByOwner.Value <= DateTime.Now)
+        {
+            return "Accepted by Owner";
+        }*@
+        return "Requested";
+    }
+}
