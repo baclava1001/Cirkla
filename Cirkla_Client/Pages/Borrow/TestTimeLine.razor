@@ -1,0 +1,88 @@
+﻿@page "/test-timeline"
+
+@using Cirkla_Client.Pages
+
+<Timeline Processes="testProcesses" IsVertical="true" />
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        @foreach (var process in testProcesses)
+        {
+            <div class="col">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">@process.Title</div>
+                    <div class="card-body">
+                        <div class="timeline-container" style="display: flex; flex-direction: @(true ? "column" : "row");">
+                            @foreach (var step in process.Steps)
+                            {
+                                <div class="timeline-step @(step.Status)" style="margin: 10px; padding: 10px; border-left: @(true ? "3px solid #ccc" : "none"); border-bottom: @(true ? "none" : "3px solid #ccc");">
+                                    <span class="badge bg-@(step.Status == "completed" ? "success" : step.Status == "active" ? "primary" : "secondary")">@step.Label</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .timeline-container { display: flex; align-items: start; gap: 10px; }
+    .timeline-step { position: relative; padding: 10px; }
+    .timeline-step::before {
+        content: "";
+        width: 10px; height: 10px;
+        background: #ccc;
+        border-radius: 50%;
+        position: absolute;
+        left: -15px; top: 10px;
+    }
+</style>
+
+@code {
+    public partial class Timeline : ComponentBase
+    {
+        [Parameter] public List<TimelineProcess> Processes { get; set; } = new();
+        [Parameter] public bool IsVertical { get; set; } = true;
+    }
+
+    public class TimelineProcess
+    {
+        public string Title { get; set; } = string.Empty;
+        public List<TimelineStep> Steps { get; set; } = new();
+    }
+
+    public class TimelineStep
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Status { get; set; } = "pending"; // pending, active, completed
+    }
+
+    private List<TimelineProcess> testProcesses = new()
+    {
+        new TimelineProcess
+        {
+            Title = "Lån 1",
+            Steps = new()
+            {
+                new TimelineStep { Label = "Förfrågan skickad", Status = "completed" },
+                new TimelineStep { Label = "Väntar på svar", Status = "active" },
+                new TimelineStep { Label = "Godkänd", Status = "pending" }
+            }
+        },
+        new TimelineProcess
+        {
+            Title = "Lån 2",
+            Steps = new()
+            {
+                new TimelineStep { Label = "Förfrågan skickad", Status = "completed" },
+                new TimelineStep { Label = "Svar mottaget", Status = "completed" },
+                new TimelineStep { Label = "Uthämtning pågår", Status = "active" },
+                new TimelineStep { Label = "Återlämning", Status = "pending" }
+            }
+        }
+    };
+
+
+}
