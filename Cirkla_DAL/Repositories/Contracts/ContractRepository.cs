@@ -20,6 +20,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
+                .Include(c => c.StatusChanges)
                 .ToListAsync();
         }
 
@@ -30,6 +31,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
+                .Include(c => c.StatusChanges)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -59,8 +61,8 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
-                .Include(c => c.Status)
-                .Where(c => c.Borrower.Id == userId && c.Status.LastOrDefault().To != ContractStatus.Archived)
+                .Include(c => c.StatusChanges)
+                .Where(c => c.Borrower.Id == userId && c.StatusChanges.LastOrDefault().To != ContractStatus.Archived)
                 .ToListAsync();
         }
 
@@ -71,8 +73,8 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
-                .Include(c => c.Status)
-                .Where(c => c.Owner.Id == userId && c.Status.LastOrDefault().To != ContractStatus.Archived)
+                .Include(c => c.StatusChanges)
+                .Where(c => c.Owner.Id == userId && c.StatusChanges.LastOrDefault().To != ContractStatus.Archived)
                 .ToListAsync();
         }
 
@@ -83,7 +85,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
-                .Where(c => c.Borrower.Id == userId && c.Status.LastOrDefault().To == ContractStatus.Archived)
+                .Where(c => c.Borrower.Id == userId && c.StatusChanges.LastOrDefault().To == ContractStatus.Archived)
                 .ToListAsync();
         }
 
@@ -94,7 +96,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
-                .Where(c => c.Owner.Id == userId && c.Status.LastOrDefault().To == ContractStatus.Archived)
+                .Where(c => c.Owner.Id == userId && c.StatusChanges.LastOrDefault().To == ContractStatus.Archived)
                 .ToListAsync();
         }
     }

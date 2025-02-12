@@ -23,6 +23,6 @@ namespace Cirkla_DAL.Models
         public DateTime StartTime { get; set; }
         [Required]
         public DateTime EndTime { get; set; }
-        public List<ContractStatusChange>? Status { get; set; }
+        public List<ContractStatusChange>? StatusChanges { get; set; }
     }
 }

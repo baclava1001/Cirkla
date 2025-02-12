@@ -32,24 +32,24 @@
             <dt class="col-sm-2">Under the following conditions</dt>
             <dd class="col-sm-10">(Coming feature, not yet implemented)</dd>
             <dt class="col-sm-2">Status</dt>
-            @if(Contract.AcceptedByOwner is not null)
+            @if(Contract.StatusChanges.LastOrDefault().To == ContractStatus.Accepted)
             {
-                <dd class="col-sm-10">Request accepted</dd>
+            <dd class="col-sm-10">Request accepted</dd>
             }
-            else if(Contract.DeniedByOwner is not null)
+            else if(Contract.StatusChanges.LastOrDefault().To == ContractStatus.Denied)
             {
-                <dd class="col-sm-10">Request denied</dd>
+            <dd class="col-sm-10">Request denied</dd>
             }
             else
             {
-                <dd class="col-sm-10">Waiting for reply from owner</dd>
+            <dd class="col-sm-10">Waiting for reply from owner</dd>
             }
 
-            @if (route == "/request/review" && Contract.AcceptedByOwner is null && Contract.DeniedByOwner is null)
+            @if (route == "/request/review" && Contract.StatusChanges.LastOrDefault().To != ContractStatus.Accepted && Contract.StatusChanges.LastOrDefault().To != ContractStatus.Denied)
             {
-                <CascadingValue Value="Contract">
-                    <ReplyToRequestButtons />
-                </CascadingValue>
+            <CascadingValue Value="Contract">
+                <ReplyToRequestButtons />
+            </CascadingValue>
             }
         </dl>
     }
