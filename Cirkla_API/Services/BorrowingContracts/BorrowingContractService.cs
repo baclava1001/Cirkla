@@ -1,7 +1,7 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
-using Cirkla_DAL.Repositories.Contracts;
+//using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Mapping.DTOs.Contracts;
@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Cirkla_API.Services.BorrowingContracts
 {
     public class BorrowingContractService(
-        IContractRepository contractRepository,
+        //IContractRepository contractRepository,
         IItemRepository itemRepository,
         IUserRepository userRepository,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService

@@ -16,7 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\BorrowingContractController.cs" />
+    <Compile Remove="Controllers\InboxController.cs" />
     <Compile Remove="Controllers\ProfileController.cs" />
+    <Compile Remove="Services\BorrowingContracts\BorrowingContractService.cs" />
+    <Compile Remove="Services\BorrowingContracts\IBorrowingContractService.cs" />
+    <Compile Remove="Services\Inbox\IInboxService.cs" />
+    <Compile Remove="Services\Inbox\InboxService.cs" />
     <Compile Remove="Services\IProfileService.cs" />
     <Compile Remove="Services\ProfileService.cs" />
     <Compile Remove="Services\Users\IProfileService.cs" />
@@ -49,6 +55,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\BorrowingContracts\" />
+    <Folder Include="Services\Inbox\" />
     <Folder Include="Services\TokenGenerator\" />
     <Folder Include="Startup\" />
   </ItemGroup>

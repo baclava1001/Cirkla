@@ -23,14 +23,6 @@ namespace Cirkla_DAL.Models
         public DateTime StartTime { get; set; }
         [Required]
         public DateTime EndTime { get; set; }
-        public DateTime? AcceptedByOwner { get; set; }
-        public DateTime? DeniedByOwner { get; set; }
-        //public DateTime? CancelledByOwner { get; set; }
-        //public DateTime? AcceptedByBorrower { get; set; }
-        //public DateTime? CancelledByBorrower { get; set; }
-        //public DateTime? PickedUpTime { get; set; }
-        //public DateTime? ReturnedTime { get; set; }
-        //public ContractStatus Status { get; set; }
-
+        public List<ContractStatusChange>? Status { get; set; }
     }
 }

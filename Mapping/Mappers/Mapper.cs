@@ -46,9 +46,7 @@ namespace Mapping.Mappers
                 Id = contractReplyDTO.Id,
                 StartTime = contractReplyDTO.StartTime,
                 EndTime = contractReplyDTO.EndTime,
-                Created = contractReplyDTO.Created,
-                DeniedByOwner = contractReplyDTO.DeniedByOwner,
-                AcceptedByOwner = contractReplyDTO.AcceptedByOwner
+                Created = contractReplyDTO.Created
             };
         }
     }
