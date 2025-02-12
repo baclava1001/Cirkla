@@ -58,10 +58,10 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RespondToRequest(int id, ContractReplyDTO contractReplyDTO)
+        public async Task<IActionResult> RespondToRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
             _logger.LogInformation("Responding to request");
-            var result = await _borrowingContractService.RespondToRequest(id, contractReplyDTO);
+            var result = await _borrowingContractService.RespondToRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
     }

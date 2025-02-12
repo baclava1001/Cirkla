@@ -15,7 +15,7 @@
     private async Task SendReplyToBorrower(string buttonName)
     {
         // TODO: Move to mapper
-        ContractReplyDTO contractReplyDTO = new()
+        ContractUpdateDTO contractUpdateDTO = new()
             {
                 Id = Contract.Id,
                 ItemId = Contract.Item.Id,
@@ -30,13 +30,13 @@
         {
             if (buttonName == "Deny")
             {
-                contractReplyDTO.DeniedByOwner = DateTime.Now;
+                contractUpdateDTO.CurrentStatus = ContractStatus.Denied;
             }
             else if (buttonName == "Accept")
             {
-                contractReplyDTO.AcceptedByOwner = DateTime.Now;
+                contractUpdateDTO.CurrentStatus = ContractStatus.Accepted;
             }
-            await _client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractReplyDTO);
+            await _client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractUpdateDTO);
         }
         catch (Exception ex)
         {

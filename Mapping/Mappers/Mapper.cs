@@ -1,11 +1,13 @@
 ﻿using Cirkla_DAL.Models;
+using Cirkla_DAL.Models.Enums;
 using Mapping.DTOs.Users;
 using Mapping.DTOs.Contracts;
 
 namespace Mapping.Mappers
 {
     // TODO: Make separate mappers for each Model
-    // TODO: Turn into a service instead?
+    // TODO: Turn into a service with interface instead?
+    
     public static class Mapper
     {
         public static async Task<User> MapToUser(UserSignupDTO userSignupDto)
@@ -26,28 +28,49 @@ namespace Mapping.Mappers
 
         public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO, Item item, User owner, User borrower)
         {
-            return new Contract
+            var contract = new Contract
             {
-                // Id is set later by EF Core
                 Item = item,
                 Owner = owner,
                 Borrower = borrower,
+                Created = contractCreateDTO.Created,
                 StartTime = contractCreateDTO.StartTime,
                 EndTime = contractCreateDTO.EndTime,
-                Created = contractCreateDTO.Created
+                StatusChanges = new List<ContractStatusChange>
+                {
+                    new ContractStatusChange
+                    {
+                        ChangedAt = contractCreateDTO.Created,
+                        ChangedBy = borrower,
+                        From = ContractStatus.None,
+                        To = contractCreateDTO.CurrentStatus,
+                    }
+                }
             };
+            return contract;
         }
 
 
-        public static async Task<Contract> MapToContract(ContractReplyDTO contractReplyDTO)
+        public static async Task<Contract> MapToContract(ContractUpdateDTO contractUpdateDTO, Item item, User owner, User borrower, User updatingUser)
         {
-            return new Contract
+            var contract = new Contract()
             {
-                Id = contractReplyDTO.Id,
-                StartTime = contractReplyDTO.StartTime,
-                EndTime = contractReplyDTO.EndTime,
-                Created = contractReplyDTO.Created
+                Id = contractUpdateDTO.Id,
+                Item = item,
+                Owner = owner,
+                StartTime = contractUpdateDTO.StartTime,
+                EndTime = contractUpdateDTO.EndTime
             };
+
+            contract.StatusChanges.Add(new ContractStatusChange
+            {
+                ChangedAt = contractUpdateDTO.Created,
+                ChangedBy = updatingUser,
+                From = contractUpdateDTO.LastStatus,
+                To = contractUpdateDTO.CurrentStatus
+            });
+
+            return contract;
         }
     }
 }

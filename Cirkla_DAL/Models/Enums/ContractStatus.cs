@@ -2,7 +2,7 @@
 
 public enum ContractStatus
 {
-    Created,
+    None,
     Pending,
     Accepted,
     Denied,

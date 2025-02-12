@@ -1,7 +1,7 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
-//using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Mapping.DTOs.Contracts;
@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Cirkla_API.Services.BorrowingContracts
 {
     public class BorrowingContractService(
-        //IContractRepository contractRepository,
+        IContractRepository contractRepository,
         IItemRepository itemRepository,
         IUserRepository userRepository,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
@@ -55,6 +55,7 @@ namespace Cirkla_API.Services.BorrowingContracts
             {
                 await contractRepository.Create(contract);
                 await contractRepository.SaveChanges();
+                // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);
             }
             catch (DbUpdateException ex)
@@ -80,7 +81,7 @@ namespace Cirkla_API.Services.BorrowingContracts
                     logger.LogWarning("Borrowing contract with ID {id} not found", id);
                     return ServiceResult<Contract>.Fail("Borrowing contract not found", ErrorType.NotFound);
                 }
-
+                // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);
             }
             catch (Exception ex)
@@ -91,23 +92,26 @@ namespace Cirkla_API.Services.BorrowingContracts
         }
 
 
-        public async Task<ServiceResult<Contract>> RespondToRequest(int id, ContractReplyDTO contractReplyDTO)
+        // Updates a borrowing contract to respond to a request.
+        public async Task<ServiceResult<Contract>> RespondToRequest(int id, ContractUpdateDTO contractUpdateDto)
         {
-            if (contractReplyDTO is null || id != contractReplyDTO.Id)
+            if (contractUpdateDto is null || id != contractUpdateDto.Id)
             {
                 logger.LogWarning("Attempted updating an borrowing contract (to reply to a request) with null value or ID mismatch");
                 return ServiceResult<Contract>.Fail("Reply not valid", ErrorType.ValidationError);
             }
 
-            Contract contract = await Mapper.MapToContract(contractReplyDTO);
-            contract.Item = await itemRepository.Get(contractReplyDTO.ItemId);
-            contract.Owner = await userRepository.Get(contractReplyDTO.OwnerId);
-            contract.Borrower = await userRepository.Get(contractReplyDTO.BorrowerId);
+            var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var updatingUser = await userRepository.Get(contractUpdateDto.UpdatedByUserId);
+            Contract contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower, updatingUser);
 
             try
             {
                 await contractRepository.Update(contract);
                 await contractRepository.SaveChanges();
+                // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);
             }
             catch (DbUpdateException ex)

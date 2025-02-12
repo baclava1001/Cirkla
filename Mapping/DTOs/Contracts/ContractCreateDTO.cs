@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Cirkla_DAL.Models.Enums;
 
 namespace Mapping.DTOs.Contracts
 {
@@ -14,10 +15,12 @@ namespace Mapping.DTOs.Contracts
         [Required]
         public string BorrowerId { get; set; }
         [Required]
+        public DateTime Created { get; set; }
+        [Required]
         public DateTime StartTime { get; set; }
         [Required]
         public DateTime EndTime { get; set; }
         [Required]
-        public DateTime Created { get; set; }
+        public ContractStatus CurrentStatus { get; set; }
     }
 }
