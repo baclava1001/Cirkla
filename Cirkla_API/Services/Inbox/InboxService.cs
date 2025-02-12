@@ -10,7 +10,7 @@ public class InboxService : IInboxService
 {
     private readonly IContractRepository _contractRepository;
     private readonly IUserRepository _userRepository;
-    private readonly ILogger _logger;
+    private readonly ILogger<InboxService> _logger;
 
     public InboxService(IContractRepository contractRepository, IUserRepository userRepository, ILogger<InboxService> logger)
     {
