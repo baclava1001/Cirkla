@@ -10,6 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\**" />
+    <Compile Remove="MockDataGeneration\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="MockDataGeneration\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Common\**" />
+    <None Remove="MockDataGeneration\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />

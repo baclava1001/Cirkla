@@ -6,11 +6,10 @@ namespace Cirkla_DAL.Repositories.Contracts
     {
         Task<Contract> Create(Contract contract);
         Task<IEnumerable<Contract>> GetAll();
-        Task<IEnumerable<Contract>> GetIncomingRequestsForInbox(string userId);
-        Task<IEnumerable<Contract>> GetUsersPendingRequests(string userId);
-        Task<IEnumerable<Contract>> GetUsersAnsweredRequests(string userId);
-        Task<IEnumerable<Contract>> GetUsersRequestHistory(string userId);
-        Task<IEnumerable<Contract>> GetUsersContractHistory(string userId);
+        Task<IEnumerable<Contract>> GetActiveWhereUserIsBorrower(string userId);
+        Task<IEnumerable<Contract>> GetActiveWhereUserIsOwner(string userId);
+        Task<IEnumerable<Contract>> GetArchivedWhereUsersWasBorrower(string userId);
+        Task<IEnumerable<Contract>> GetArchivedWhereUserWasOwner(string userId);
         Task<Contract?> GetById(int id);
         Task<Contract?> Delete(Contract contract);
         Task<Contract?> Update(Contract contract);

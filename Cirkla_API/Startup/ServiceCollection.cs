@@ -1,17 +1,17 @@
 ﻿using Cirkla_API.Middleware;
-using Cirkla_API.Services.BorrowingContracts;
-using Cirkla_API.Services.Inbox;
+//using Cirkla_API.Services.BorrowingContracts;
 using Cirkla_API.Services.ItemPictures;
 using Cirkla_API.Services.Items;
 using Cirkla_DAL;
 using Cirkla_DAL.Models;
-using Cirkla_DAL.Repositories.Contracts;
+//using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.ItemPictures;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 using Cirkla_API.Services.Authentication;
+//using Cirkla_API.Services.Inbox;
 using Cirkla_API.Services.TokenGenerator;
 
 namespace Cirkla_API.Startup;
@@ -37,9 +37,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemPictureRepository, ItemPictureRepository>();
         services.AddScoped<IItemPictureService, ItemPictureService>();
 
-        services.AddScoped<IContractRepository, ContractRepository>();
-        services.AddScoped<IInboxService, InboxService>();
-        services.AddScoped<IBorrowingContractService, BorrowingContractService>();
+        // services.AddScoped<IContractRepository, ContractRepository>();
+        //services.AddScoped<IInboxService, InboxService>();
+        //services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
         services.AddCors(options =>
         {

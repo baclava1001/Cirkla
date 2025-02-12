@@ -13,6 +13,7 @@ namespace Cirkla_DAL
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemPicture> ItemPictures { get; set; }
         public DbSet<Contract> Contracts { get; set; }
+        public DbSet<ContractStatusChange> ContractStatusChanges { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
