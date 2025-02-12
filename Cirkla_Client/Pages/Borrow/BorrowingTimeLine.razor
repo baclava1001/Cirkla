@@ -1,6 +1,11 @@
 @page "/borrowing-timeline"
 @inject IClient _client;
 
+@if (!_requests.Any())
+{
+    <p><em>Loading...</em></p>
+}
+
 <div class="container mt-4">
     <div class="row">
         @foreach (var request in _requests)
@@ -58,7 +63,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        var result = await _client.ApiInboxMyPendingRequestsAsync(_tempUserId);
+        var result = await _client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
         _requests = result.ToList();
     }
 }

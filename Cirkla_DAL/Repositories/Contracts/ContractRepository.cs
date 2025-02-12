@@ -62,7 +62,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .Include(c => c.StatusChanges)
-                .Where(c => c.Borrower.Id == userId && c.StatusChanges.LastOrDefault().To != ContractStatus.Archived)
+                .Where(c => c.Borrower.Id == userId && c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault().To != ContractStatus.Archived)
                 .ToListAsync();
         }
 
@@ -74,7 +74,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .Include(c => c.StatusChanges)
-                .Where(c => c.Owner.Id == userId && c.StatusChanges.LastOrDefault().To != ContractStatus.Archived)
+                .Where(c => c.Borrower.Id == userId && c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault().To != ContractStatus.Archived)
                 .ToListAsync();
         }
 
