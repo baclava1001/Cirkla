@@ -1,0 +1,48 @@
+@page "/borrowing-timelines"
+@using Cirkla_Client.Pages.Components;
+@inject IClient _client;
+
+@if (BorrowingItems is null && SharingItems is null)
+{
+    <p><em>Loading...</em></p>
+}
+
+<TimeLineGrid Contracts="BorrowingItems ?? new List<Contract>()" /> @*For borrowed items*@
+
+<TimeLineGrid Contracts="SharingItems ?? new List<Contract>()" /> @*For shared items*@
+
+@code {
+    // Sida: Ramar in alltihop, hämtar alla kontrakt och skickar in dem en och en (foreach här!) till Grid som parametrar för fortsättning
+    // Grid: Tar emot ETT kontrakt och renderar det stora kortet, med rubrik mm samt själva timeline (och eventuellt färg till rätt milstolpe?)
+    // Card: Tar emot samma kontrakt från Grid och renderar färg till rätt milstolpe (genom en eventcallback?)
+    // ...samt renderar och uppdaterar infokort bredvid varje milstolpe
+    // Om status är pending - rendera första kortet och lys upp första punkten (byt till nån grön variant)
+    // Om status är accepted eller denied - rendera andra kortet och lys upp andra punkten (rött vid denied eller cancelled?)
+    // Vid cancelled (av en användare): Uppdatera kort #2
+    // Annars rendera kort #3 automatiskt (redan vid accepted?)
+    // När datum för hämtning kommer - uppdatera status i backend automatiskt (i affärslogiken) och uppdatera kort #3
+    // Samma när datum för återlämning kommer, uppdatera status och punkt #4 (visa redan vid upphämtning?)
+    // Röd markering vid cancellering, (försening = orange?) eller anmälning av problem
+
+
+    public List<Contract>? BorrowingItems { get; set; }
+    public List<Contract>? SharingItems { get; set; }
+    private string _tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is use 'Liza Minelli', hardcoded.
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var borrowingResult = await _client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
+        var sharingResult = await _client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
+
+        if (borrowingResult.Any())
+        {
+            BorrowingItems = borrowingResult.ToList();
+        }
+
+        if (sharingResult.Any())
+        {
+            SharingItems = sharingResult.ToList();
+        }
+    }
+}

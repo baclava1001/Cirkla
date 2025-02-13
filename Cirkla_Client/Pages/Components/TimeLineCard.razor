@@ -1,0 +1,71 @@
+﻿@foreach (var card in Cards)
+{
+    <MudCard Outlined="true" Elevation="25" Class="@card.Visibility">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@card.Title</MudText>
+            <MudText Typo="Typo.body2">@card.Content</MudText>
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    [Parameter]
+    public Contract? Contract { get; set; }
+    List<CardModel> Cards = new();
+    ContractStatus? _currentStatus;
+
+    protected override Task OnInitializedAsync()
+    {
+        _currentStatus = Contract?.StatusChanges?.LastOrDefault()?.To;
+        if (_currentStatus is not null)
+        {
+            GenerateCards();
+        }
+        return Task.CompletedTask;
+    }
+
+    private void GenerateCards()
+    {
+        Cards.Clear();
+        foreach (var statusChange in Contract?.StatusChanges ?? Enumerable.Empty<ContractStatusChange>())
+        {
+            switch (statusChange.To)
+            {
+                case ContractStatus.Pending:
+                    Cards.Add(new CardModel
+                    {
+                        Title = "Pending Request",
+                        Content = $"You asked to borrow {Contract?.Item.Name} from {Contract?.Owner.FirstName} from {Contract?.StartTime} to {Contract?.EndTime}",
+                        Visibility = "visible"
+                    });
+                    break;
+                case ContractStatus.Accepted:
+                    Cards.Add(new CardModel
+                    {
+                        Title = "Accepted Request",
+                        Content = $"Your request to borrow {Contract?.Item.Name} from {Contract?.Owner.FirstName} has been accepted.",
+                        Visibility = "visible"
+                    });
+                    break;
+                case ContractStatus.Denied:
+                    Cards.Add(new CardModel
+                    {
+                        Title = "Denied Request",
+                        Content = $"Your request to borrow {Contract?.Item.Name} from {Contract?.Owner.FirstName} has been denied.",
+                        Visibility = "visible"
+                    });
+                    break;
+                // Add more cases as needed
+                default:
+                    break;
+            }
+        }
+    }
+
+    private class CardModel
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public string Visibility { get; set; } = "invisible";
+    }
+}
