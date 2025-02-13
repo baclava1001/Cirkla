@@ -1,4 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+@* Needed for dialogs *@
+<MudDialogProvider />
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
 
 <div class="page d-flex flex-column min-vh-100">
     <div class="navbar">
@@ -17,11 +25,3 @@
         </div>
     </footer>
 </div>
-
-@* Required *@
-<MudThemeProvider />
-<MudPopoverProvider />
-@* Needed for dialogs *@
-<MudDialogProvider />
-@* Needed for snackbars *@
-<MudSnackbarProvider />

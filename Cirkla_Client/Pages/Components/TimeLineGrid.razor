@@ -1,26 +1,22 @@
-@page "/borrowing-timeline"
-@inject IClient _client;
-
-@if (!_requests.Any())
-{
-    <p><em>Loading...</em></p>
-}
-
-<div class="container mt-4">
+﻿<div class="container mt-4">
     <div class="row">
-        @foreach (var request in _requests)
+        @foreach (var contract in Contracts)
         {
             <div class="col-md-4 mb-4">
                 <MudCard Outlined="true" Elevation="25" Style="height: 800px;">
-                    <MudCardHeader><MudText Typo="Typo.h6">Borrowing @request.Item.Name from @request.Owner.FirstName</MudText></MudCardHeader>
-                    <MudCardMedia Height="200" Image="@request.Item.Pictures.FirstOrDefault().Url"/>
-
+                    <MudCardHeader><MudText Typo="Typo.h6">Borrowing @contract.Item.Name from @contract.Owner.FirstName</MudText></MudCardHeader>
+                    <MudCardMedia Height="200" Image="@contract.Item.Pictures.FirstOrDefault().Url"/>
                     <MudTimeline TimelinePosition="TimelinePosition.Start" Modifiers="true" Class="my-4">
+
                         <MudTimelineItem Size="Size.Small" Color="Color.Info" Elevation="2">
+                            <TimeLineCard Contract="contract"/>
+                        </MudTimelineItem>
+
+                        @*                         <MudTimelineItem Size="Size.Small" Color="Color.Info" Elevation="2">
                             <MudCard Outlined="true" Elevation="25">
                                 <MudCardContent>
                                     <MudText Typo="Typo.h5">Request</MudText>
-                                    <MudText Typo="Typo.body2">You asked to borrow @request.Item.Name from @request.Owner.FirstName from @request.StartTime to @request.EndTime</MudText>
+                                    <MudText Typo="Typo.body2">You asked to borrow @contract.Item.Name from @contract.Owner.FirstName from @contract.StartTime to @contract.EndTime</MudText>
                                 </MudCardContent>
                             </MudCard>
                         </MudTimelineItem>
@@ -28,7 +24,7 @@
                             <MudCard Outlined="true" Elevation="25">
                                 <MudCardContent>
                                     <MudText Typo="Typo.h5">Reply</MudText>
-                                    <MudText Typo="Typo.body2">@request.Owner.FirstName accepted your request.</MudText>
+                                    <MudText Typo="Typo.body2">@contract.Owner.FirstName accepted your request.</MudText>
                                 </MudCardContent>
                             </MudCard>
                         </MudTimelineItem>
@@ -36,7 +32,7 @@
                             <MudCard Outlined="true" Elevation="25">
                                 <MudCardContent>
                                     <MudText Typo="Typo.h5">Pick up</MudText>
-                                    <MudText Typo="Typo.body2">Remember to pick up @request.Item.Name from @request.Owner.FirstName on @request.StartTime</MudText>
+                                    <MudText Typo="Typo.body2">Remember to pick up @contract.Item.Name from @contract.Owner.FirstName on @contract.StartTime</MudText>
                                 </MudCardContent>
                             </MudCard>
                         </MudTimelineItem>
@@ -44,10 +40,10 @@
                             <MudCard Outlined="true" Elevation="25" Class="invisible">
                                 <MudCardContent>
                                     <MudText Typo="Typo.h5">Return</MudText>
-                                    <MudText Typo="Typo.body2">Be sure to return @request.Item.Name to @request.Owner.FirstName on @request.EndTime</MudText>
+                                    <MudText Typo="Typo.body2">Be sure to return @contract.Item.Name to @contract.Owner.FirstName on @contract.EndTime</MudText>
                                 </MudCardContent>
                             </MudCard>
-                        </MudTimelineItem>
+                        </MudTimelineItem> *@
                     </MudTimeline>
                 </MudCard>
             </div>
@@ -56,14 +52,10 @@
 </div>
 
 @code {
+    [Parameter]
+    public List<Contract>? Contracts { get; set; }
 
-    private List<Contract> _requests = new List<Contract>();
-    private string _tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is use 'Liza Minelli', hardcoded.
+    // TODO: Make TimeLineItem Color.Info on the most recent updated milestone, but Color.Default otherwise
+    // TODO: Make Cards invisible as long as they have no update (Same conditions as above, but each card can have more conditions and updates/statuses for the same milestone)
 
-    protected override async Task OnInitializedAsync()
-    {
-
-        var result = await _client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
-        _requests = result.ToList();
-    }
 }
