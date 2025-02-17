@@ -1,0 +1,29 @@
+﻿@using System.Runtime.CompilerServices
+@using Cirkla_Client.ViewModels
+
+<MudTimelineItem Size="Size.Small" Color="@TimeLineItemViewModel.Color" Elevation="2">
+    <MudCard Outlined="true" Elevation="25" Class="@_cardVisibility">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@TimeLineItemViewModel.Title</MudText>
+            <MudText Typo="Typo.body2">@TimeLineItemViewModel.InfoCardData.EventDate</MudText>
+            <MudText Typo="Typo.body1">@TimeLineItemViewModel.InfoCardData.Content</MudText>
+        </MudCardContent>
+    </MudCard>
+</MudTimelineItem>
+
+@code {
+    [Parameter]
+    public TimeLineItemVM TimeLineItemViewModel { get; set; }
+
+    private string _cardVisibility = "visible";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TimeLineItemViewModel.ShowInfoCard is false)
+        {
+            _cardVisibility = "invisible";
+        }
+    }
+
+}
