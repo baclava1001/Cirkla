@@ -7,9 +7,9 @@ public enum ContractStatus
     Accepted,
     Denied,
     Cancelled,
-    Active,
-    Late,
+    Active, // Changes automatically of no user cancels
+    Late, // Changes automatically if Owner hasn't marked contract 'Completed'
     Completed,
     Problem,
-    Archived
+    Archived // Changes automatically 48 hours after a contract was completed
 }
