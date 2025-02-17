@@ -5,7 +5,7 @@ namespace Cirkla_Client.ViewModels;
 
 public class TimeLineItemVM
 {
-    public string Title { get; set; }
+    public string EventName { get; set; }
     public bool IsActive { get; set; }
     public Color Color { get; set; }
     public bool ShowInfoCard { get; set; }
