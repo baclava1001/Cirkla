@@ -4,7 +4,7 @@
     <div class="row">
         @foreach (var contract in Contracts)
         {
-            _timeLineItemViewModels = MapViewModels(contract);
+            _timeLineItemViewModels = MapViewModels(contract).Result;
             <div class="col-md-4 mb-4">
                 <MudCard Outlined="true" Elevation="25" Style="height: 800px;">
                     <MudCardHeader><MudText Typo="Typo.h6">Borrowing @contract.Item.Name from @contract.Owner.FirstName</MudText></MudCardHeader>
@@ -21,30 +21,13 @@
     </div>
 </div>
 
+
 @code {
     [Parameter]
     public List<Contract>? Contracts { get; set; }
+    [Parameter]
+    public string UserId { get; set; }
     private List<TimeLineItemVM> _timeLineItemViewModels = new List<TimeLineItemVM>();
-
-    // private async Task<List<TimeLineItemVM>> MapViewModels(Contract contract)
-    // {
-    //     var requestedEventVM = new TimeLineItemVM
-    //     {
-    //         Title = ContractMilestone.Request,
-    //         IsActive = contract.StatusChanges?.Count == 1 && contract.StatusChanges.First().To == ContractStatus.Pending,
-    //         Color = MudBlazor.Color.Success,
-    //         ShowInfoCard = true,
-    //         InfoCardData = new InfoCardVM
-    //         {
-    //             Title = "Request",
-    //             Content = $"You have requested to borrow {contract.Item} from {contract.Owner}",
-    //             Contract = contract
-    //         }
-    //     };
-
-    //     return _timeLineItemViewModels;
-    // }
-
 
     // if casegrupp 1
     //    if alternativ 1 - kör metod som matar in data i listan
@@ -80,26 +63,26 @@
     // Om Request && accepted && active && completed
     // Om Request && accepted && active && completed && archived
 
-    private List<TimeLineItemVM> MapViewModels(Contract contract)
+    private async Task<List<TimeLineItemVM>> MapViewModels(Contract contract)
     {
         var statusChanges = contract.StatusChanges?.Select(sc => sc.To).ToList() ?? new List<ContractStatus?>();
 
         return statusChanges switch
         {
             // Case group 1:
-            [ContractStatus.Pending] => HandlePending(contract),
-            [ContractStatus.Pending, ContractStatus.Denied] => HandleDenied(contract),
-            [ContractStatus.Pending, ContractStatus.Cancelled] => HandleCancelled(contract),
+            [ContractStatus.Pending] => await HandlePending(contract),
+            [ContractStatus.Pending, ContractStatus.Denied] => await HandleDenied(contract),
+            [ContractStatus.Pending, ContractStatus.Cancelled] => await HandleCancelled(contract),
 
             // Case group 2
-            [ContractStatus.Pending, ContractStatus.Accepted] => HandleAccepted(contract),
-            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Cancelled] => HandleAcceptedCancelled(contract),
-            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Cancelled] => HandleActiveCancelled(contract),
+            [ContractStatus.Pending, ContractStatus.Accepted] => await HandleAccepted(contract),
+            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Cancelled] => await HandleAcceptedCancelled(contract),
+            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Cancelled] => await HandleActiveCancelled(contract),
 
             // Case group 3
-            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active] => HandleActive(contract),
-            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Late] => HandleLate(contract),
-            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Completed] => HandleCompleted(contract),
+            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active] => await HandleActive(contract),
+            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Late] => await HandleLate(contract),
+            [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Completed] => await HandleCompleted(contract),
             // [ContractStatus.Pending, ContractStatus.Accepted, ContractStatus.Active, ContractStatus.Completed, ContractStatus.Archived] => HandleArchived(contract),
             // TODO: Add case where late but returned/completed
             // TODO: Add case where problem was reported
@@ -110,29 +93,29 @@
 
 
     // New request
-    private List<TimeLineItemVM> HandlePending(Contract contract)
+    private async Task<List<TimeLineItemVM>> HandlePending(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = nameof(ContractMilestone.Request),
                 IsActive = true,
-                Color = MudBlazor.Color.Success,
+                Color = Color.Success,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You have requested to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = nameof(ContractMilestone.Reply),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -144,9 +127,9 @@
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -158,9 +141,9 @@
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -176,43 +159,43 @@
 
 
     // Request denied by owner
-    private List<TimeLineItemVM> HandleDenied(Contract contract)
+    private async Task<List<TimeLineItemVM>> HandleDenied(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = ContractMilestone.Request.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = ContractMilestone.Reply.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Error,
+                Color = Color.Error,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request denied",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Denied).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner.FirstName} {contract.Owner.LastName} denied your request.",
+                    EventDate = await ContractStringBuilder.DeniedDate(contract),
+                    Content = await ContractStringBuilder.DeniedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -224,9 +207,9 @@
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -242,43 +225,43 @@
 
 
     // Cancelled by borrower before reply
-    private List<TimeLineItemVM> HandleCancelled(Contract contract)
+    private async Task<List<TimeLineItemVM>> HandleCancelled(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = ContractMilestone.Request.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = ContractMilestone.Reply.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Error,
+                Color = Color.Error,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request cancelled",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You cancelled your request to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.CancelledDate(contract),
+                    Content = await ContractStringBuilder.CancelledCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -290,9 +273,9 @@
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -308,57 +291,57 @@
 
 
     // Request accepted
-    private List<TimeLineItemVM> HandleAccepted(Contract contract)
+    private async Task<List<TimeLineItemVM>> HandleAccepted(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = nameof(ContractMilestone.Request),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = nameof(ContractMilestone.Reply),
                 IsActive = true,
-                Color = MudBlazor.Color.Success,
+                Color = Color.Success,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request accepted",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Accepted).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner.FirstName} {contract.Owner.LastName} accepted your request to borrow {contract.Item}",
+                    EventDate = await ContractStringBuilder.AcceptedDate(contract),
+                    Content = await ContractStringBuilder.AcceptedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = nameof(ContractMilestone.Pickup),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
-                ShowInfoCard = false,
+                Color = Color.Default,
+                ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Pick up date",
-                    EventDate = contract.StartTime.ToShortDateString(),
-                    Content = $"Remember to pick up {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName} on {contract.StartTime.ToShortDateString()}",
+                    EventDate = contract.StartTime.ToString(),
+                    Content = await ContractStringBuilder.PickupSoonCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -373,58 +356,58 @@
     }
 
 
-    // Request accepted and then cancelled av either party
-    private List<TimeLineItemVM> HandleAcceptedCancelled(Contract contract)
+    // Request accepted and then cancelled av either party - before start date
+    private async Task<List<TimeLineItemVM>> HandleAcceptedCancelled(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = nameof(ContractMilestone.Request),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = nameof(ContractMilestone.Reply),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request accepted",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Accepted).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner.FirstName} {contract.Owner.LastName} accepted your request to borrow {contract.Item.Name}",
+                    EventDate = await ContractStringBuilder.AcceptedDate(contract),
+                    Content = await ContractStringBuilder.AcceptedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Error,
+                Color = Color.Error,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Pick up cancelled",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).FirstOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).FirstOrDefault().ChangedBy.FirstName} {contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).FirstOrDefault().ChangedBy.LastName} cancelled on {contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).FirstOrDefault()}",
+                    EventDate = await ContractStringBuilder.CancelledDate(contract),
+                    Content = await ContractStringBuilder.CancelledCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -441,57 +424,57 @@
 
     // Cancellation after contract start time
     // TODO: Careful with backend logic for handling active status - borrower should not be able to cancel after pickup date without Owner's consent
-    private List<TimeLineItemVM> HandleActiveCancelled(Contract contract)
+    private  async Task<List<TimeLineItemVM>> HandleActiveCancelled(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = ContractMilestone.Request.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = ContractMilestone.Reply.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request accepted",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Accepted).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner} accepted your request to borrow {contract.Item.Name}",
+                    EventDate = await ContractStringBuilder.AcceptedDate(contract),
+                    Content = await ContractStringBuilder.AcceptedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Error,
+                Color = Color.Error,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Pick up cancelled",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).FirstOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.StatusChanges.Where(s => s.To == ContractStatus.Cancelled).FirstOrDefault().ChangedBy.FirstName} cancelled on {contract.StartTime.ToShortDateString()}",
+                    EventDate = await ContractStringBuilder.CancelledDate(contract),
+                    Content = await ContractStringBuilder.CancelledCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
@@ -507,63 +490,63 @@
 
 
     // Render active contract
-    private List<TimeLineItemVM> HandleActive(Contract contract)
+    private  async Task<List<TimeLineItemVM>> HandleActive(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = ContractMilestone.Request.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = ContractMilestone.Reply.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request accepted",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Accepted).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner.FirstName} {contract.Owner.LastName} accepted your request to borrow {contract.Item}",
+                    EventDate = await ContractStringBuilder.AcceptedDate(contract),
+                    Content = await ContractStringBuilder.AcceptedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Success,
+                Color = Color.Success,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Picked up",
-                    EventDate = contract.StartTime.ToShortDateString(),
-                    Content = $"You are currently borrowing {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.ActiveDate(contract),
+                    Content = await ContractStringBuilder.ActiveCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = false,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Return date",
                     EventDate = contract.EndTime.ToShortDateString(),
-                    Content = "",
+                    Content = await ContractStringBuilder.ReturnReminderCardContent(contract, UserId),
                     Contract = null
                 }
             }
@@ -573,63 +556,63 @@
 
 
     // Warns about late return
-    private List<TimeLineItemVM> HandleLate(Contract contract)
+    private  async Task<List<TimeLineItemVM>> HandleLate(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = ContractMilestone.Request.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = ContractMilestone.Reply.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request accepted",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Accepted).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner.FirstName} {contract.Owner.LastName} accepted your request to borrow {contract.Item.Name}",
+                    EventDate = await ContractStringBuilder.AcceptedDate(contract),
+                    Content = await ContractStringBuilder.AcceptedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Picked up",
-                    EventDate = contract.StartTime.ToShortDateString(),
-                    Content = $"You are currently borrowing {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.ActiveDate(contract),
+                    Content = await ContractStringBuilder.ActiveCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Warning,
+                Color = Color.Warning,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Late return",
                     EventDate = contract.EndTime.ToShortDateString(),
-                    Content = $"You were supposed to return {contract.Item.Name} to {contract.Owner.FirstName} {contract.Owner.LastName} on {contract.EndTime.ToShortDateString()}",
+                    Content = await ContractStringBuilder.LateCardContent(contract, UserId),
                     Contract = contract
                 }
             }
@@ -637,75 +620,68 @@
         return _timeLineItemViewModels;
     }
 
-    private List<TimeLineItemVM> HandleCompleted(Contract contract)
+
+    private  async Task<List<TimeLineItemVM>> HandleCompleted(Contract contract)
     {
         _timeLineItemViewModels = new()
         {
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Request.ToString(),
+                EventName = ContractMilestone.Request.ToString(),
                 IsActive = false,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Pending).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"You requested to borrow {contract.Item.Name} from {contract.Owner}",
+                    EventDate = await ContractStringBuilder.RequestDate(contract),
+                    Content = await ContractStringBuilder.RequestCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Reply.ToString(),
+                EventName = ContractMilestone.Reply.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Request accepted",
-                    EventDate = contract.StatusChanges.Where(s => s.To == ContractStatus.Accepted).LastOrDefault().ChangedAt.ToString(),
-                    Content = $"{contract.Owner.FirstName} {contract.Owner.LastName} accepted your request to borrow {contract.Item.Name}",
+                    EventDate = await ContractStringBuilder.AcceptedDate(contract),
+                    Content = await ContractStringBuilder.AcceptedCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Pickup.ToString(),
+                EventName = ContractMilestone.Pickup.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Default,
+                Color = Color.Default,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Picked up",
-                    EventDate = contract.StartTime.ToShortDateString(),
-                    Content = $"You are currently borrowing {contract.Item.Name} from {contract.Owner.FirstName} {contract.Owner.LastName}",
+                    EventDate = await ContractStringBuilder.ActiveDate(contract),
+                    Content = await ContractStringBuilder.ActiveCardContent(contract, UserId),
                     Contract = contract
                 }
             },
             new TimeLineItemVM
             {
-                Title = ContractMilestone.Return.ToString(),
+                EventName = ContractMilestone.Return.ToString(),
                 IsActive = true,
-                Color = MudBlazor.Color.Success,
+                Color = Color.Success,
                 ShowInfoCard = true,
                 InfoCardData = new InfoCardVM
                 {
                     Title = "Returned",
-                    EventDate = contract.EndTime.ToShortDateString(),
-                    Content = $"You've returned {contract.Item.Name} to {contract.Owner.FirstName} {contract.Owner.LastName} on {contract.EndTime.ToShortDateString()}",
+                    EventDate = await ContractStringBuilder.CompletedDate(contract),
+                    Content = await ContractStringBuilder.CompletedCardContent(contract, UserId),
                     Contract = contract
                 }
             }
         };
         return _timeLineItemViewModels;
     }
-
-    // Archived contracts should not be rendered in the timeline view
-    // private List<TimeLineItemVM> HandleArchived(Contract contract)
-    // {
-    //     // Implement logic for handling archived status
-    // }
-
-
 }

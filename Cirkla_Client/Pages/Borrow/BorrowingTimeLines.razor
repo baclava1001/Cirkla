@@ -11,11 +11,11 @@
 
 <h3>You are borrowing</h3>
 <hr/>
-<TimeLineGrid Contracts="BorrowingItems ?? new List<Contract>()" /> @*For borrowed items*@
+<TimeLineGrid Contracts="BorrowingItems ?? new List<Contract>()" UserId="@_tempUserId" />
 
 <h3>You are sharing</h3>
 <hr/>
-<TimeLineGrid Contracts="SharingItems ?? new List<Contract>()" /> @*For shared items*@
+<TimeLineGrid Contracts="SharingItems ?? new List<Contract>()" UserId="@_tempUserId" />
 
 
 
