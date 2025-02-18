@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Cirkla_API.Hubs.ContractUpdate;
 
 namespace Cirkla_API
 {
@@ -26,6 +27,7 @@ namespace Cirkla_API
                 .GetConnectionString("AppConnectionString")));
 
 
+            builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,6 +73,7 @@ namespace Cirkla_API
 
             app.UseHttpsRedirection();
 
+            // TODO: Safer CORS policy
             app.UseCors("AllowAll");
 
             app.UseAuthentication();
@@ -78,6 +81,8 @@ namespace Cirkla_API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapHub<ContractUpdateHub>("contractNotifications");
 
             // Seed roles on startup
             using (var scope = app.Services.CreateScope())

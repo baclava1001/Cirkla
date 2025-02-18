@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+
+
+<h3>Notifications!</h3>
+
+@foreach (var message in _messages)
+{
+    <li>@message</li>
+}
+
+@code {
+    
+    private HubConnection? _hubConnection;
+    private List<string> _messages = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Connecting Client to the SignalR Hub
+        // Set up and build the SignalR connection to the server
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
+            .Build();
+
+        // Method call to receive the message from the server
+        _hubConnection.On<string>("ReceiveContractUpdate", message =>
+        {
+            _messages.Add(message);
+
+            // Update the UI
+            InvokeAsync(StateHasChanged);
+        });
+
+        // Start the connection
+        await _hubConnection.StartAsync();
+    }
+
+
+    // Dispose of the SignalR connection
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+}

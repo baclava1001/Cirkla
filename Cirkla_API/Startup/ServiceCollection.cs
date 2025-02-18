@@ -11,8 +11,8 @@ using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 using Cirkla_API.Services.Authentication;
+using Cirkla_API.Services.Notifications;
 using Cirkla_API.Services.TimeLines;
-//using Cirkla_API.Services.Inbox;
 using Cirkla_API.Services.TokenGenerator;
 
 namespace Cirkla_API.Startup;
@@ -30,7 +30,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ICustomAuthenticationService, CustomAuthenticationService>();
-        // builder.Services.AddScoped<IProfileService, ProfileService>(); <= remove?
 
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemService, ItemService>();
@@ -40,9 +39,12 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<ITimeLineService, TimeLineService>();
-        //services.AddScoped<IInboxService, InboxService>();
         services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
+        services.AddSignalR();
+        services.AddHostedService<ServerTimeNotifier>();
+
+        // TODO: Safer CORS policy
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
@@ -57,7 +59,6 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddOpenApiDocument();
-
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
 
