@@ -20,7 +20,7 @@ public class ServerTimeNotifier : BackgroundService
         while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
         {
             _logger.LogInformation("{Service} ran on {Time}.", nameof(ServerTimeNotifier), DateTime.Now);
-            await _hubContext.Clients.All.ReceiveContractUpdate($"This is a test: Server time is {DateTime.Now}");
+            await _hubContext.Clients.All.ReceiveContractUpdate();
         }
     }
 }

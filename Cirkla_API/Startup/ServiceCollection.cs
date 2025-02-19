@@ -11,7 +11,6 @@ using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 using Cirkla_API.Services.Authentication;
-using Cirkla_API.Services.Notifications;
 using Cirkla_API.Services.TimeLines;
 using Cirkla_API.Services.TokenGenerator;
 
@@ -42,7 +41,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
         services.AddSignalR();
-        services.AddHostedService<ServerTimeNotifier>();
+        // services.AddHostedService<ServerTimeNotifier>(); // Sends "heartbeat" updates to clients, testing purposes
 
         // TODO: Safer CORS policy
         services.AddCors(options =>
@@ -59,9 +58,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddOpenApiDocument();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
-
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 
