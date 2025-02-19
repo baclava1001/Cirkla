@@ -12,12 +12,15 @@
     <EmbeddedResource Remove="Pages\Inbox\**" />
     <None Remove="Pages\Inbox\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Pages\Borrow\ReplyToRequestButtons.razor" />
+  </ItemGroup>
+	
 
   <ItemGroup>
     <Content Remove="Pages\Cirkla.razor" />
     <Content Remove="Pages\ItemCreateAndEdit\ReplyButtons.razor" />
   </ItemGroup>
-
   <ItemGroup>
 	  <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
 	  <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />

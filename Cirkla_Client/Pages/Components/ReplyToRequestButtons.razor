@@ -1,11 +1,13 @@
 ﻿@inject IClient _client;
 
-
-<div class="d-flex">
-    <a href="/inventory" class="btn btn-secondary me-2" type="button">Back</a>
-    <button type="button" id="Deny" class="btn btn-danger me-2" @onclick='() => SendReplyToBorrower("Deny")'>Deny(icon)</button>
-    <button type="button" id="Accept" class="btn btn-success me-2" @onclick='() => SendReplyToBorrower("Accept")'>Accept(icon)</button>
-</div>
+@if (Contract is not null)
+{
+    <div class="d-flex">
+        <a href="/borrowing-timelines" class="btn btn-secondary me-2" type="button">Back</a>
+        <button type="button" id="Deny" class="btn btn-danger me-2" @onclick='() => SendReplyToBorrower("Deny")'>Deny(icon)</button>
+        <button type="button" id="Accept" class="btn btn-success me-2" @onclick='() => SendReplyToBorrower("Accept")'>Accept(icon)</button>
+    </div>
+}
 
 
 @code {
@@ -18,12 +20,15 @@
         ContractUpdateDTO contractUpdateDTO = new()
             {
                 Id = Contract.Id,
+                UpdatedByUserId = Contract.Owner.Id,
                 ItemId = Contract.Item.Id,
                 OwnerId = Contract.Owner.Id,
                 BorrowerId = Contract.Borrower.Id,
                 StartTime = Contract.StartTime,
                 EndTime = Contract.EndTime,
-                Created = Contract.Created
+                Created = Contract.Created,
+                CurrentStatus = ContractStatus.Accepted,
+                LastStatus = Contract.StatusChanges.LastOrDefault().To
             };
 
         try

@@ -1,5 +1,6 @@
-﻿@page "/request/view"
+﻿@* @page "/request/view" *@
 @page "/request/review"
+@using Cirkla_Client.Pages.Components
 @inject IClient _client;
 @inject NavigationManager _navigationManager;
 
@@ -48,12 +49,12 @@
 
 
 @code {
-    // TODO: Finalized contract (accepted and active, or archived or denied) should lead to another, more static view, with no controls
+    // TODO: Finalized contract (active or archived or denied) should lead to another, more static view, with no controls
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
 
-    public Contract? Contract { get; set; }
+    private Contract? Contract { get; set; }
 
     private string? _route;
     private string? _requestNumber;
@@ -70,6 +71,7 @@
 
     private async Task GetRequestDataFromApi()
     {
+        Console.WriteLine("Getting Contract values from API...");
         try
         {
             Contract = await _client.ApiBorrowingContractViewRequestSummaryAsync(Id);
@@ -77,6 +79,7 @@
         }
         catch (ApiException ex)
         {
+            Console.WriteLine("Something went wrong getting Contract values from API...");
             if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
             {
                 _messageClass = "text-success";
