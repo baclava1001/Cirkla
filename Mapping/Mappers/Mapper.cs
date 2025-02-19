@@ -59,7 +59,8 @@ namespace Mapping.Mappers
                 Item = item,
                 Owner = owner,
                 StartTime = contractUpdateDTO.StartTime,
-                EndTime = contractUpdateDTO.EndTime
+                EndTime = contractUpdateDTO.EndTime,
+                StatusChanges = new List<ContractStatusChange>()
             };
 
             contract.StatusChanges.Add(new ContractStatusChange

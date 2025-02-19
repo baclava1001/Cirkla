@@ -25,21 +25,26 @@ public class EntityChangeHandler
     // The sender parameter is the source of the event, and the args parameter contains the event data.
     private async void OnEntityChanged(object sender, EntityChangedEventArgs args)
     {
-        // Create a new notification entry in the database
-        var notification = new ContractNotification
+        try
         {
-            Id = args.Entity.Id,
-            NotificationMessage = "", // Message is set in the client
-            Contract = args.Entity,
-            CreatedAt = DateTime.Now,
-            HasBeenRead = false
-        };
+            var notification = new ContractNotification
+            {
+                Id = args.Entity.Id,
+                NotificationMessage = "", // Message is set in the client
+                Contract = args.Entity,
+                CreatedAt = DateTime.Now,
+                HasBeenRead = false
+            };
 
-        _dbContext.ContractNotifications.Add(notification);
-        await _dbContext.SaveChangesAsync();
+            _dbContext.ContractNotifications.Add(notification);
+            await _dbContext.SaveChangesAsync();
 
-        // Use the IHubContext to send the updated Contract entity to all connected clients.
-        // The ReceiveContractUpdate method on the client side will be called with the updated Contract entity.
-        await _hubContext.Clients.All.ReceiveContractUpdate(notification);
+            await _hubContext.Clients.All.ReceiveContractUpdate(notification);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            Console.WriteLine($"Error in OnEntityChanged: {ex.Message}");
+        }
     }
 }

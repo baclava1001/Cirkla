@@ -10,6 +10,6 @@ namespace Mapping.DTOs.Contracts
         public int Id { get; set; }
         [Required]
         public string UpdatedByUserId { get; set; }
-        public ContractStatus LastStatus { get; set; }
+        public ContractStatus LastStatus { get; set; } // Previous status, change name to clarify
     }
 }
