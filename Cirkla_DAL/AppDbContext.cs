@@ -13,8 +13,9 @@ namespace Cirkla_DAL
         public DbSet<ItemPicture> ItemPictures { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<ContractStatusChange> ContractStatusChanges { get; set; }
-        
-        // Event handler for when a Contract entity changes
+        public DbSet<ContractNotification> ContractNotifications { get; set; }
+
+        // Event for when a Contract entity changes
         public event EventHandler<EntityChangedEventArgs> EntityChanged;
 
         protected override void OnModelCreating(ModelBuilder builder)

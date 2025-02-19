@@ -4,5 +4,5 @@ namespace Cirkla_API.Hubs.ContractUpdate;
 
 public interface IContractUpdateHub
 {
-    Task ReceiveContractUpdate(Contract contract);
+    Task ReceiveContractUpdate(ContractNotification contractNotification);
 }

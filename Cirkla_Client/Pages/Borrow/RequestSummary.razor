@@ -5,7 +5,7 @@
 
 
 <PageTitle>Request summary</PageTitle>
-<h3>Request summary @requestNumber</h3>
+<h3>Request summary @_requestNumber</h3>
 <hr />
 
 <div>
@@ -34,17 +34,15 @@
             <dt class="col-sm-2">Status</dt>
             <dd class="col-sm-10">Request @Contract.StatusChanges.LastOrDefault().To.ToString().ToLower()</dd>
 
-            @if (route == "/request/review" && Contract.StatusChanges.LastOrDefault().To != ContractStatus.Accepted && Contract.StatusChanges.LastOrDefault().To != ContractStatus.Denied)
+            @if (Contract?.StatusChanges?.LastOrDefault()?.To != ContractStatus.Accepted && Contract?.StatusChanges?.LastOrDefault()?.To != ContractStatus.Denied)
             {
-            <CascadingValue Value="Contract">
-                <ReplyToRequestButtons />
-            </CascadingValue>
+                <ReplyToRequestButtons Contract="Contract" />
             }
         </dl>
     }
-    @if(!string.IsNullOrEmpty(tempMessage))
+    @if(!string.IsNullOrEmpty(_tempMessage))
     {
-        <p class="@messageClass mt-3">@tempMessage</p>
+        <p class="@_messageClass mt-3">@_tempMessage</p>
     }
 </div>
 
@@ -55,18 +53,17 @@
     [SupplyParameterFromQuery]
     public int Id { get; set; }
 
-    [CascadingParameter]
     public Contract? Contract { get; set; }
 
-    private string? route;
-    private string? requestNumber;
-    private string? tempMessage;
-    private string? messageClass;
+    private string? _route;
+    private string? _requestNumber;
+    private string? _tempMessage;
+    private string? _messageClass;
 
     protected override async Task OnInitializedAsync()
     {
         await GetRequestDataFromApi();
-        route = await CaptureUrlRoute();
+        _route = await CaptureUrlRoute();
     }
 
 
@@ -76,14 +73,14 @@
         try
         {
             Contract = await _client.ApiBorrowingContractViewRequestSummaryAsync(Id);
-            requestNumber = $"#{Contract.Id}";
+            _requestNumber = $"#{Contract.Id}";
         }
         catch (ApiException ex)
         {
             if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
             {
-                messageClass = "text-success";
-                tempMessage = "Here's the request!";
+                _messageClass = "text-success";
+                _tempMessage = "Here's the request!";
             }
             else if (ex.StatusCode == 404)
             {
@@ -91,8 +88,8 @@
             }
             else
             {
-                messageClass = "text-danger";
-                tempMessage = ex.Message.ToString();
+                _messageClass = "text-danger";
+                _tempMessage = ex.Message.ToString();
             }
         }
     }
