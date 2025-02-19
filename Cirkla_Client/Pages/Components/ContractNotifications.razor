@@ -1,19 +1,16 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @implements IAsyncDisposable
 
+<h3>Notifications here below!</h3>
 
-<h3>Notifications!</h3>
-
-@foreach (var contract in _contracts)
+@foreach (var notification in _notifications)
 {
-    <li>@contract.Item, @contract.StatusChanges.LastOrDefault().To</li>
+    <li>@notification.Contract.Item, @notification.Contract.StatusChanges.LastOrDefault().To</li>
 }
 
 @code {
-    
     private HubConnection? _hubConnection;
-    private List<Contract> _contracts = new();
-
+    private List<ContractNotification> _notifications = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,9 +21,10 @@
             .Build();
 
         // Method call to receive the message from the server
-        _hubConnection.On<Contract>("ReceiveContractUpdate", contract =>
+        _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
         {
-            _contracts.Add(contract);
+            notification.NotificationMessage = GetNotificationMessage(notification);
+            _notifications.Add(notification);
 
             // Update the UI
             InvokeAsync(StateHasChanged);
@@ -34,6 +32,18 @@
 
         // Start the connection
         await _hubConnection.StartAsync();
+    }
+
+
+    private string GetNotificationMessage(ContractNotification notification)
+    {
+        var lastStatusChange = notification.Contract.StatusChanges?.LastOrDefault();
+        if (lastStatusChange == null)
+        {
+            return "";
+        }
+
+        return $"Status changed to {lastStatusChange.To} by {lastStatusChange.ChangedBy.FirstName} {lastStatusChange.ChangedBy.LastName}.";
     }
 
 

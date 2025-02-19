@@ -1,6 +1,6 @@
 ﻿using Cirkla.ApiClient;
 
-namespace Cirkla_Client.Constants;
+namespace Cirkla_Client.Services;
 
 public static class ContractStringBuilder
 {
@@ -69,11 +69,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"You have requested to borrow {contract.Item.Name} from {ContractStringBuilder.OwnerFullName(contract).Result}.";
+                message = $"You have requested to borrow {contract.Item.Name} from {OwnerFullName(contract).Result}.";
             }
             else
             {
-                message = $"{ContractStringBuilder.BorrowerFullName(contract).Result} has requested to borrow {contract.Item.Name}.";
+                message = $"{BorrowerFullName(contract).Result} has requested to borrow {contract.Item.Name}.";
             }
         }
         return message;
@@ -87,11 +87,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"{ContractStringBuilder.OwnerFullName(contract).Result} has accepted your request to borrow {contract.Item.Name}.";
+                message = $"{OwnerFullName(contract).Result} has accepted your request to borrow {contract.Item.Name}.";
             }
             else
             {
-                message = $"You have accepted {ContractStringBuilder.BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}.";
+                message = $"You have accepted {BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}.";
             }
         }
         return message;
@@ -104,11 +104,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"{ContractStringBuilder.OwnerFullName(contract).Result} has denied your request to borrow {contract.Item.Name}.";
+                message = $"{OwnerFullName(contract).Result} has denied your request to borrow {contract.Item.Name}.";
             }
             else
             {
-                message = $"You have denied {ContractStringBuilder.BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}.";
+                message = $"You have denied {BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}.";
             }
         }
         return message;
@@ -130,13 +130,13 @@ public static class ContractStringBuilder
             message = (isBorrower, isOwner, isChangedByUser) switch
             {
                 (true, _, true) =>
-                    $"You have cancelled your request to borrow {contract.Item.Name} from {ContractStringBuilder.OwnerFullName(contract)}.",
+                    $"You have cancelled your request to borrow {contract.Item.Name} from {OwnerFullName(contract)}.",
                 (_, true, true) =>
-                    $"{ContractStringBuilder.BorrowerFullName(contract).Result} has cancelled their request to borrow {contract.Item.Name}.",
+                    $"{BorrowerFullName(contract).Result} has cancelled their request to borrow {contract.Item.Name}.",
                 (true, _, false) =>
-                    $"{ContractStringBuilder.OwnerFullName(contract).Result} has cancelled your request to borrow {contract.Item.Name}.",
+                    $"{OwnerFullName(contract).Result} has cancelled your request to borrow {contract.Item.Name}.",
                 _ =>
-                    $"You have cancelled {ContractStringBuilder.BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}."
+                    $"You have cancelled {BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}."
             };
         }
         return message;
@@ -151,11 +151,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"Remember to pick up {contract.Item.Name} from {ContractStringBuilder.OwnerFullName(contract).Result} on {contract.StartTime.ToShortDateString()}";
+                message = $"Remember to pick up {contract.Item.Name} from {OwnerFullName(contract).Result} on {contract.StartTime.ToShortDateString()}";
             }
             else
             {
-                message = $"{ContractStringBuilder.BorrowerFullName(contract).Result} will pick up {contract.Item.Name} on the {contract.StartTime.ToShortDateString()}.";
+                message = $"{BorrowerFullName(contract).Result} will pick up {contract.Item.Name} on the {contract.StartTime.ToShortDateString()}.";
             }
         }
         return message;
@@ -169,11 +169,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"You are currently borrowing {contract.Item.Name} from {ContractStringBuilder.OwnerFullName(contract).Result}";
+                message = $"You are currently borrowing {contract.Item.Name} from {OwnerFullName(contract).Result}";
             }
             else
             {
-                message = $"{ContractStringBuilder.BorrowerFullName(contract).Result} is borrowing {contract.Item.Name} from you.";
+                message = $"{BorrowerFullName(contract).Result} is borrowing {contract.Item.Name} from you.";
             }
         }
         return message;
@@ -187,11 +187,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"Remember to return {contract.Item.Name} to {ContractStringBuilder.OwnerFullName(contract).Result} on {contract.EndTime.ToShortDateString()}";
+                message = $"Remember to return {contract.Item.Name} to {OwnerFullName(contract).Result} on {contract.EndTime.ToShortDateString()}";
             }
             else
             {
-                message = $"{ContractStringBuilder.BorrowerFullName(contract).Result} will return {contract.Item.Name} on the {contract.EndTime.ToShortDateString()}.";
+                message = $"{BorrowerFullName(contract).Result} will return {contract.Item.Name} on the {contract.EndTime.ToShortDateString()}.";
             }
         }
         return message;
@@ -205,11 +205,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"Warning! You are late to return {contract.Item.Name} to {ContractStringBuilder.OwnerFullName(contract).Result}.";
+                message = $"Warning! You are late to return {contract.Item.Name} to {OwnerFullName(contract).Result}.";
             }
             else
             {
-                message = $"{ContractStringBuilder.BorrowerFullName(contract).Result} is late to return {contract.Item.Name}.";
+                message = $"{BorrowerFullName(contract).Result} is late to return {contract.Item.Name}.";
             }
         }
         return message;
@@ -223,11 +223,11 @@ public static class ContractStringBuilder
         {
             if (userId == contract.Borrower.Id)
             {
-                message = $"You've now returned {contract.Item.Name} to {ContractStringBuilder.OwnerFullName(contract).Result}.";
+                message = $"You've now returned {contract.Item.Name} to {OwnerFullName(contract).Result}.";
             }
             else
             {
-                message = $"{ContractStringBuilder.BorrowerFullName(contract).Result} has now returned {contract.Item.Name}.";
+                message = $"{BorrowerFullName(contract).Result} has now returned {contract.Item.Name}.";
             }
         }
         return message;

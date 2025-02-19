@@ -63,11 +63,11 @@
     // Om Request && accepted && active && completed
     // Om Request && accepted && active && completed && archived
 
-    private async Task<List<TimeLineItemVM>> MapViewModels(Contract contract)
+    private async Task<List<TimeLineItemVM?>> MapViewModels(Contract contract)
     {
         var statusChanges = contract.StatusChanges?.Select(sc => sc.To).ToList() ?? new List<ContractStatus?>();
 
-        return statusChanges switch
+        return (statusChanges switch
         {
             // Case group 1:
             [ContractStatus.Pending] => await HandlePending(contract),
@@ -88,7 +88,7 @@
             // TODO: Add case where problem was reported
 
             _ => new List<TimeLineItemVM>()
-        };
+        })!;
     }
 
 

@@ -13,10 +13,9 @@ public class ContractUpdateHub : Hub<IContractUpdateHub>
         await base.OnConnectedAsync();
     }
 
-    // Send updates to clients
-    public async Task HandleEntityChanged(EntityChangedEventArgs args)
+
+    public async Task ReceiveNotReceiveContractUpdate(ContractNotification notification)
     {
-        var entity = args.Entity;
-        await Clients.All.ReceiveContractUpdate(entity);
+        await Clients.All.ReceiveContractUpdate(notification);
     }
 }
