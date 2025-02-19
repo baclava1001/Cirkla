@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Cirkla_DAL.Events;
+using Cirkla_DAL.Models;
+using Microsoft.AspNetCore.SignalR;
 using NuGet.Protocol.Providers;
 
 namespace Cirkla_API.Hubs.ContractUpdate;
@@ -8,7 +10,13 @@ public class ContractUpdateHub : Hub<IContractUpdateHub>
 {
     public override async Task OnConnectedAsync()
     {
-        await Clients.Client(Context.ConnectionId).ReceiveContractUpdate($"{Context.ConnectionId} has joined the hub!");
         await base.OnConnectedAsync();
+    }
+
+    // Send updates to clients
+    public async Task HandleEntityChanged(EntityChangedEventArgs args)
+    {
+        var entity = args.Entity;
+        await Clients.All.ReceiveContractUpdate(entity);
     }
 }

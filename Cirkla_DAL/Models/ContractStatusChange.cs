@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Cirkla_DAL.Models.Enums;
+﻿using Cirkla_DAL.Models.Enums;
 
 namespace Cirkla_DAL.Models
 {

@@ -29,21 +29,10 @@
             <dd class="col-sm-10">@Contract?.StartTime</dd>
             <dt class="col-sm-2">To</dt>
             <dd class="col-sm-10">@Contract?.EndTime</dd>
-            <dt class="col-sm-2">Under the following conditions</dt>
-            <dd class="col-sm-10">(Coming feature, not yet implemented)</dd>
+            @* <dt class="col-sm-2">Under the following conditions</dt>
+            <dd class="col-sm-10">(Coming feature, not yet implemented)</dd> *@
             <dt class="col-sm-2">Status</dt>
-            @if(Contract.StatusChanges.LastOrDefault().To == ContractStatus.Accepted)
-            {
-            <dd class="col-sm-10">Request accepted</dd>
-            }
-            else if(Contract.StatusChanges.LastOrDefault().To == ContractStatus.Denied)
-            {
-            <dd class="col-sm-10">Request denied</dd>
-            }
-            else
-            {
-            <dd class="col-sm-10">Waiting for reply from owner</dd>
-            }
+            <dd class="col-sm-10">Request @Contract.StatusChanges.LastOrDefault().To.ToString().ToLower()</dd>
 
             @if (route == "/request/review" && Contract.StatusChanges.LastOrDefault().To != ContractStatus.Accepted && Contract.StatusChanges.LastOrDefault().To != ContractStatus.Denied)
             {
