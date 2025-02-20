@@ -32,10 +32,10 @@
             <dd class="col-sm-10">@Contract?.EndTime</dd>
             @* <dt class="col-sm-2">Under the following conditions</dt>
             <dd class="col-sm-10">(Coming feature, not yet implemented)</dd> *@
-            <dt class="col-sm-2">Status</dt>
-            <dd class="col-sm-10">Request @Contract.StatusChanges.LastOrDefault().To.ToString().ToLower()</dd>
+            <dt class="col-sm-2">Current status</dt>
+            <dd class="col-sm-10">@Contract.StatusChanges.LastOrDefault().To</dd>
 
-            @if (Contract?.StatusChanges?.LastOrDefault()?.To != ContractStatus.Accepted && Contract?.StatusChanges?.LastOrDefault()?.To != ContractStatus.Denied)
+            @if (Contract?.StatusChanges?.LastOrDefault()?.To is not ContractStatus.Accepted && Contract?.StatusChanges?.LastOrDefault()?.To is not ContractStatus.Denied)
             {
                 <ReplyToRequestButtons Contract="Contract" />
             }
@@ -71,7 +71,7 @@
 
     private async Task GetRequestDataFromApi()
     {
-        Console.WriteLine("Getting Contract values from API...");
+        Console.WriteLine("RequestSummary component is getting Contract values from API...");
         try
         {
             Contract = await _client.ApiBorrowingContractViewRequestSummaryAsync(Id);
@@ -79,7 +79,6 @@
         }
         catch (ApiException ex)
         {
-            Console.WriteLine("Something went wrong getting Contract values from API...");
             if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
             {
                 _messageClass = "text-success";
@@ -87,10 +86,12 @@
             }
             else if (ex.StatusCode == 404)
             {
+                Console.WriteLine("Something went wrong getting Contract values from API.");
                 _navigationManager.NavigateTo("/notfound");
             }
             else
             {
+                Console.WriteLine("Something went wrong getting Contract values from API.");
                 _messageClass = "text-danger";
                 _tempMessage = ex.Message.ToString();
             }

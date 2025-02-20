@@ -10,6 +10,7 @@ using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
+using Cirkla_API.Hubs.ContractUpdate;
 using Cirkla_API.Services.Authentication;
 using Cirkla_API.Services.TimeLines;
 using Cirkla_API.Services.TokenGenerator;
@@ -40,8 +41,16 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITimeLineService, TimeLineService>();
         services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
-        services.AddSignalR();
-        // services.AddHostedService<ServerTimeNotifier>(); // Sends "heartbeat" updates to clients, testing purposes
+        // Remove entirely? Would be used to relay changes to clients through event callbacks and SignalR but didn't work as intended
+        // services.AddHostedService<EntityChangeHandler>(); 
+        services.AddSignalR().AddJsonProtocol(options =>
+        {
+            options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        });
+
+        services.AddSingleton<ContractUpdateHub>();
+        // Sends "heartbeat" updates to clients, testing purposes
+        // services.AddHostedService<ServerTimeNotifier>(); 
 
         // TODO: Safer CORS policy
         services.AddCors(options =>

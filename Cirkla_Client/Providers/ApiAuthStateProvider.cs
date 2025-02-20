@@ -1,9 +1,9 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Cirkla_API.Providers
+namespace Cirkla_Client.Providers
 {
     /// <summary>
     /// This class contains logic for reading and setting authentication state.

@@ -58,6 +58,7 @@ namespace Mapping.Mappers
                 Id = contractUpdateDTO.Id,
                 Item = item,
                 Owner = owner,
+                Borrower = borrower,
                 StartTime = contractUpdateDTO.StartTime,
                 EndTime = contractUpdateDTO.EndTime,
                 StatusChanges = new List<ContractStatusChange>()

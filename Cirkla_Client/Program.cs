@@ -4,8 +4,8 @@ using Cirkla.ApiClient;
 using Cirkla_Client.Constants;
 using Cirkla_Client.Services;
 using Blazored.LocalStorage;
-using Cirkla_API.Providers;
 using System.IdentityModel.Tokens.Jwt;
+using Cirkla_Client.Providers;
 using MudBlazor.Services;
 
 namespace Cirkla_Client

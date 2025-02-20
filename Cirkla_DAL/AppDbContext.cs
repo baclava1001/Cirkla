@@ -43,33 +43,50 @@ namespace Cirkla_DAL
         }
 
         // Overrides SaveChanges to detect changes to Contract entities
-        public override int SaveChanges()
-        {
-            // Make a list of all the entities that have changed
-            var changedEntities = ChangeTracker.Entries()
-                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
-                .ToList();
+        //public override int SaveChanges()
+        //{
+        //    // Make a list of all the entities that have changed
+        //    var changedEntities = ChangeTracker.Entries()
+        //        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+        //        .ToList();
 
-            foreach (var entry in changedEntities)
-            {
-                if (entry.Entity is Contract)
-                {
-                    OnEntityChanged(entry);
-                }
-            }
-            return base.SaveChanges();
-        }
+        //    foreach (var entry in changedEntities)
+        //    {
+        //        if (entry.Entity is Contract)
+        //        {
+        //            OnEntityChanged(entry);
+        //        }
+        //    }
+        //    return base.SaveChanges();
+        //}
+
+        //public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        //{
+        //    // Make a list of all the entities that have changed
+        //    var changedEntities = ChangeTracker.Entries()
+        //        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+        //        .ToList();
+
+        //    foreach (var entry in changedEntities)
+        //    {
+        //        if (entry.Entity is Contract)
+        //        {
+        //            OnEntityChanged(entry);
+        //        }
+        //    }
+        //    return await base.SaveChangesAsync(cancellationToken);
+        //}
 
 
-        // Raises the EntityChanged event when a Contract entity changes
-        protected virtual void OnEntityChanged(EntityEntry entry)
-        {
-            var entity = entry.Entity as Contract;
-            if (entity is not null)
-            {
-                // Raise an event with the entity details
-                EntityChanged?.Invoke(this, new EntityChangedEventArgs(entity));
-            }
-        }
+        //// Raises the EntityChanged event when a Contract entity changes
+        //protected virtual void OnEntityChanged(EntityEntry entry)
+        //{
+        //    var entity = entry.Entity as Contract;
+        //    if (entity is not null)
+        //    {
+        //        // Raise an event with the entity details
+        //        EntityChanged?.Invoke(this, new EntityChangedEventArgs(entity));
+        //    }
+        //}
     }
 }

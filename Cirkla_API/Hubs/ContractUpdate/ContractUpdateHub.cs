@@ -14,8 +14,9 @@ public class ContractUpdateHub : Hub<IContractUpdateHub>
     }
 
 
-    public async Task ReceiveNotReceiveContractUpdate(ContractNotification notification)
+    public async Task ReceiveContractUpdate(ContractNotification notification)
     {
+        Console.WriteLine("ReceiveContractUpdate called!!!!!!!!!!!!!!!!!");
         await Clients.All.ReceiveContractUpdate(notification);
     }
 }

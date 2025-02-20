@@ -61,6 +61,7 @@ namespace Cirkla_API.Controllers
         public async Task<IActionResult> RespondToRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
             _logger.LogInformation("Responding to request");
+
             var result = await _borrowingContractService.RespondToRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
