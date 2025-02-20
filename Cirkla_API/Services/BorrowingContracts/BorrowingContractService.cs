@@ -1,11 +1,14 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
+using Cirkla_API.Hubs.ContractUpdate;
+using Cirkla_DAL;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Mapping.DTOs.Contracts;
 using Mapping.Mappers;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.BorrowingContracts
@@ -14,6 +17,8 @@ namespace Cirkla_API.Services.BorrowingContracts
         IContractRepository contractRepository,
         IItemRepository itemRepository,
         IUserRepository userRepository,
+        AppDbContext dbContext, // TODO: Replace with repository
+        IHubContext<ContractUpdateHub, IContractUpdateHub> hubContext,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
     {
 
@@ -112,6 +117,27 @@ namespace Cirkla_API.Services.BorrowingContracts
                 await contractRepository.Update(contract);
                 await contractRepository.SaveChanges();
                 // TODO: Return a thin and flat DTO instead of full object
+                if (!ServiceResult<Contract>.Success(contract).IsError)
+                {
+                    var notification = new ContractNotification
+                    {
+                        NotificationMessage = $"Testing One Two, {contract.Owner.FirstName} has accepted", // TODO: Formulate message here
+                        Contract = contract,
+                        CreatedAt = DateTime.Now,
+                        HasBeenRead = false
+                    };
+                    dbContext.Add(notification);
+                    dbContext.SaveChanges();
+                    try
+                    {
+                        logger.LogInformation("ReceiveContractUpdate will now be called...");
+                        await hubContext.Clients.All.ReceiveContractUpdate(notification);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Hub failed to send contract update notification to clients");
+                    }
+                }
                 return ServiceResult<Contract>.Success(contract);
             }
             catch (DbUpdateException ex)

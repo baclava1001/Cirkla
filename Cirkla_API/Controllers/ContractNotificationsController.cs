@@ -1,4 +1,5 @@
 using Cirkla_DAL;
+using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,16 @@ namespace Cirkla_API.Controllers
         }
 
 
-        // Add business logic to get only recent notifications, for contracts that are not archived
+        [HttpPost]
+        public async Task<IActionResult> CreateNotification(ContractNotification notification)
+        {
+            _logger.LogInformation("Creating new notification");
+            await _dbContext.ContractNotifications.AddAsync(notification);
+            await _dbContext.SaveChangesAsync(); 
+            return Ok(notification);
+        }
+
+        // TODO: Add business logic to get only recent notifications, for contracts that are not archived
         [HttpGet]
         public async Task<IEnumerable<ContractNotification>> GetNotifications()
         {
@@ -30,7 +40,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpPut("markAsRead/{id}")]
+        [HttpPut("ToggleMarkAsRead/{id}")]
         public async Task<IActionResult> ToggleMarkAsRead(int id)
         {
             _logger.LogInformation("Marking notification with id: {Id} as read ", id);

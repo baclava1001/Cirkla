@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
+using Cirkla_Client.Providers;
 using Cirkla.ApiClient;
-using Cirkla_API.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Cirkla_Client.Services

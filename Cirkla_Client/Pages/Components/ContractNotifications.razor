@@ -1,12 +1,18 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 @implements IAsyncDisposable
 
-<h3>Notifications here below!</h3>
+<MudMenu Label="Notifications" Color="Color.Inherit" Size="Size.Medium" Variant="Variant.Text">
+    @if (!_notifications.Any())
+    {
+        <MudMenuItem Label="No notifications yet"/>
+    }
 
-@foreach (var notification in _notifications)
-{
-    <li>@notification.Contract.Item, @notification.Contract.StatusChanges.LastOrDefault().To</li>
-}
+    @foreach (var notification in _notifications)
+    {
+        <MudMenuItem Label="@notification.NotificationMessage"/>
+    }    
+</MudMenu>
+
 
 @code {
     private HubConnection? _hubConnection;
@@ -20,10 +26,9 @@
             .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
             .Build();
 
-        // Method call to receive the message from the server
+        // Subscribe to the ReceiveContractUpdate method on the server
         _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
         {
-            notification.NotificationMessage = GetNotificationMessage(notification);
             _notifications.Add(notification);
 
             // Update the UI
@@ -33,19 +38,6 @@
         // Start the connection
         await _hubConnection.StartAsync();
     }
-
-
-    private string GetNotificationMessage(ContractNotification notification)
-    {
-        var lastStatusChange = notification.Contract.StatusChanges?.LastOrDefault();
-        if (lastStatusChange == null)
-        {
-            return "";
-        }
-
-        return $"Status changed to {lastStatusChange.To} by {lastStatusChange.ChangedBy.FirstName} {lastStatusChange.ChangedBy.LastName}.";
-    }
-
 
     // Dispose of the SignalR connection
     public async ValueTask DisposeAsync()
