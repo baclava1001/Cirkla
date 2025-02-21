@@ -18,7 +18,7 @@ namespace Cirkla_API.Services.BorrowingContracts
         IItemRepository itemRepository,
         IUserRepository userRepository,
         AppDbContext dbContext, // TODO: Replace with repository
-        IHubContext<ContractUpdateHub, IContractUpdateHub> hubContext,
+        IHubContext<ContractUpdateHub, IContractUpdateClient> hubContext,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
     {
 
@@ -121,7 +121,7 @@ namespace Cirkla_API.Services.BorrowingContracts
                 {
                     var notification = new ContractNotification
                     {
-                        NotificationMessage = $"Testing One Two, {contract.Owner.FirstName} has accepted", // TODO: Formulate message here
+                        NotificationMessage = $"Testing One Two, {contract.Owner.FirstName} has accepted", // TODO: Formulate correct message here
                         Contract = contract,
                         CreatedAt = DateTime.Now,
                         HasBeenRead = false

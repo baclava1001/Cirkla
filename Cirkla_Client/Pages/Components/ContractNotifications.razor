@@ -13,7 +13,6 @@
     }    
 </MudMenu>
 
-
 @code {
     private HubConnection? _hubConnection;
     private List<ContractNotification> _notifications = new();
@@ -22,21 +21,25 @@
     {
         // Connecting Client to the SignalR Hub
         // Set up and build the SignalR connection to the server
+        Console.WriteLine("Connecting to SignalR hub");
         _hubConnection = new HubConnectionBuilder()
             .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
             .Build();
 
         // Subscribe to the ReceiveContractUpdate method on the server
-        _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
+        _hubConnection.On<ContractNotification>("ReceiveContractUpdate", async notification =>
         {
+            Console.WriteLine("Received notification: " + notification.NotificationMessage);
             _notifications.Add(notification);
 
+            Console.WriteLine("Refreshing ContractNotifications component");
             // Update the UI
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         });
 
         // Start the connection
         await _hubConnection.StartAsync();
+        Console.WriteLine("SignalR connection started.");
     }
 
     // Dispose of the SignalR connection
@@ -45,6 +48,7 @@
         if (_hubConnection is not null)
         {
             await _hubConnection.DisposeAsync();
+            Console.WriteLine("SignalR connection disposed.");
         }
     }
 }
