@@ -25,7 +25,7 @@ namespace Cirkla_Client
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMudServices();
-
+            builder.Services.AddSingleton<NotificationService>();
 
             builder.Services.AddScoped(sp => new HttpClient
             {

@@ -1,4 +1,5 @@
 ﻿@inject IClient _client;
+@inject NavigationManager _navigationManager;
 
 @if (Contract is not null)
 {
@@ -42,6 +43,7 @@
                 contractUpdateDTO.CurrentStatus = ContractStatus.Accepted;
             }
             await _client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractUpdateDTO);
+            _navigationManager.NavigateTo("/borrowing-timelines");
         }
         catch (Exception ex)
         {
