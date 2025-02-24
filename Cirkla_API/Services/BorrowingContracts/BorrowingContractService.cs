@@ -106,6 +106,7 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Reply not valid", ErrorType.ValidationError);
             }
 
+            // TODO: Move to a separate Mapping service that fetches all necessary entities and calls mapper
             var item = await itemRepository.Get(contractUpdateDto.ItemId);
             var owner = await userRepository.Get(contractUpdateDto.OwnerId);
             var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
@@ -126,7 +127,7 @@ namespace Cirkla_API.Services.BorrowingContracts
                         CreatedAt = DateTime.Now,
                         HasBeenRead = false
                     };
-                    dbContext.Add(notification);
+                    dbContext.Add(notification); // TODO: change to repository call
                     dbContext.SaveChanges();
                     try
                     {

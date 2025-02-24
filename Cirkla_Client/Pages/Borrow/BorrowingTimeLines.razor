@@ -1,6 +1,6 @@
 @page "/borrowing-timelines"
 @using Cirkla_Client.Pages.Components;
-@inject IClient _client;
+@inject IClient Client;
 
 <PageTitle>Timelines</PageTitle>
 
@@ -28,8 +28,8 @@
     protected override async Task OnInitializedAsync()
     {
 
-        var borrowingResult = await _client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
-        var sharingResult = await _client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
+        var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
+        var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
 
         if (borrowingResult.Any())
         {

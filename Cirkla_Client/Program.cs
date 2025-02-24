@@ -26,7 +26,7 @@ namespace Cirkla_Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMudServices();
             builder.Services.AddSingleton<NotificationService>();
-
+            
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new Uri(ApiAddress.baseAdress)
@@ -39,7 +39,12 @@ namespace Cirkla_Client
 
             });
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+            
+            var notificationService = host.Services.GetRequiredService<NotificationService>();
+            await notificationService.StartAsync();
+
+            await host.RunAsync();
         }
     }
 }
