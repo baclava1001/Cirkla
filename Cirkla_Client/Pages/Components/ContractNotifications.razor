@@ -1,54 +1,27 @@
-﻿@using Microsoft.AspNetCore.SignalR.Client
-@implements IAsyncDisposable
+﻿@inject NotificationService NotificationService
+@inject IClient Client;
 
 <MudMenu Label="Notifications" Color="Color.Inherit" Size="Size.Medium" Variant="Variant.Text">
-    @if (!_notifications.Any())
+    @if (!NotificationService.Notifications.Any())
     {
         <MudMenuItem Label="No notifications yet"/>
     }
 
-    @foreach (var notification in _notifications)
+    @foreach (var notification in NotificationService.Notifications)
     {
         <MudMenuItem Label="@notification.NotificationMessage"/>
     }    
 </MudMenu>
 
 @code {
-    private HubConnection? _hubConnection;
-    private List<ContractNotification> _notifications = new();
-
     protected override async Task OnInitializedAsync()
     {
-        // Connecting Client to the SignalR Hub
-        // Set up and build the SignalR connection to the server
-        Console.WriteLine("Connecting to SignalR hub");
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
-            .Build();
-
-        // Subscribe to the ReceiveContractUpdate method on the server
-        _hubConnection.On<ContractNotification>("ReceiveContractUpdate", async notification =>
-        {
-            Console.WriteLine("Received notification: " + notification.NotificationMessage);
-            _notifications.Add(notification);
-
-            Console.WriteLine("Refreshing ContractNotifications component");
-            // Update the UI
-            await InvokeAsync(StateHasChanged);
-        });
-
-        // Start the connection
-        await _hubConnection.StartAsync();
-        Console.WriteLine("SignalR connection started.");
+        NotificationService.OnChange += StateHasChanged;
     }
 
-    // Dispose of the SignalR connection
-    public async ValueTask DisposeAsync()
+
+    public void Dispose()
     {
-        if (_hubConnection is not null)
-        {
-            await _hubConnection.DisposeAsync();
-            Console.WriteLine("SignalR connection disposed.");
-        }
+        NotificationService.OnChange -= StateHasChanged;
     }
 }

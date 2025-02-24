@@ -41,14 +41,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITimeLineService, TimeLineService>();
         services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
-        // Remove entirely? Would be used to relay changes to clients through event callbacks and SignalR but didn't work as intended
-        // services.AddHostedService<EntityChangeHandler>(); 
         services.AddSignalR().AddJsonProtocol(options =>
         {
             options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         });
 
-        services.AddSingleton<ContractUpdateHub>();
+
         // Sends "heartbeat" updates to clients, testing purposes
         // services.AddHostedService<ServerTimeNotifier>(); 
 

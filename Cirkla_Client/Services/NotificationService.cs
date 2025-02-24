@@ -1,4 +1,5 @@
 using Cirkla.ApiClient;
+using Cirkla_Client.Constants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -7,23 +8,56 @@ namespace Cirkla_Client.Services
     public class NotificationService : IAsyncDisposable
     {
         private readonly HubConnection _hubConnection;
-        public List<ContractNotification> Notifications { get; private set; } = new();
+        private readonly IServiceProvider _serviceProvider;
+        private IClient _client;
+        public List<ContractNotification> Notifications { get; set; } = new();
 
-        public NotificationService(NavigationManager navigationManager)
+        public NotificationService(IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
+
+            Console.WriteLine("Connecting to SignalR hub");
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(navigationManager.ToAbsoluteUri("contractNotifications"))
+                .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
+                .WithAutomaticReconnect()
                 .Build();
 
-            _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
+            // TODO: Populate Notifications from API here?
+            using (var scope = _serviceProvider.CreateScope())
             {
-                Notifications.Add(notification);
-                NotifyStateChanged();
-            });
+                _client = scope.ServiceProvider.GetRequiredService<IClient>();
+
+                // TODO: Populate Notifications from API here?
+                try
+                {
+                    var notificationsFromAPI = _client.ApiContractNotificationsAsync();
+                    Notifications.AddRange<ContractNotification>(notificationsFromAPI);
+                }
+                catch (ApiException ex)
+                {
+                    if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
+                    {
+                        Console.WriteLine("Success!");
+                    }
+                    else
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
         }
 
         public async Task StartAsync()
         {
+            // Listen to ReceiveContractUpdate method and handle notifications received from it
+            _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
+            {
+                Console.WriteLine("Received notification: " + notification.NotificationMessage);
+                Notifications.Add(notification);
+                NotifyStateChanged();
+            });
+
+            // Start SignalR connection
             await _hubConnection.StartAsync();
             Console.WriteLine("SignalR connection started.");
         }

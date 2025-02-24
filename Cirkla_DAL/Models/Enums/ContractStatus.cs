@@ -3,11 +3,11 @@
 public enum ContractStatus
 {
     None,
-    Pending,
+    Pending, // TODO: Owner should be able to suggest a different time for a pending contract (Status: "Pending + date" => "Pending + new date")
     Accepted,
     Denied,
     Cancelled,
-    Active, // Changes automatically of no user cancels
+    Active,
     Late, // Changes automatically if Owner hasn't marked contract 'Completed'
     Completed,
     Problem,
