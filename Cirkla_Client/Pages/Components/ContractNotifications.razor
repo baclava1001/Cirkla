@@ -2,23 +2,45 @@
 @inject IClient Client;
 
 <MudMenu Label="Notifications" Color="Color.Inherit" Size="Size.Medium" Variant="Variant.Text">
-    @if (!NotificationService.Notifications.Any())
+    @if (!NotificationsToDisplay.Any())
     {
         <MudMenuItem Label="No notifications yet"/>
     }
 
-    @foreach (var notification in NotificationService.Notifications)
+    @foreach (var notification in NotificationsToDisplay)
     {
         <MudMenuItem Label="@notification.NotificationMessage"/>
     }    
 </MudMenu>
 
 @code {
+    List<ContractNotification> NotificationsToDisplay { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
+        ICollection<ContractNotification> result = null;
+        Console.WriteLine("UI trying to get notifications from API/DB.");
+        try
+        {
+            result = await Client.ApiContractNotificationsAsync();
+        }
+        catch (ApiException ex) when (ex.StatusCode is >= 200 and <= 299)
+        {
+            if (result is not null)
+            {
+                NotificationsToDisplay = result.ToList();
+                Console.WriteLine("UI successfully retrieved notifications from API/DB.");
+            }
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
         Console.WriteLine("UI subscribing to NotificationService.OnChange.");
         NotificationService.OnChange += HandleStateChange;
     }
+
 
     public void Dispose()
     {
@@ -26,9 +48,11 @@
         NotificationService.OnChange -= HandleStateChange;
     }
 
+
     private async Task HandleStateChange()
     {
-        Console.WriteLine("State changed!");
+        Console.WriteLine("Notification component received: State changed!");
+        NotificationsToDisplay.AddRange(NotificationService.Notifications);
         await InvokeAsync(StateHasChanged);
     }
 }

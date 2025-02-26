@@ -1,7 +1,10 @@
 ﻿using Cirkla_API.Middleware;
+using Cirkla_API.Services.Authentication;
 using Cirkla_API.Services.BorrowingContracts;
 using Cirkla_API.Services.ItemPictures;
 using Cirkla_API.Services.Items;
+using Cirkla_API.Services.TimeLines;
+using Cirkla_API.Services.TokenGenerator;
 using Cirkla_DAL;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
@@ -10,10 +13,6 @@ using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
-using Cirkla_API.Hubs.ContractUpdate;
-using Cirkla_API.Services.Authentication;
-using Cirkla_API.Services.TimeLines;
-using Cirkla_API.Services.TokenGenerator;
 
 namespace Cirkla_API.Startup;
 
@@ -45,7 +44,6 @@ public static class ServiceCollectionExtensions
         {
             options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         });
-
 
         // Sends "heartbeat" updates to clients, testing purposes
         // services.AddHostedService<ServerTimeNotifier>(); 
