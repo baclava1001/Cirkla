@@ -1,4 +1,6 @@
-﻿using Cirkla_API.Common;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_API.Hubs.ContractUpdate;
 using Cirkla_DAL;
@@ -10,6 +12,7 @@ using Mapping.DTOs.Contracts;
 using Mapping.Mappers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace Cirkla_API.Services.BorrowingContracts
 {
@@ -132,7 +135,14 @@ namespace Cirkla_API.Services.BorrowingContracts
                     try
                     {
                         logger.LogInformation("ReceiveContractUpdate will now be called...");
-                        await hubContext.Clients.All.ReceiveContractUpdate(notification);
+                        var options = new JsonSerializerOptions
+                        {
+                            ReferenceHandler = ReferenceHandler.Preserve,
+                            WriteIndented = true
+                        };
+                        var json = JsonSerializer.Serialize(notification, options);
+                        await hubContext.Clients.All.ReceiveContractUpdate(json);
+                        logger.LogInformation("ReceiveContractUpdate was called correctly.");
                     }
                     catch (Exception ex)
                     {

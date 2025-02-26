@@ -14,52 +14,54 @@ namespace Cirkla_Client.Services
 
         public NotificationService(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
-
             Console.WriteLine("Connecting to SignalR hub");
+            
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
                 .WithAutomaticReconnect()
                 .Build();
-
+            
+            Console.WriteLine("Hub Connection State: " + _hubConnection.State);
             // TODO: Populate Notifications from API here?
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                _client = scope.ServiceProvider.GetRequiredService<IClient>();
 
-                // TODO: Populate Notifications from API here?
-                try
-                {
-                    var notificationsFromAPI = _client.ApiContractNotificationsAsync();
-                    Notifications.AddRange<ContractNotification>(notificationsFromAPI);
-                }
-                catch (ApiException ex)
-                {
-                    if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
-                    {
-                        Console.WriteLine("Success!");
-                    }
-                    else
-                    {
-                        Console.WriteLine(ex);
-                    }
-                }
-            }
+            //_serviceProvider = serviceProvider;
+            //using (var scope = _serviceProvider.CreateScope())
+            //{
+            //    _client = scope.ServiceProvider.GetRequiredService<IClient>();
+            //    try
+            //    {
+            //        //var notificationsFromAPI = _client.ApiContractNotificationsAsync();
+            //        //Notifications.AddRange(notificationsFromAPI);
+            //    }
+            //    catch (ApiException ex)
+            //    {
+            //        if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            //        {
+            //            Console.WriteLine("Success!");
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine(ex);
+            //        }
+            //    }
+            //}
         }
 
         public async Task StartAsync()
         {
             // Listen to ReceiveContractUpdate method and handle notifications received from it
-            _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
+            _hubConnection.On<string>("ReceiveContractUpdate", json =>
             {
-                Console.WriteLine("Received notification: " + notification.NotificationMessage);
-                Notifications.Add(notification);
-                NotifyStateChanged();
+                Console.WriteLine("Raw notification received: " + json);
+                //Console.WriteLine("Received notification from API: " + notification.NotificationMessage);
+                //Notifications.Add(notification);
+                //NotifyStateChanged();
             });
 
             // Start SignalR connection
             await _hubConnection.StartAsync();
-            Console.WriteLine("SignalR connection started.");
+            await _hubConnection.InvokeAsync("TestConnection");
+            Console.WriteLine("Hub Connection State: " + _hubConnection.State);
         }
 
         public async ValueTask DisposeAsync()
@@ -71,7 +73,15 @@ namespace Cirkla_Client.Services
             }
         }
 
-        public event Action? OnChange;
-        private void NotifyStateChanged() => OnChange?.Invoke();
+        public event Func<Task> OnChange;
+
+        public async Task NotifyStateChanged()
+        {
+            if (OnChange != null)
+            {
+                await OnChange.Invoke();
+                Console.WriteLine("State changed!");
+            }
+        }
     }
 }
