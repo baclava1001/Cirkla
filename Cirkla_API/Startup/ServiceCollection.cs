@@ -45,9 +45,6 @@ public static class ServiceCollectionExtensions
             options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         });
 
-        // Sends "heartbeat" updates to clients, testing purposes
-        // services.AddHostedService<ServerTimeNotifier>(); 
-
         // TODO: Safer CORS policy
         services.AddCors(options =>
         {
