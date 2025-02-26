@@ -43,7 +43,8 @@
                 contractUpdateDTO.CurrentStatus = ContractStatus.Accepted;
             }
             await _client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractUpdateDTO);
-            _navigationManager.NavigateTo("/borrowing-timelines");
+            Console.WriteLine("Button component responded to borrower request successfully");
+            //_navigationManager.NavigateTo("/borrowing-timelines");
         }
         catch (Exception ex)
         {

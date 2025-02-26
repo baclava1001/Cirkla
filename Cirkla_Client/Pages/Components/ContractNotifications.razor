@@ -16,12 +16,19 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        NotificationService.OnChange += StateHasChanged;
+        Console.WriteLine("UI subscribing to NotificationService.OnChange.");
+        NotificationService.OnChange += HandleStateChange;
     }
-
 
     public void Dispose()
     {
-        NotificationService.OnChange -= StateHasChanged;
+        Console.WriteLine("UI unsubscribing to NotificationService.OnChange.");
+        NotificationService.OnChange -= HandleStateChange;
+    }
+
+    private async Task HandleStateChange()
+    {
+        Console.WriteLine("State changed!");
+        await InvokeAsync(StateHasChanged);
     }
 }
