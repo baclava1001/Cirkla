@@ -3,7 +3,7 @@ using Cirkla_DAL.Models;
 
 namespace Mapping.DTOs.ContractNotifications;
 
-public class ContractNotificationsForViews
+public class ContractNotificationForViews
 {
     [Required]
     public int Id { get; set; }

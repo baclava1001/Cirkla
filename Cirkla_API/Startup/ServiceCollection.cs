@@ -13,6 +13,7 @@ using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
+using Cirkla_DAL.Repositories.ContractNotifications;
 
 namespace Cirkla_API.Startup;
 
@@ -39,6 +40,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<ITimeLineService, TimeLineService>();
         services.AddScoped<IBorrowingContractService, BorrowingContractService>();
+
+        services.AddScoped<IContractNotificationRepository, ContractNotificationRepository>();
+        // TODO: Add ContractNotificationService here
 
         services.AddSignalR().AddJsonProtocol(options =>
         {

@@ -118,10 +118,10 @@ namespace Mapping.Mappers
 
         #region ContractNotifications
 
-        public static async Task<ContractNotificationsForViews> MapToContractNotificationForViews(
+        public static async Task<ContractNotificationForViews> MapToContractNotificationForViews(
             ContractNotification contractNotification)
         {
-            var contractNotificationForViews = new ContractNotificationsForViews
+            var contractNotificationForViews = new ContractNotificationForViews
             {
                 Id = contractNotification.Id,
                 NotificationMessage = contractNotification.NotificationMessage,
@@ -140,7 +140,7 @@ namespace Mapping.Mappers
         }
 
 
-        public static async Task<ContractNotification> MapToContractNotification(ContractNotificationsForViews contractNotificationForViews, Contract contract)
+        public static async Task<ContractNotification> MapToContractNotification(ContractNotificationForViews contractNotificationForViews, Contract contract)
         {
             var contractNotification = new ContractNotification
             {

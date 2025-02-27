@@ -11,23 +11,25 @@
   <ItemGroup>
     <Compile Remove="Repositories\**" />
     <Compile Remove="Services\EntityChange\**" />
+    <Compile Remove="Services\Inbox\**" />
     <Compile Remove="Services\Notifications\**" />
     <Content Remove="Repositories\**" />
     <Content Remove="Services\EntityChange\**" />
+    <Content Remove="Services\Inbox\**" />
     <Content Remove="Services\Notifications\**" />
     <EmbeddedResource Remove="Repositories\**" />
     <EmbeddedResource Remove="Services\EntityChange\**" />
+    <EmbeddedResource Remove="Services\Inbox\**" />
     <EmbeddedResource Remove="Services\Notifications\**" />
     <None Remove="Repositories\**" />
     <None Remove="Services\EntityChange\**" />
+    <None Remove="Services\Inbox\**" />
     <None Remove="Services\Notifications\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Controllers\InboxController.cs" />
     <Compile Remove="Controllers\ProfileController.cs" />
-    <Compile Remove="Services\Inbox\IInboxService.cs" />
-    <Compile Remove="Services\Inbox\InboxService.cs" />
     <Compile Remove="Services\IProfileService.cs" />
     <Compile Remove="Services\ProfileService.cs" />
     <Compile Remove="Services\Users\IProfileService.cs" />
@@ -61,7 +63,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Inbox\" />
     <Folder Include="Services\TokenGenerator\" />
     <Folder Include="Startup\" />
   </ItemGroup>
