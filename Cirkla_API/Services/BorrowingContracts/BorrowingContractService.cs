@@ -12,15 +12,16 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Cirkla_API.Services.ContractNotifications;
 
 namespace Cirkla_API.Services.BorrowingContracts
 {
     public class BorrowingContractService(
+        IContractNotificationService contractNotificationService,
         IContractRepository contractRepository,
         IItemRepository itemRepository,
         IUserRepository userRepository,
         AppDbContext dbContext, // TODO: Replace with repository
-        IHubContext<ContractUpdateHub, IContractUpdateClient> hubContext,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
     {
 
@@ -119,28 +120,11 @@ namespace Cirkla_API.Services.BorrowingContracts
             {
                 await contractRepository.Update(contract);
                 await contractRepository.SaveChanges();
-                // TODO: Return a thin and flat DTO instead of full object
                 if (!ServiceResult<Contract>.Success(contract).IsError)
                 {
-                    var notification = new ContractNotification
-                    {
-                        NotificationMessage = $"Testing One Two, {contract.Owner.FirstName} has accepted", // TODO: Formulate correct message here
-                        Contract = contract,
-                        CreatedAt = DateTime.Now,
-                        HasBeenRead = false
-                    };
-                    dbContext.Add(notification); // TODO: change to repository call
-                    dbContext.SaveChanges();
-                    try
-                    {
-                        logger.LogInformation("ReceiveContractUpdate will now be called...");
-                        await hubContext.Clients.All.ReceiveContractUpdate(notification);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "Hub failed to send contract update notification to clients");
-                    }
+                    contractNotificationService.CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
                 }
+                // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);
             }
             catch (DbUpdateException ex)
