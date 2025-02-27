@@ -22,6 +22,7 @@ namespace Cirkla_API.Controllers
         }
 
 
+        // TODO: Remove this? Notifications should be created inside the API and pushed through SignalR, not by the client
         [HttpPost]
         public async Task<IActionResult> CreateNotification(ContractNotification notification)
         {
@@ -35,11 +36,11 @@ namespace Cirkla_API.Controllers
         [HttpGet]
         public async Task<IEnumerable<ContractNotification>> GetNotifications()
         {
-            _logger.LogInformation("Getting all notifications");
-            return await _dbContext.ContractNotifications.ToListAsync();
+            
         }
 
 
+        // TODO: Refactor to PATCH?
         [HttpPut("ToggleMarkAsRead/{id}")]
         public async Task<IActionResult> ToggleMarkAsRead(int id)
         {
