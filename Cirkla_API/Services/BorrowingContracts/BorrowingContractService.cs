@@ -109,12 +109,19 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Reply not valid", ErrorType.ValidationError);
             }
 
-            // TODO: Move to a separate Mapping service that fetches all necessary entities and calls mapper
+            // TODO: Move to a separate helper/service that fetches all necessary entities and calls mapper
             var item = await itemRepository.Get(contractUpdateDto.ItemId);
             var owner = await userRepository.Get(contractUpdateDto.OwnerId);
             var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
-            var updatingUser = await userRepository.Get(contractUpdateDto.UpdatedByUserId);
-            Contract contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower, updatingUser);
+            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+
+            contract.StatusChanges.Add(new ContractStatusChange
+            {
+                ChangedAt = DateTime.Now,
+                ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
+                From = contractUpdateDto.LastStatus,
+                To = contractUpdateDto.CurrentStatus
+            });
 
             try
             {

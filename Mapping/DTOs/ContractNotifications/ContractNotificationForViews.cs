@@ -7,7 +7,7 @@ public class ContractNotificationForViews
 {
     [Required]
     public int Id { get; set; }
-    public string? NotificationMessage { get; set; }
+    public string? NotificationMessage { get; set; } // "(User X) (requested/replied/picked up/returned/cancelled) (borrowing of Item Y) (on date Z)" 
     [Required]
     public DateTime CreatedAt { get; set; }
     public bool HasBeenRead { get; set; }
@@ -27,5 +27,4 @@ public class ContractNotificationForViews
     public DateTime StartTime { get; set; }
     [Required]
     public DateTime EndTime { get; set; }
-    public List<ContractStatusChange>? StatusChanges { get; set; }
 }

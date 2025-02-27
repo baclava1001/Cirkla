@@ -10,13 +10,11 @@ namespace Cirkla_Client.Services
     public class NotificationService : IAsyncDisposable
     {
         private readonly HubConnection _hubConnection;
-        //private readonly IServiceProvider _serviceProvider;
-        //private IClient _client;
-        public List<ContractNotification> Notifications { get; set; } = new();
+        public List<ContractNotificationForViews> PushNotifications { get; set; } = new();
 
         public NotificationService(IServiceProvider serviceProvider)
         {
-            Console.WriteLine("Connecting to SignalR hub");
+            Console.WriteLine("Frontend service connecting to SignalR hub");
             
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
@@ -28,39 +26,15 @@ namespace Cirkla_Client.Services
                 .Build();
             
             Console.WriteLine("Hub Connection Initial State: " + _hubConnection.State);
-            
-            // TODO: Populate Notifications from API - not here - move to ContractNotifications component
-
-            //_serviceProvider = serviceProvider;
-            //using (var scope = _serviceProvider.CreateScope())
-            //{
-            //    _client = scope.ServiceProvider.GetRequiredService<IClient>();
-            //    try
-            //    {
-            //        //var notificationsFromAPI = _client.ApiContractNotificationsAsync();
-            //        //Notifications.AddRange(notificationsFromAPI);
-            //    }
-            //    catch (ApiException ex)
-            //    {
-            //        if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
-            //        {
-            //            Console.WriteLine("Success!");
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine(ex);
-            //        }
-            //    }
-            //}
         }
 
         public async Task StartAsync()
         {
             // Listen to ReceiveContractUpdate method and handle notifications received from it
-            _hubConnection.On<ContractNotification>("ReceiveContractUpdate", notification =>
+            _hubConnection.On<ContractNotificationForViews>("ReceiveContractUpdate", notification =>
             {
                 Console.WriteLine("Received notification from API: " + notification.NotificationMessage);
-                Notifications.Add(notification);
+                PushNotifications.Add(notification);
                 NotifyStateChanged();
             });
 

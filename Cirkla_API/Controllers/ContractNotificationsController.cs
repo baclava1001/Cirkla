@@ -1,9 +1,7 @@
 using Cirkla_API.Helpers;
 using Cirkla_API.Services.ContractNotifications;
-using Cirkla_DAL;
-using Cirkla_DAL.Models;
+using Mapping.DTOs.ContractNotifications;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Controllers
 {
@@ -22,8 +20,12 @@ namespace Cirkla_API.Controllers
         }
 
 
-        // TODO: Add business logic to get only recent notifications, for contracts that are not archived
-        [HttpGet]
+        // TODO: Add business logic to get only relevant notifications for particular user
+        [HttpGet("GetNotifications")]
+        [ProducesResponseType(typeof(IEnumerable<ContractNotificationForViews>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNotifications()
         {
             _logger.LogInformation("Fetching notifications from API");
@@ -34,6 +36,10 @@ namespace Cirkla_API.Controllers
 
         // TODO: Refactor to PATCH?
         [HttpPut("ToggleMarkAsRead/{id}")]
+        [ProducesResponseType(typeof(ContractNotificationForViews), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ToggleMarkAsRead(int id)
         {
             _logger.LogInformation("Marking notification with id: {Id} as read ", id);

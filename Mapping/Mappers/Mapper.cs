@@ -74,7 +74,7 @@ namespace Mapping.Mappers
         }
 
 
-        public static async Task<Contract> MapToContract(ContractUpdateDTO contractUpdateDTO, Item item, User owner, User borrower, User updatingUser)
+        public static async Task<Contract> MapToContract(ContractUpdateDTO contractUpdateDTO, Item item, User owner, User borrower)
         {
             var contract = new Contract()
             {
@@ -86,15 +86,6 @@ namespace Mapping.Mappers
                 EndTime = contractUpdateDTO.EndTime,
                 StatusChanges = new List<ContractStatusChange>()
             };
-
-            contract.StatusChanges.Add(new ContractStatusChange
-            {
-                ChangedAt = contractUpdateDTO.Created,
-                ChangedBy = updatingUser,
-                From = contractUpdateDTO.LastStatus,
-                To = contractUpdateDTO.CurrentStatus
-            });
-
             return contract;
         }
 
@@ -118,8 +109,7 @@ namespace Mapping.Mappers
 
         #region ContractNotifications
 
-        public static async Task<ContractNotificationForViews> MapToContractNotificationForViews(
-            ContractNotification contractNotification)
+        public static async Task<ContractNotificationForViews> MapToContractNotificationForViews(ContractNotification contractNotification)
         {
             var contractNotificationForViews = new ContractNotificationForViews
             {
@@ -133,8 +123,7 @@ namespace Mapping.Mappers
                 BorrowerFullName = contractNotification.Contract.Borrower.FirstName + " " + contractNotification.Contract.Borrower.LastName,
                 Created = contractNotification.Contract.Created,
                 StartTime = contractNotification.Contract.StartTime,
-                EndTime = contractNotification.Contract.EndTime,
-                StatusChanges = contractNotification.Contract.StatusChanges
+                EndTime = contractNotification.Contract.EndTime
             };
             return contractNotificationForViews;
         }
