@@ -32,7 +32,7 @@ public class ContractNotificationService : IContractNotificationService
     {
         var notification = new ContractNotification
         {
-            NotificationMessage = $"Test message: {contract.Owner.FirstName} has replied {contract.StatusChanges.Last().To}",
+            NotificationMessage = $"Test message for #{contract.Id}: {contract.Owner.FirstName} has replied {contract.StatusChanges.Last().To} at {contract.StatusChanges.Last().ChangedAt}",
             Contract = contract,
             CreatedAt = DateTime.Now,
             HasBeenRead = false
@@ -44,12 +44,16 @@ public class ContractNotificationService : IContractNotificationService
             _logger.LogInformation("Clients will now be notified.");
             var notificationForView = await Mapper.MapToContractNotificationForViews(notification);
             await _hubContext.Clients.All.ReceiveContractUpdate(notificationForView);
+            return ServiceResult<ContractNotificationForViews>.Success(notificationForView);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Hub failed to send contract update notification to clients");
+            return ServiceResult<ContractNotificationForViews>.Fail("Unable to send notification", ErrorType.InternalError);
         }
     }
+
+
 
     public async Task<ServiceResult<IEnumerable<ContractNotificationForViews>>> GetNotifications()
     {
@@ -79,6 +83,7 @@ public class ContractNotificationService : IContractNotificationService
     }
 
 
+
     public async Task<ServiceResult<ContractNotificationForViews>> ToggleMarkAsRead(int id)
     {
         _logger.LogInformation("Marking notification with id: {Id} as read/unread", id);
@@ -95,6 +100,7 @@ public class ContractNotificationService : IContractNotificationService
             _logger.LogInformation("Toggling read status for notification with ID {Id} and saving to db", id);
             await _contractNotificationRepository.Update(notification);
             await _contractNotificationRepository.SaveChanges();
+            await _hubContext.Clients.All.ReceiveContractUpdate(await Mapper.MapToContractNotificationForViews(notification));
         }
         catch (Exception ex)
         {

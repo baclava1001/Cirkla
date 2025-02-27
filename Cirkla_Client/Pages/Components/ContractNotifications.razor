@@ -14,24 +14,19 @@
 </MudMenu>
 
 @code {
-    List<ContractNotification> NotificationsToDisplay { get; set; } = new();
+    List<ContractNotificationForViews> NotificationsToDisplay { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        ICollection<ContractNotification> result = null;
         Console.WriteLine("UI trying to get notifications from API/DB.");
         try
         {
-            result = await Client.ApiContractNotificationsAsync();
+            var result = await Client.ApiContractNotificationsGetNotificationsAsync();
+            NotificationsToDisplay = result.ToList();
         }
         catch (ApiException ex) when (ex.StatusCode is >= 200 and <= 299)
         {
-            if (result is not null)
-            {
-                NotificationsToDisplay = result.ToList();
-                Console.WriteLine("UI successfully retrieved notifications from API/DB.");
-            }
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.WriteLine($"Server error: {ex.StatusCode}.");
         }
         catch (Exception ex)
         {
@@ -51,8 +46,8 @@
 
     private async Task HandleStateChange()
     {
-        Console.WriteLine("Notification component received: State changed!");
-        NotificationsToDisplay.AddRange(NotificationService.Notifications);
+        Console.WriteLine("UI received notification: State changed!");
+        NotificationsToDisplay.AddRange(NotificationService.PushNotifications);
         await InvokeAsync(StateHasChanged);
     }
 }
