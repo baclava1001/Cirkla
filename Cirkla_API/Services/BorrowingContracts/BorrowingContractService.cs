@@ -117,6 +117,7 @@ namespace Cirkla_API.Services.BorrowingContracts
 
             contract.StatusChanges.Add(new ContractStatusChange
             {
+                Contract = contract,
                 ChangedAt = DateTime.Now,
                 ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
                 From = contractUpdateDto.LastStatus,
@@ -129,7 +130,7 @@ namespace Cirkla_API.Services.BorrowingContracts
                 await contractRepository.SaveChanges();
                 if (!ServiceResult<Contract>.Success(contract).IsError)
                 {
-                    contractNotificationService.CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
+                    await contractNotificationService.CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
                 }
                 // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);

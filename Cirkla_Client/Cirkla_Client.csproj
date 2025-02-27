@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
+    <ProjectReference Include="..\Mapping\Mapping.csproj" />
   </ItemGroup>
 
 </Project>

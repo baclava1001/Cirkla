@@ -1,6 +1,8 @@
 ﻿@inject NotificationService NotificationService
 @inject IClient Client;
 
+
+<MudBadge Content="NotificationsToDisplay.Count" Color="Color.Warning" Overlap="true" Class="mx-6 my-4">
 <MudMenu Label="Notifications" Color="Color.Inherit" Size="Size.Medium" Variant="Variant.Text">
     @if (!NotificationsToDisplay.Any())
     {
@@ -9,9 +11,12 @@
 
     @foreach (var notification in NotificationsToDisplay)
     {
-        <MudMenuItem Label="@notification.NotificationMessage"/>
+            <MudLink Href="/borrowing-timelines">
+                <MudMenuItem Label="@notification.NotificationMessage" />
+        </MudLink>
     }    
 </MudMenu>
+</MudBadge>
 
 @code {
     List<ContractNotificationForViews> NotificationsToDisplay { get; set; } = new();

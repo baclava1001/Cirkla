@@ -44,6 +44,7 @@ public class ContractNotificationService : IContractNotificationService
             _logger.LogInformation("Clients will now be notified.");
             var notificationForView = await Mapper.MapToContractNotificationForViews(notification);
             await _hubContext.Clients.All.ReceiveContractUpdate(notificationForView);
+            _logger.LogInformation("Clients were notified.");
             return ServiceResult<ContractNotificationForViews>.Success(notificationForView);
         }
         catch (Exception ex)

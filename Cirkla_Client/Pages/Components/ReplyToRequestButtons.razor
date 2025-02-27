@@ -17,7 +17,8 @@
 
     private async Task SendReplyToBorrower(string buttonName)
     {
-        // TODO: Move to mapper
+        // var contractUpdateDTO = Mapper.MapToContractUpdateDTO(Contract); // TODO: Fix this
+
         ContractUpdateDTO contractUpdateDTO = new()
             {
                 Id = Contract.Id,
