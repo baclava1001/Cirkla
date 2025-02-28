@@ -6,7 +6,7 @@
 
 
 <PageTitle>Request summary</PageTitle>
-<h3>Request summary @_requestNumber</h3>
+<h3>Request @_requestNumber summary</h3>
 <hr />
 
 <div>
@@ -16,16 +16,21 @@
     }
     else
     {
-        <img src="@Contract.Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Contract?.Item?.Name" class="img-fluid" style="width: 350px; height: auto;" />
+        <img src="@Contract?.Item?.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Contract?.Item?.Name" class="img-fluid" style="width: 350px; height: auto;" />
         <br />
         <br />
         <dl class="row">
             <dt class="col-sm-2">Cirkla member</dt>
             <dd class="col-sm-10">@Contract?.Borrower.FirstName @Contract?.Borrower.LastName</dd>
             <dt class="col-sm-2">Requests to borrow</dt>
-            <dd class="col-sm-10">@Contract?.Item.Name @Contract?.Item.Model</dd>
+            <dd class="col-sm-10">@Contract?.Item?.Name @Contract?.Item?.Model</dd>
             <dt class="col-sm-2">From Cirkla member</dt>
             <dd class="col-sm-10">@Contract?.Owner.FirstName @Contract?.Owner.LastName</dd>
+            @if (Contract.StatusChanges.Any(sc => sc.To == ContractStatus.Accepted))
+            {
+                <dt class="col-sm-2">Contact owner for details</dt>
+                <dd class="col-sm-10">@Contract?.Owner.PhoneNumber</dd>
+            }
             <dt class="col-sm-2">From</dt>
             <dd class="col-sm-10">@Contract?.StartTime</dd>
             <dt class="col-sm-2">To</dt>
@@ -33,11 +38,11 @@
             @* <dt class="col-sm-2">Under the following conditions</dt>
             <dd class="col-sm-10">(Coming feature, not yet implemented)</dd> *@
             <dt class="col-sm-2">Current status</dt>
-            <dd class="col-sm-10">@Contract.StatusChanges.LastOrDefault().To by @Contract.StatusChanges.LastOrDefault().ChangedBy.FirstName</dd>
-            <dt class="col-sm-2">Current status history</dt>
+            <dd class="col-sm-10">@Contract.StatusChanges.LastOrDefault().To by @Contract?.StatusChanges?.LastOrDefault()?.ChangedBy?.FirstName</dd>
+            <dt class="col-sm-2">Status history</dt>
             <dd class="col-sm-10">
                 <ul>
-                    @foreach (var statusChange in Contract.StatusChanges)
+                    @foreach (var statusChange in Contract.StatusChanges.Reverse())
                     {
                         <li>@statusChange?.ChangedBy?.FirstName</li>
                         <li>@statusChange?.ChangedAt</li>
@@ -86,21 +91,20 @@
         {
             Contract = await _client.ApiBorrowingContractViewRequestSummaryAsync(Id);
             _requestNumber = $"#{Contract.Id}";
-            _messageClass = "text-success";
-            _tempMessage = "Here's the request!";
         }
         catch (ApiException ex)
         {
             if (ex.StatusCode == 404)
             {
                 Console.WriteLine("Something went wrong getting Contract values from API.");
-                _navigationManager.NavigateTo("/notfound");
+                _messageClass = "text-danger";
+                _tempMessage = ex.Message;
             }
             else
             {
                 Console.WriteLine("Something went wrong getting Contract values from API.");
                 _messageClass = "text-danger";
-                _tempMessage = ex.Message.ToString();
+                _tempMessage = ex.Message;
             }
         }
         catch (Exception ex)

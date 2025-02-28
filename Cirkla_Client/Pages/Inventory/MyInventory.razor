@@ -1,0 +1,125 @@
+﻿@page "/inventory"
+@using Cirkla_Client.Pages.Components
+@inject IClient Client;
+
+<PageTitle>My inventory</PageTitle>
+<div class="row mb-3">
+    <h3 class="col-2">My inventory</h3><a href="/publishitem" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"/></a>
+</div>
+<hr/>
+
+<div class="container">
+    
+    <MudDivider/>
+    <div class="row my-5">
+        <h4>Borrowing items</h4>
+        @if (!BorrowingItems.Any())
+        {
+            <p>Loading items...</p>
+        }
+        else
+        {
+            foreach (var contract in BorrowingItems)
+            {
+                <ContractCard Contract="contract"/>
+            }
+        }
+    </div>
+
+    <MudDivider/>
+    <div class="row my-5">
+        <h4>Sharing Items</h4>
+        @if (!SharingItems.Any())
+        {
+            <p>Loading items...</p>
+        }
+        else
+        {
+            foreach (var contract in SharingItems)
+            {
+                <ContractCard Contract="contract"/>
+            }
+        }
+    </div>
+
+    <MudDivider/>
+    <div class="row my-5">
+        <h4>My items</h4>
+        @if (!MyItems.Any())
+        {
+            <p>Loading items...</p>
+        }
+        else
+        {
+            foreach (var item in MyItems)
+            {
+                <ItemCard Item="item"/>
+            }
+        }
+    </div>
+</div>
+
+
+
+
+@code {
+    // TODO: Add pagination serverside & clientside
+
+    [Parameter]
+    public List<Item> MyItems { get; set; } = new();
+
+    public List<Contract>? BorrowingItems { get; set; } = new();
+    public List<Contract>? SharingItems { get; set; } = new();
+    private string _tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is use 'Liza Minelli', hardcoded.
+
+    private string? borrowingItemsMessage;
+    private string? sharingItemsMessage;
+    private string? myItemsMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            BorrowingItems = await GetBorrowingItems();
+            SharingItems = await GetSharingItems();
+            MyItems = await GetMyItems();
+            
+            if (!BorrowingItems.Any())
+            {
+                borrowingItemsMessage = "No items to load at this time";
+            }
+
+            if (!SharingItems.Any())
+            {
+                sharingItemsMessage = "No items to load at this time";
+            }
+            
+            if (!MyItems.Any())
+            {
+                myItemsMessage = "No items to load at this time";
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task<List<Contract>> GetBorrowingItems()
+    {
+        var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
+        return borrowingResult.ToList();
+    }
+
+    private async Task<List<Contract>> GetSharingItems()
+    {
+        var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
+        return sharingResult.ToList();
+    }
+
+    private async Task<List<Item>> GetMyItems()
+    {
+        var response = await Client.ApiItemByUserIdAsync(_tempUserId);
+        return response.ToList();
+    }
+}

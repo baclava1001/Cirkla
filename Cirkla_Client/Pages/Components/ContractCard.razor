@@ -1,0 +1,66 @@
+﻿@inject NavigationManager NavigationManager;
+
+<div class="col-12 col-sm-6 col-md-3 mb-4">
+    <MudCard Outlined="true" Elevation="100">
+        <MudCardMedia Height="200" Image="@Contract.Item.Pictures.FirstOrDefault().Url" alt="@AltText()" />
+        <MudCardContent>
+            <MudText Typo="Typo.h5">Borrowing @Contract.Item.Name from @Contract.Owner.FirstName</MudText>
+            <MudText Typo="Typo.body2">@_cardContent</MudText>
+            <MudText Typo="Typo.body2">(DATE placeholder)</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton @onclick="NavigateToSummary" Variant="Variant.Text" Color="Color.Default">
+                Full summary
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</div>
+
+@code {
+    [Parameter]
+    public Contract? Contract { get; set; }
+    private string _tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is user 'Liza Mineilli', hardcoded.
+    private string _cardContent = string.Empty;
+
+    private void NavigateToSummary()
+    {
+        var url = $"/request/review?id={Contract.Id}";
+        NavigationManager.NavigateTo(url);
+    }
+
+    private async Task<string> AltText()
+    {
+        return $"Picture of {Contract?.Item.Name}";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        switch (Contract.StatusChanges.Last().To)
+        {
+            case ContractStatus.Pending:
+                _cardContent = await ContractStringBuilder.RequestCardContent(Contract, _tempUserId);
+                break;
+            case ContractStatus.Accepted:
+                _cardContent = await ContractStringBuilder.AcceptedCardContent(Contract, _tempUserId);
+                break;
+            case ContractStatus.Denied:
+                _cardContent = await ContractStringBuilder.DeniedCardContent(Contract, _tempUserId);
+                break;
+            case ContractStatus.Cancelled:
+                _cardContent = await ContractStringBuilder.CancelledCardContent(Contract, _tempUserId);
+                break;
+            case ContractStatus.Active:
+                _cardContent = await ContractStringBuilder.ActiveCardContent(Contract, _tempUserId);
+                break;
+            case ContractStatus.Completed:
+                _cardContent = await ContractStringBuilder.CompletedCardContent(Contract, _tempUserId);
+                break;
+            case ContractStatus.Late:
+                _cardContent = await ContractStringBuilder.LateCardContent(Contract, _tempUserId);
+                break;
+            default:
+                _cardContent = "No status change found.";
+                break;
+        }
+    }
+}

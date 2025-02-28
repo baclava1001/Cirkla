@@ -1,0 +1,32 @@
+﻿@inject NavigationManager NavigationManager;
+
+<div class="col-12 col-sm-6 col-md-3 mb-4">
+    <MudCard Outlined="true" Elevation="100">
+        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" />
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@Item.Name</MudText>
+            <MudText Typo="Typo.body2">@Item.Description</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton @onclick="NavigateToItem" Variant="Variant.Text" Color="Color.Default">
+                More...
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</div>
+
+@code {
+    [Parameter]
+    public Item Item { get; set; }
+
+    private void NavigateToItem()
+    {
+        var url = $"/borrowitem/?id={Item.Id}";
+        NavigationManager.NavigateTo(url);
+    }
+
+    private async Task<string> AltText()
+    {
+        return $"Picture of {Item.Name}";
+    }
+}
