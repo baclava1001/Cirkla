@@ -8,12 +8,16 @@
 
   <ItemGroup>
     <Compile Remove="Pages\Inbox\**" />
+    <Compile Remove="Pages\SharedStuff\**" />
     <Content Remove="Pages\Inbox\**" />
+    <Content Remove="Pages\SharedStuff\**" />
     <EmbeddedResource Remove="Pages\Inbox\**" />
+    <EmbeddedResource Remove="Pages\SharedStuff\**" />
     <None Remove="Pages\Inbox\**" />
+    <None Remove="Pages\SharedStuff\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Pages\Borrow\ReplyToRequestButtons.razor" />
+    <Content Remove="Pages\BorrowItem\ReplyToRequestButtons.razor" />
   </ItemGroup>
 	
 

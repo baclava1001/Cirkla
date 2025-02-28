@@ -17,10 +17,11 @@ namespace Cirkla_DAL.Repositories.Contracts
         {
             return await context.Contracts
                 .Include(c => c.Item)
-                .Include(c => c.Item.Pictures)
+                .ThenInclude(I => I.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .Include(c => c.StatusChanges)
+                .ThenInclude(sc => sc.ChangedBy)
                 .ToListAsync();
         }
 
@@ -28,10 +29,11 @@ namespace Cirkla_DAL.Repositories.Contracts
         {
             return await context.Contracts
                 .Include(c => c.Item)
-                .Include(c => c.Item.Pictures)
+                .ThenInclude(I => I.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .Include(c => c.StatusChanges)
+                .ThenInclude(sc => sc.ChangedBy)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
