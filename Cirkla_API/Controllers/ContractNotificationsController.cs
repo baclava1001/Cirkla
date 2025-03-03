@@ -28,7 +28,6 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNotifications()
         {
-            _logger.LogInformation("Fetching notifications from API");
             var result = await _contractNotificationService.GetNotifications();
             return result.ToHttpResponse();
         }
@@ -42,7 +41,6 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ToggleMarkAsRead(int id)
         {
-            _logger.LogInformation("Marking notification with id: {Id} as read ", id);
             var result = await _contractNotificationService.ToggleMarkAsRead(id);
             return result.ToHttpResponse();
         }

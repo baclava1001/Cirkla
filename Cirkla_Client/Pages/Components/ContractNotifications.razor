@@ -1,25 +1,26 @@
 ﻿@inject NotificationService NotificationService
 @inject IClient Client;
 
+<MudBadge Content="_count" Color="Color.Warning" Overlap="true" Class="mx-6 my-4">
+    <MudMenu Icon="@Icons.Material.Filled.WavingHand" Color="Color.Inherit" Size="Size.Medium">
+        @if (!NotificationsToDisplay.Any())
+        {
+            <MudMenuItem Label="No notifications yet"/>
+        }
 
-<MudBadge Content="NotificationsToDisplay.Count" Color="Color.Warning" Overlap="true" Class="mx-6 my-4">
-<MudMenu Icon="@Icons.Material.Filled.WavingHand" Color="Color.Inherit" Size="Size.Medium">
-    @if (!NotificationsToDisplay.Any())
-    {
-        <MudMenuItem Label="No notifications yet"/>
-    }
-
-    @foreach (var notification in NotificationsToDisplay)
-    {
-            <MudLink Href="/borrowing-timelines" Underline="Underline.None" Color="Color.Default" >
-                <MudMenuItem Label="@notification.NotificationMessage" />
-        </MudLink>
-    }    
-</MudMenu>
+        @foreach (var notification in NotificationsToDisplay)
+        {
+            <MudLink Href="/inventory" Underline="Underline.None" Color="Color.Default" >
+                <MudMenuItem Label="@notification.NotificationMessage" OnClick="async () => await MarkAsRead(notification)"/>
+            </MudLink>
+        }    
+    </MudMenu>
 </MudBadge>
 
 @code {
-    List<ContractNotificationForViews> NotificationsToDisplay { get; set; } = new();
+    private List<ContractNotificationForViews> NotificationsToDisplay { get; set; } = new();
+    private int _count = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,8 +29,9 @@
         {
             var result = await Client.ApiContractNotificationsGetNotificationsAsync();
             NotificationsToDisplay = result.Reverse().ToList();
+            _count = NotificationsToDisplay.Where(n => n.HasBeenRead is false).Count();
         }
-        catch (ApiException ex) when (ex.StatusCode is >= 200 and <= 299)
+        catch (ApiException ex)
         {
             Console.WriteLine($"Server error: {ex.StatusCode}.");
         }
@@ -41,6 +43,31 @@
         NotificationService.OnChange += HandleStateChange;
     }
 
+    private async Task MarkAsRead(ContractNotificationForViews notification)
+    {
+        Console.WriteLine("UI trying to mark notifications as read.");
+        if (notification.HasBeenRead is true)
+        {
+            return;
+        }
+        try
+        {
+            await Client.ApiContractNotificationsToggleMarkAsReadAsync(notification.Id);
+            _count--;
+            // TODO: Needs some work to update state properly.
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine($"Server error: {ex.StatusCode}.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+    // TODO: Add toggle read/unread UI-component and method
 
     public void Dispose()
     {
@@ -48,11 +75,11 @@
         NotificationService.OnChange -= HandleStateChange;
     }
 
-
     private async Task HandleStateChange()
     {
         Console.WriteLine("UI received notification: State changed!");
         NotificationsToDisplay.AddRange(NotificationService.PushNotifications);
+        _count += NotificationService.PushNotifications.Count;
         await InvokeAsync(StateHasChanged);
     }
 }
