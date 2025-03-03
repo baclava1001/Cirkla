@@ -101,7 +101,6 @@ public class ContractNotificationService : IContractNotificationService
             _logger.LogInformation("Toggling read status for notification with ID {Id} and saving to db", id);
             await _contractNotificationRepository.Update(notification);
             await _contractNotificationRepository.SaveChanges();
-            await _hubContext.Clients.All.ReceiveContractUpdate(await Mapper.MapToContractNotificationForViews(notification));
         }
         catch (Exception ex)
         {

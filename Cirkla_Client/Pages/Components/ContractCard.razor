@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavigationManager;
 
 <div class="col-12 col-sm-6 col-md-3 mb-4">
-    <MudCard Outlined="true" Elevation="100">
+    <MudCard Elevation="2">
         <MudCardMedia Height="200" Image="@Contract.Item.Pictures.FirstOrDefault().Url" alt="@AltText()" />
         <MudCardContent>
             <MudText Typo="Typo.h5">Borrowing @Contract.Item.Name from @Contract.Owner.FirstName</MudText>
@@ -9,7 +9,7 @@
             <MudText Typo="Typo.body2">(DATE placeholder)</MudText>
         </MudCardContent>
         <MudCardActions>
-            <MudButton @onclick="NavigateToSummary" Variant="Variant.Text" Color="Color.Default">
+            <MudButton @onclick="NavigateToSummary" Variant="Variant.Text" Color="Color.Info">
                 Full summary
             </MudButton>
         </MudCardActions>

@@ -29,6 +29,13 @@ public class ContractNotificationRepository(AppDbContext context) : IContractNot
     {
         return await context.ContractNotifications
             .Include(cn => cn.Contract)
+                .ThenInclude(c=> c.Item)
+            .Include(cn => cn.Contract)
+                .ThenInclude(c => c.Owner)
+            .Include(cn => cn.Contract)
+                .ThenInclude(c => c.Borrower)
+            .Include(cn => cn.Contract)
+                .ThenInclude(c => c.StatusChanges)
             .FirstOrDefaultAsync(cn => cn.Id == id);
     }
 
