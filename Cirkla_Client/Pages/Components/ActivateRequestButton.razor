@@ -1,25 +1,20 @@
-﻿@using Mapping.Mappers
-@inject IClient Client;
+﻿@inject IClient Client;
 @inject NavigationManager NavigationManager;
 
 @if (Contract is not null)
 {
     <MudGrid Justify="Justify.FlexStart">
         <MudButton id="Back" ButtonType="ButtonType.Button" Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FastRewind" Href="/inventory" Class="ml-5">Back</MudButton>
-        <MudButton id="Deny" ButtonType="ButtonType.Button" Color="Color.Error" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Reply" @onclick='() => SendReplyToBorrower("Deny")' Class="ml-2">Deny</MudButton>
-        <MudButton id="Accept" ButtonType="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" @onclick='() => SendReplyToBorrower("Accept")' Class="ml-2">Accept</MudButton>
+        <MudButton id="Activate" Buttontype="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="() => ActivateRequest()">Activate</MudButton>
     </MudGrid>
 }
-
 
 @code {
     [Parameter]
     public Contract? Contract { get; set; }
 
-    private async Task SendReplyToBorrower(string buttonName)
+    private async Task ActivateRequest()
     {
-        //var contractUpdateDTO = Mapper.MapToContractUpdateDTO(Contract); // TODO: Fix this
-
         ContractUpdateDTO contractUpdateDTO = new()
             {
                 Id = Contract.Id,
@@ -36,16 +31,9 @@
 
         try
         {
-            if (buttonName == "Deny")
-            {
-                contractUpdateDTO.CurrentStatus = ContractStatus.Denied;
-            }
-            else if (buttonName == "Accept")
-            {
-                contractUpdateDTO.CurrentStatus = ContractStatus.Accepted;
-            }
-            await Client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractUpdateDTO);
-            Console.WriteLine("Button component responded to borrower request successfully");
+            contractUpdateDTO.CurrentStatus = ContractStatus.Active;
+            await Client.ApiBorrowingContractActivateRequestAsync(Contract.Id, contractUpdateDTO);
+            Console.WriteLine("Button component activated request successfully");
             NavigationManager.NavigateTo("/inventory");
         }
         catch (Exception ex)
@@ -54,3 +42,4 @@
         }
     }
 }
+

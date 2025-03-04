@@ -1,0 +1,44 @@
+﻿@inject IClient Client;
+@inject NavigationManager NavigationManager;
+
+@if (Contract is not null)
+{
+    <MudGrid Justify="Justify.FlexStart">
+        <MudButton id="Back" ButtonType="ButtonType.Button" Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FastRewind" Href="/inventory" Class="ml-5">Back</MudButton>
+        <MudButton id="Cancel" Buttontype="ButtonType.Button" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Cancel" OnClick="() => CancelRequest()">Cancel</MudButton>
+    </MudGrid>
+}
+
+@code {
+    [Parameter]
+    public Contract? Contract { get; set; }
+
+    private async Task CancelRequest()
+    {
+        ContractUpdateDTO contractUpdateDTO = new()
+        {
+            Id = Contract.Id,
+            UpdatedByUserId = Contract.Owner.Id,
+            ItemId = Contract.Item.Id,
+            OwnerId = Contract.Owner.Id,
+            BorrowerId = Contract.Borrower.Id,
+            StartTime = Contract.StartTime,
+            EndTime = Contract.EndTime,
+            Created = Contract.Created,
+            CurrentStatus = ContractStatus.None,
+            LastStatus = Contract.StatusChanges.LastOrDefault().To
+        };
+
+        try
+        {
+            contractUpdateDTO.CurrentStatus = ContractStatus.Cancelled;
+            await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id, contractUpdateDTO);
+            Console.WriteLine("Button component cancelled request successfully");
+            NavigationManager.NavigateTo("/inventory");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+}

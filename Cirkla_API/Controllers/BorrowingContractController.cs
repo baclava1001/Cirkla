@@ -33,7 +33,7 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SendRequest(ContractCreateDTO contractDTOFromClient)
         {
-            _logger.LogInformation("Sending request to borrow item (creating new contract)");
+            _logger.LogInformation("API received http-request to borrow item (creating new contract)");
             var result = await _borrowingContractService.SendRequest(contractDTOFromClient);
             return result.ToHttpResponse();
         }
@@ -46,7 +46,7 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ViewRequestSummary(int id)
         {
-            _logger.LogInformation("Fetching request summary");
+            _logger.LogInformation("API received http-request for contract details");
             var result = await _borrowingContractService.ViewRequestSummary(id);
             return result.ToHttpResponse();
         }
@@ -60,9 +60,34 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RespondToRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            _logger.LogInformation("Responding to request");
-
+            _logger.LogInformation("API received http-request to respond 'Accept' or 'Deny' to borrowing request");
             var result = await _borrowingContractService.RespondToRequest(id, contractUpdateDTO);
+            return result.ToHttpResponse();
+        }
+
+
+        [HttpPut("CancelRequest{id}")]
+        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CancelRequest(int id, ContractUpdateDTO contractUpdateDTO)
+        {
+            _logger.LogInformation("API received http-request to cancel request");
+            var result = await _borrowingContractService.CancelRequest(id, contractUpdateDTO);
+            return result.ToHttpResponse();
+        }
+
+
+        [HttpPut("ActivateRequest{id}")]
+        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ActivateRequest(int id, ContractUpdateDTO contractUpdateDTO)
+        {
+            _logger.LogInformation("API received http-request to activate a contract");
+            var result = await _borrowingContractService.ActivateRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
     }

@@ -52,9 +52,17 @@
                 </ul>
             </dd>
 
-            @if (Contract?.StatusChanges?.LastOrDefault()?.To is not ContractStatus.Accepted && Contract?.StatusChanges?.LastOrDefault()?.To is not ContractStatus.Denied)
+            @if (Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Accepted) is false && Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Denied) is false)
             {
                 <ReplyToRequestButtons Contract="Contract" />
+            }
+            @if (Contract?.StatusChanges?.LastOrDefault()?.To is ContractStatus.Active && Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Completed) is false && Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Archived) is false)
+            {
+                <ActivateRequestButton Contract="Contract" />
+            }
+            @if (Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Archived) is false && Contract?.StatusChanges?.LastOrDefault()?.To is not ContractStatus.Cancelled)
+            {
+                <CancelRequestButton Contract="Contract" />
             }
         </dl>
     }

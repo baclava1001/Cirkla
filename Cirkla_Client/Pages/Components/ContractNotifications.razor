@@ -29,7 +29,7 @@
         {
             var result = await Client.ApiContractNotificationsGetNotificationsAsync();
             NotificationsToDisplay = result.Reverse().ToList();
-            _count = NotificationsToDisplay.Where(n => n.HasBeenRead is false).Count();
+            _count = NotificationsToDisplay.Count(n => n.HasBeenRead is false);
         }
         catch (ApiException ex)
         {

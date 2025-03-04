@@ -38,13 +38,15 @@ namespace Cirkla_API.Services.BorrowingContracts
             if (contractDTOFromClient.StartTime < contractDTOFromClient.Created)
             {
                 logger.LogWarning("Borrowing contract start date was earlier than the date of creation");
-                return ServiceResult<Contract>.Fail("Start date cannot be earlier than request creation date", ErrorType.ValidationError);
+                return ServiceResult<Contract>.Fail("Start date cannot be earlier than request creation date",
+                    ErrorType.ValidationError);
             }
 
             if (contractDTOFromClient.StartTime > contractDTOFromClient.EndTime)
             {
                 logger.LogWarning("Borrowing contract start date cannot be later than end date");
-                return ServiceResult<Contract>.Fail("Start date cannot be later than end date", ErrorType.ValidationError);
+                return ServiceResult<Contract>.Fail("Start date cannot be later than end date",
+                    ErrorType.ValidationError);
             }
 
             var item = await itemRepository.Get(contractDTOFromClient.ItemId);
@@ -69,7 +71,8 @@ namespace Cirkla_API.Services.BorrowingContracts
             catch (DbUpdateException ex)
             {
                 logger.LogError(ex, "Failed writing new contract to database");
-                return ServiceResult<Contract>.Fail("An error occurred while creating the contract", ErrorType.InternalError);
+                return ServiceResult<Contract>.Fail("An error occurred while creating the contract",
+                    ErrorType.InternalError);
             }
             catch (Exception ex)
             {
@@ -89,6 +92,7 @@ namespace Cirkla_API.Services.BorrowingContracts
                     logger.LogWarning("Borrowing contract with ID {id} not found", id);
                     return ServiceResult<Contract>.Fail("Borrowing contract not found", ErrorType.NotFound);
                 }
+
                 // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);
             }
@@ -105,7 +109,8 @@ namespace Cirkla_API.Services.BorrowingContracts
         {
             if (contractUpdateDto is null || id != contractUpdateDto.Id)
             {
-                logger.LogWarning("Attempted updating an borrowing contract (to reply to a request) with null value or ID mismatch");
+                logger.LogWarning(
+                    "Attempted updating an borrowing contract (to reply to a request) with null value or ID mismatch");
                 return ServiceResult<Contract>.Fail("Reply not valid", ErrorType.ValidationError);
             }
 
@@ -130,8 +135,10 @@ namespace Cirkla_API.Services.BorrowingContracts
                 await contractRepository.SaveChanges();
                 if (!ServiceResult<Contract>.Success(contract).IsError)
                 {
-                    await contractNotificationService.CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
+                    await contractNotificationService
+                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
                 }
+
                 // TODO: Return a thin and flat DTO instead of full object
                 return ServiceResult<Contract>.Success(contract);
             }
@@ -139,6 +146,96 @@ namespace Cirkla_API.Services.BorrowingContracts
             {
                 logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
                 return ServiceResult<Contract>.Fail("Error saving updated borrowing contract", ErrorType.InternalError);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
+                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
+            }
+        }
+
+        public async Task<ServiceResult<Contract>> CancelRequest(int id, ContractUpdateDTO contractUpdateDto)
+        {
+            if (contractUpdateDto is null || id != contractUpdateDto.Id)
+            {
+                logger.LogWarning(
+                    "Attempted cancelling borrowing contract with null value or ID mismatch");
+                return ServiceResult<Contract>.Fail("Unable to cancel", ErrorType.ValidationError);
+            }
+
+            var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            contract.StatusChanges.Add(new ContractStatusChange
+            {
+                Contract = contract,
+                ChangedAt = DateTime.Now,
+                ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
+                From = contractUpdateDto.LastStatus,
+                To = contractUpdateDto.CurrentStatus
+            });
+            try
+            {
+                await contractRepository.Update(contract);
+                await contractRepository.SaveChanges();
+                if (!ServiceResult<Contract>.Success(contract).IsError)
+                {
+                    await contractNotificationService
+                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
+                }
+                return ServiceResult<Contract>.Success(contract);
+            }
+            catch (DbUpdateException ex)
+            {
+                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
+                return ServiceResult<Contract>.Fail("Error updating borrowing contract", ErrorType.InternalError);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
+                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
+            }
+        }
+
+
+        public async Task<ServiceResult<Contract>> ActivateRequest(int id, ContractUpdateDTO contractUpdateDto)
+        {
+            if (contractUpdateDto is null || id != contractUpdateDto.Id)
+            {
+                logger.LogWarning(
+                    "Attempted activating borrowing contract with null value or ID mismatch");
+                return ServiceResult<Contract>.Fail("Unable to cancel", ErrorType.ValidationError);
+            }
+
+            var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            contract.StatusChanges.Add(new ContractStatusChange
+            {
+                Contract = contract,
+                ChangedAt = DateTime.Now,
+                ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
+                From = contractUpdateDto.LastStatus,
+                To = contractUpdateDto.CurrentStatus
+            });
+
+            try
+            {
+                await contractRepository.Update(contract);
+                await contractRepository.SaveChanges();
+                if (!ServiceResult<Contract>.Success(contract).IsError)
+                {
+                    await contractNotificationService
+                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
+                }
+                return ServiceResult<Contract>.Success(contract);
+            }
+            catch (DbUpdateException ex)
+            {
+                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
+                return ServiceResult<Contract>.Fail("Error updating borrowing contract", ErrorType.InternalError);
             }
             catch (Exception ex)
             {
