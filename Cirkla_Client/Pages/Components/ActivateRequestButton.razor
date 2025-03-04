@@ -3,10 +3,7 @@
 
 @if (Contract is not null)
 {
-    <MudGrid Justify="Justify.FlexStart">
-        <MudButton id="Back" ButtonType="ButtonType.Button" Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FastRewind" Href="/inventory" Class="ml-5">Back</MudButton>
-        <MudButton id="Activate" Buttontype="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="() => ActivateRequest()">Activate</MudButton>
-    </MudGrid>
+        <MudButton id="Activate" Buttontype="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="() => ActivateRequest()" Class="ml-2">Activate</MudButton>
 }
 
 @code {
@@ -25,13 +22,12 @@
                 StartTime = Contract.StartTime,
                 EndTime = Contract.EndTime,
                 Created = Contract.Created,
-                CurrentStatus = ContractStatus.None,
+                CurrentStatus = ContractStatus.Active,
                 LastStatus = Contract.StatusChanges.LastOrDefault().To
             };
 
         try
         {
-            contractUpdateDTO.CurrentStatus = ContractStatus.Active;
             await Client.ApiBorrowingContractActivateRequestAsync(Contract.Id, contractUpdateDTO);
             Console.WriteLine("Button component activated request successfully");
             NavigationManager.NavigateTo("/inventory");

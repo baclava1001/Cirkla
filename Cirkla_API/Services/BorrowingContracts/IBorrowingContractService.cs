@@ -12,5 +12,6 @@ namespace Cirkla_API.Services.BorrowingContracts
         Task<ServiceResult<Contract>> RespondToRequest(int id, ContractUpdateDTO contractUpdateDto);
         Task<ServiceResult<Contract>> CancelRequest(int id, ContractUpdateDTO contractUpdateDto);
         Task<ServiceResult<Contract>> ActivateRequest(int id, ContractUpdateDTO contractUpdateDto);
+        Task<ServiceResult<Contract>> CompleteRequest(int id, ContractUpdateDTO contractUpdateDto);
     }
 }

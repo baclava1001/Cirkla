@@ -1,5 +1,5 @@
-﻿@* @page "/request/view" *@
-@page "/request/review"
+﻿@page "/request/review"
+@using System.Runtime.CompilerServices
 @using Cirkla_Client.Pages.Components
 @inject IClient _client;
 @inject NavigationManager _navigationManager;
@@ -51,20 +51,26 @@
                     }
                 </ul>
             </dd>
-
-            @if (Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Accepted) is false && Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Denied) is false)
-            {
-                <ReplyToRequestButtons Contract="Contract" />
-            }
-            @if (Contract?.StatusChanges?.LastOrDefault()?.To is ContractStatus.Active && Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Completed) is false && Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Archived) is false)
-            {
-                <ActivateRequestButton Contract="Contract" />
-            }
-            @if (Contract?.StatusChanges?.Any(sc => sc.To == ContractStatus.Archived) is false && Contract?.StatusChanges?.LastOrDefault()?.To is not ContractStatus.Cancelled)
+        </dl>
+        <MudGrid Justify="Justify.FlexStart">
+            <MudButton id="Back" ButtonType="ButtonType.Button" Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FastRewind" Href="/inventory" Class="ml-5">Back</MudButton>
+            @if (_canCancel)
             {
                 <CancelRequestButton Contract="Contract" />
             }
-        </dl>
+            @if (_canReply)
+            {
+                <ReplyToRequestButtons Contract="Contract" />
+            }
+            @if (_canActivate)
+            {
+                <ActivateRequestButton Contract="Contract" />
+            }
+            @if (_canComplete)
+            {
+                <CompleteRequestButton Contract="Contract" />
+            }
+        </MudGrid>
     }
     @if(!string.IsNullOrEmpty(_tempMessage))
     {
@@ -74,7 +80,7 @@
 
 
 @code {
-    // TODO: Finalized contract (active or archived or denied) should lead to another, more static view, with no controls
+    // TODO: Add more detailed conditions for showing/hiding buttons and refactor to pattern matching (depending on date, logged in user, etc)
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
@@ -84,10 +90,29 @@
     private string? _requestNumber;
     private string? _tempMessage;
     private string? _messageClass;
+    private bool _canReply;
+    private bool _canActivate;
+    private bool _canCancel;
+    private bool _canComplete;
 
     protected override async Task OnInitializedAsync()
     {
         await GetRequestDataFromApi();
+
+        var changes = Contract?.StatusChanges;
+        var lastStatus = changes?.LastOrDefault()?.To;
+    
+        _canReply = changes is not null &&
+                    !changes.Any(sc => sc.To is ContractStatus.Accepted or ContractStatus.Denied);
+        _canActivate = changes is not null &&
+                       lastStatus is ContractStatus.Accepted &&
+                       !changes.Any(sc => sc.To is ContractStatus.Completed or ContractStatus.Archived);
+        _canCancel = changes is not null &&
+                         !changes.Any(sc => sc.To is ContractStatus.Archived) &&
+                         lastStatus is not ContractStatus.Cancelled;
+        _canComplete = changes is not null &&
+                       lastStatus is ContractStatus.Active &&
+                       !changes.Any(sc => sc.To is ContractStatus.Completed or ContractStatus.Archived);
     }
 
 
@@ -121,14 +146,6 @@
             _messageClass = "text-danger";
             _tempMessage = ex.Message.ToString();
         }
-    }
-
-
-    private async Task<string> CaptureUrlRoute()
-    {
-        var uri = new Uri(_navigationManager.Uri);
-        string capturedRoute = uri.AbsolutePath;
-        return capturedRoute;
     }
 }
 

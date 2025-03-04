@@ -4,11 +4,9 @@
 
 @if (Contract is not null)
 {
-    <MudGrid Justify="Justify.FlexStart">
-        <MudButton id="Back" ButtonType="ButtonType.Button" Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FastRewind" Href="/inventory" Class="ml-5">Back</MudButton>
-        <MudButton id="Deny" ButtonType="ButtonType.Button" Color="Color.Error" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Reply" @onclick='() => SendReplyToBorrower("Deny")' Class="ml-2">Deny</MudButton>
-        <MudButton id="Accept" ButtonType="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" @onclick='() => SendReplyToBorrower("Accept")' Class="ml-2">Accept</MudButton>
-    </MudGrid>
+        <MudButton id="Deny" ButtonType="ButtonType.Button" Color="Color.Error" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Cancel" OnClick='() => SendReplyToBorrower("Deny")' Class="ml-2">Deny</MudButton>
+        
+        <MudButton id="Accept" ButtonType="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" OnClick='() => SendReplyToBorrower("Accept")' Class="ml-2">Accept</MudButton>
 }
 
 

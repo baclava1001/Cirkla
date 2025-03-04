@@ -21,7 +21,6 @@ namespace Cirkla_API.Services.BorrowingContracts
         IContractRepository contractRepository,
         IItemRepository itemRepository,
         IUserRepository userRepository,
-        AppDbContext dbContext, // TODO: Replace with repository
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
     {
 
@@ -243,5 +242,52 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
             }
         }
+
+
+        public async Task<ServiceResult<Contract>> CompleteRequest(int id, ContractUpdateDTO contractUpdateDto)
+        {
+            if (contractUpdateDto is null || id != contractUpdateDto.Id)
+            {
+                logger.LogWarning(
+                    "Attempted completing borrowing contract with null value or ID mismatch");
+                return ServiceResult<Contract>.Fail("Unable to cancel", ErrorType.ValidationError);
+            }
+
+            var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            contract.StatusChanges.Add(new ContractStatusChange
+            {
+                Contract = contract,
+                ChangedAt = DateTime.Now,
+                ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
+                From = contractUpdateDto.LastStatus,
+                To = contractUpdateDto.CurrentStatus
+            });
+
+            try
+            {
+                await contractRepository.Update(contract);
+                await contractRepository.SaveChanges();
+                if (!ServiceResult<Contract>.Success(contract).IsError)
+                {
+                    await contractNotificationService
+                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
+                }
+                return ServiceResult<Contract>.Success(contract);
+            }
+            catch (DbUpdateException ex)
+            {
+                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
+                return ServiceResult<Contract>.Fail("Error updating borrowing contract", ErrorType.InternalError);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
+                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
+            }
+        }
+
     }
 }

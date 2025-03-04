@@ -3,14 +3,14 @@
 
 @if (Contract is not null)
 {
-        <MudButton id="Cancel" Buttontype="ButtonType.Button" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Stop" OnClick="() => CancelRequest()" Class="ml-2">Cancel</MudButton>
+    <MudButton id="Completed" Buttontype="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Eject" OnClick="() => CompleteRequest()" Class="ml-2">Complete</MudButton>
 }
 
 @code {
     [Parameter]
     public Contract? Contract { get; set; }
 
-    private async Task CancelRequest()
+    private async Task CompleteRequest()
     {
         ContractUpdateDTO contractUpdateDTO = new()
         {
@@ -22,14 +22,14 @@
             StartTime = Contract.StartTime,
             EndTime = Contract.EndTime,
             Created = Contract.Created,
-            CurrentStatus = ContractStatus.Cancelled,
+            CurrentStatus = ContractStatus.Completed,
             LastStatus = Contract.StatusChanges.LastOrDefault().To
         };
 
         try
         {
-            await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id, contractUpdateDTO);
-            Console.WriteLine("Button component cancelled request successfully");
+            await Client.ApiBorrowingContractCompleteRequestAsync(Contract.Id, contractUpdateDTO);
+            Console.WriteLine("Button component completed request successfully");
             NavigationManager.NavigateTo("/inventory");
         }
         catch (Exception ex)

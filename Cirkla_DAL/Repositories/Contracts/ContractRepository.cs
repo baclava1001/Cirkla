@@ -80,6 +80,18 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Contract>> GetActiveForItem(int itemId)
+        {
+            return await context.Contracts
+                .Include(c => c.Item)
+                .Include(c => c.Item.Pictures)
+                .Include(c => c.Owner)
+                .Include(c => c.Borrower)
+                .Include(c => c.StatusChanges)
+                .Where(c => c.Item.Id == itemId && c.StatusChanges.Any(sc => sc.To == ContractStatus.Active))
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Contract>> GetArchivedWhereUsersWasBorrower(string userId)
         {
             return await context.Contracts

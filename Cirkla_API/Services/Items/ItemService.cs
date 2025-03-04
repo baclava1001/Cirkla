@@ -1,6 +1,7 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +10,13 @@ namespace Cirkla_API.Services.Items
     public class ItemService : IItemService
     {
         private readonly IItemRepository _itemRepository;
+        private readonly IContractRepository _contractRepository;
         private readonly ILogger<ItemService> _logger;
 
-        public ItemService(IItemRepository itemRepository, ILogger<ItemService> logger)
+        public ItemService(IItemRepository itemRepository, IContractRepository contractRepository,ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
+            _contractRepository = contractRepository;
             _logger = logger;
         }
 
@@ -54,7 +57,13 @@ namespace Cirkla_API.Services.Items
                 return ServiceResult<Item>.Fail("Item not found", ErrorType.NotFound);
             }
 
-            // TODO: Check if there are any active contracts before allowing deletion!
+            // Check if there are any active contracts before allowing deletion!
+            var activeContracts = await _contractRepository.GetActiveForItem(id);
+            if (activeContracts.Any())
+            {
+                _logger.LogWarning("Attempted to delete item with ID {ItemId} which still has active contracts", id);
+                return ServiceResult<Item>.Fail("Item with active contracts cannot be deleted", ErrorType.ValidationError);
+            }
 
             try
             {
