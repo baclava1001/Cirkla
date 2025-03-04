@@ -90,5 +90,18 @@ namespace Cirkla_API.Controllers
             var result = await _borrowingContractService.ActivateRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
+
+
+        [HttpPut("CompleteRequest{id}")]
+        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CompleteRequest(int id, ContractUpdateDTO contractUpdateDTO)
+        {
+            _logger.LogInformation("API received http-request to complete a contract");
+            var result = await _borrowingContractService.CompleteRequest(id, contractUpdateDTO);
+            return result.ToHttpResponse();
+        }
     }
 }

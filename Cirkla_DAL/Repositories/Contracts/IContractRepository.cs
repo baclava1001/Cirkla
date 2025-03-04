@@ -10,6 +10,7 @@ namespace Cirkla_DAL.Repositories.Contracts
         Task<IEnumerable<Contract>> GetActiveWhereUserIsOwner(string userId);
         Task<IEnumerable<Contract>> GetArchivedWhereUsersWasBorrower(string userId);
         Task<IEnumerable<Contract>> GetArchivedWhereUserWasOwner(string userId);
+        Task<IEnumerable<Contract>> GetActiveForItem(int itemId);
         Task<Contract?> GetById(int id);
         Task<Contract?> Delete(Contract contract);
         Task<Contract?> Update(Contract contract);
