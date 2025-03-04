@@ -7,7 +7,7 @@ public enum ContractStatus
     Accepted,
     Denied,
     Cancelled,
-    Active,
+    Active, // Borrower should mark the contract as 'Active' when they have received the item
     Late, // Changes automatically if Owner hasn't marked contract 'Completed'
     Completed,
     Problem,

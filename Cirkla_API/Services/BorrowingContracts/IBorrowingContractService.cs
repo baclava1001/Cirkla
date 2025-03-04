@@ -10,5 +10,7 @@ namespace Cirkla_API.Services.BorrowingContracts
         Task<ServiceResult<Contract>> SendRequest(ContractCreateDTO contractCreateDTO);
         Task<ServiceResult<Contract>> ViewRequestSummary(int id);
         Task<ServiceResult<Contract>> RespondToRequest(int id, ContractUpdateDTO contractUpdateDto);
+        Task<ServiceResult<Contract>> CancelRequest(int id, ContractUpdateDTO contractUpdateDto);
+        Task<ServiceResult<Contract>> ActivateRequest(int id, ContractUpdateDTO contractUpdateDto);
     }
 }
