@@ -3,6 +3,7 @@ using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Reflection.Emit;
 
 namespace Cirkla_DAL
 {
@@ -14,9 +15,8 @@ namespace Cirkla_DAL
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<ContractStatusChange> ContractStatusChanges { get; set; }
         public DbSet<ContractNotification> ContractNotifications { get; set; }
-
-        // Event for when a Contract entity changes
-        public event EventHandler<EntityChangedEventArgs> EntityChanged;
+        public DbSet<Circle> Circles { get; set; }
+        public DbSet<CircleRequest> CircleRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -25,68 +25,56 @@ namespace Cirkla_DAL
             builder.Entity<Item>()
                 .HasOne(i => i.Owner)
                 .WithMany(o => o.Items)
-                .HasForeignKey(i => i.OwnerId);
+                .HasForeignKey(i => i.OwnerId)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Item>()
                 .HasMany(i => i.Pictures)
-                .WithOne(p => p.Item);
+                .WithOne(p => p.Item)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Contract>()
                 .HasOne(c => c.Owner)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.Entity<Contract>()
                 .HasOne(c => c.Borrower)
                 .WithMany()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+
+            // Configure the relationship between Circle and User for Administrators
+            builder.Entity<Circle>()
+                .HasMany(c => c.Administrators)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "CircleAdministrator",
+                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientCascade),
+                    j => j.HasOne<Circle>().WithMany().HasForeignKey("CircleId").OnDelete(DeleteBehavior.ClientCascade));
+
+            // Configure the relationship between Circle and User for Members
+            builder.Entity<Circle>()
+                .HasMany(c => c.Members)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "CircleMember",
+                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientCascade),
+                    j => j.HasOne<Circle>().WithMany().HasForeignKey("CircleId").OnDelete(DeleteBehavior.ClientCascade));
+
+            // Configure the relationship between Circle and User for CreatedBy
+            builder.Entity<Circle>()
+                .HasOne(c => c.CreatedBy)
+                .WithMany()
+                .HasForeignKey(c => c.CreatedById)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // Configure the relationship between Circle and User for UpdatedBy
+            builder.Entity<Circle>()
+                .HasOne(c => c.UpdatedBy)
+                .WithMany()
+                .HasForeignKey(c => c.UpdatedById)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
-
-        // Overrides SaveChanges to detect changes to Contract entities
-        //public override int SaveChanges()
-        //{
-        //    // Make a list of all the entities that have changed
-        //    var changedEntities = ChangeTracker.Entries()
-        //        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
-        //        .ToList();
-
-        //    foreach (var entry in changedEntities)
-        //    {
-        //        if (entry.Entity is Contract)
-        //        {
-        //            OnEntityChanged(entry);
-        //        }
-        //    }
-        //    return base.SaveChanges();
-        //}
-
-        //public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        //{
-        //    // Make a list of all the entities that have changed
-        //    var changedEntities = ChangeTracker.Entries()
-        //        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
-        //        .ToList();
-
-        //    foreach (var entry in changedEntities)
-        //    {
-        //        if (entry.Entity is Contract)
-        //        {
-        //            OnEntityChanged(entry);
-        //        }
-        //    }
-        //    return await base.SaveChangesAsync(cancellationToken);
-        //}
-
-
-        //// Raises the EntityChanged event when a Contract entity changes
-        //protected virtual void OnEntityChanged(EntityEntry entry)
-        //{
-        //    var entity = entry.Entity as Contract;
-        //    if (entity is not null)
-        //    {
-        //        // Raise an event with the entity details
-        //        EntityChanged?.Invoke(this, new EntityChangedEventArgs(entity));
-        //    }
-        //}
     }
 }

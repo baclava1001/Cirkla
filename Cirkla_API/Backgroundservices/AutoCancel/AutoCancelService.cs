@@ -28,8 +28,8 @@ public class AutoCancelService : IHostedService, IDisposable
             nextRunTime = nextRunTime.AddDays(1);
         }
         var initialDelay = nextRunTime - now;
-        //_timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+        _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
+        // _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30)); // For testing
         return Task.CompletedTask;
     }
 

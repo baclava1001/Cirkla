@@ -27,8 +27,8 @@ public class AutoLateService : IHostedService, IDisposable
             nextRunTime = nextRunTime.AddDays(1);
         }
         var initialDelay = nextRunTime - now;
-        //_timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
-        _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromSeconds(5));
+        _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
+        // _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromSeconds(5)); // For testing
         return Task.CompletedTask;
     }
 

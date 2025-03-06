@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cirkla_DAL.Models
 {
@@ -16,7 +17,5 @@ namespace Cirkla_DAL.Models
         //[Url]
         public string? ProfilePictureURL { get; set; }
         public List<Item>? Items { get; set; }
-
-        // Future feature: public List<Circle>? Circles { get; set; }
     }
 }
