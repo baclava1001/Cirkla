@@ -9,13 +9,13 @@
 <hr/>
 
 <div class="container">
-    
+
     <MudDivider/>
     <div class="row my-5">
         <h4>Borrowing items</h4>
         @if (!BorrowingItems.Any())
         {
-            <p>Loading items...</p>
+            <p>@borrowingItemsMessage</p>
         }
         else
         {
@@ -31,7 +31,7 @@
         <h4>Sharing Items</h4>
         @if (!SharingItems.Any())
         {
-            <p>Loading items...</p>
+            <p>@sharingItemsMessage</p>
         }
         else
         {
@@ -47,7 +47,7 @@
         <h4>My items</h4>
         @if (!MyItems.Any())
         {
-            <p>Loading items...</p>
+            <p>@myItemsMessage</p>
         }
         else
         {
@@ -59,9 +59,6 @@
     </div>
 </div>
 
-
-
-
 @code {
     // TODO: Add pagination serverside & clientside
 
@@ -71,54 +68,65 @@
     public List<Contract>? SharingItems { get; set; } = new();
     private string _tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is use 'Liza Minelli', hardcoded.
 
-    private string? borrowingItemsMessage;
-    private string? sharingItemsMessage;
-    private string? myItemsMessage;
+    private string? borrowingItemsMessage = "Loading items...";
+    private string? sharingItemsMessage = "Loading items...";
+    private string? myItemsMessage = "Loading items...";
 
     protected override async Task OnParametersSetAsync()
     {
-        try
-        {
-            BorrowingItems = await GetBorrowingItems();
-            SharingItems = await GetSharingItems();
-            MyItems = await GetMyItems();
-            
-            if (!BorrowingItems.Any())
-            {
-                borrowingItemsMessage = "No items to load at this time";
-            }
-
-            if (!SharingItems.Any())
-            {
-                sharingItemsMessage = "No items to load at this time";
-            }
-            
-            if (!MyItems.Any())
-            {
-                myItemsMessage = "No items to load at this time";
-            }
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        BorrowingItems = await GetBorrowingItems();
+        SharingItems = await GetSharingItems();
+        MyItems = await GetMyItems();
     }
 
     private async Task<List<Contract>> GetBorrowingItems()
     {
-        var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
-        return borrowingResult.ToList();
+        try
+        {
+            var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
+            return borrowingResult.ToList();
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 404)
+            {
+                borrowingItemsMessage = "No items to load at this time";
+            }
+            return new List<Contract>();
+        }
     }
 
     private async Task<List<Contract>> GetSharingItems()
     {
-        var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
-        return sharingResult.ToList();
+        try
+        {
+            var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
+            return sharingResult.ToList();
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 404)
+            {
+                sharingItemsMessage = "No items to load at this time";
+            }
+            return new List<Contract>();
+        }
     }
 
     private async Task<List<Item>> GetMyItems()
     {
-        var response = await Client.ApiItemByUserIdAsync(_tempUserId);
-        return response.ToList();
+        try
+        {
+            var response = await Client.ApiItemByUserIdAsync(_tempUserId);
+            return response.ToList();
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode == 404)
+            {
+                myItemsMessage = "No items to load at this time";
+            }
+            return new List<Item>();
+        }
     }
 }
