@@ -5,7 +5,6 @@ namespace Cirkla_DAL.Models
 {
     public class Item
     {
-        [Required]
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -17,9 +16,9 @@ namespace Cirkla_DAL.Models
         // public string List<HashTag> HashTags { get; set; } // Fkey for coming feature
         [Required]
         public string OwnerId { get; set; }
+        [ForeignKey("OwnerId")]
         public User? Owner { get; set; }
         // public List<Circle> Circles { get; set; } // Fkey for coming feature
         public List<ItemPicture>? Pictures { get; set; }
-        // public List<Contract> Contracts { get; set; } // Fkey for coming feature
     }
 }
