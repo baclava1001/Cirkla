@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cirkla_API.Services.ContractNotifications;
+using Cirkla_DAL.Models.Enums;
 
 namespace Cirkla_API.Services.BorrowingContracts
 {
@@ -51,8 +52,15 @@ namespace Cirkla_API.Services.BorrowingContracts
             var item = await itemRepository.Get(contractDTOFromClient.ItemId);
             var owner = await userRepository.Get(contractDTOFromClient.OwnerId);
             var borrower = await userRepository.Get(contractDTOFromClient.BorrowerId);
-
             var contract = await Mapper.MapToContract(contractDTOFromClient, item, owner, borrower);
+            contract.StatusChanges.Add(new ContractStatusChange
+            {
+                Contract = contract,
+                ChangedAt = DateTime.Now,
+                ChangedBy = await userRepository.Get(contractDTOFromClient.BorrowerId),
+                From = ContractStatus.None,
+                To = ContractStatus.Pending
+            });
 
             if (contract.Item is null || contract.Owner is null || contract.Borrower is null)
             {
@@ -65,6 +73,8 @@ namespace Cirkla_API.Services.BorrowingContracts
                 await contractRepository.Create(contract);
                 await contractRepository.SaveChanges();
                 // TODO: Return a thin and flat DTO instead of full object
+                await contractNotificationService
+                    .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
                 return ServiceResult<Contract>.Success(contract);
             }
             catch (DbUpdateException ex)
