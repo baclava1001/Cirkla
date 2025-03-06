@@ -122,19 +122,23 @@ public static class ContractStringBuilder
 
         if (lastCancelledChange != null)
         {
-            var changedById = lastCancelledChange.ChangedBy.Id;
+            var changedById = lastCancelledChange?.ChangedBy?.Id;
+            var isSystem = changedById == null;
             var isBorrower = userId == contract.Borrower.Id;
             var isOwner = userId == contract.Owner.Id;
             var isChangedByUser = userId == changedById;
 
-            message = (isBorrower, isOwner, isChangedByUser) switch
+            message = (isSystem, isBorrower, isOwner, isChangedByUser) switch
             {
-                (true, _, true) =>
+
+                (false, true, false, true) =>
                     $"You have cancelled your request to borrow {contract.Item.Name} from {OwnerFullName(contract)}.",
-                (_, true, true) =>
+                (false, false, true, true) =>
                     $"{BorrowerFullName(contract).Result} has cancelled their request to borrow {contract.Item.Name}.",
-                (true, _, false) =>
+                (false, true, false, false) =>
                     $"{OwnerFullName(contract).Result} has cancelled your request to borrow {contract.Item.Name}.",
+                (true, _, _, _) =>
+                    "The item wasn't picked up, so the contract was cancelled automatically.",
                 _ =>
                     $"You have cancelled {BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}."
             };
