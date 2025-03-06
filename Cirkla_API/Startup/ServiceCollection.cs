@@ -13,6 +13,9 @@ using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
+using Cirkla_API.Backgroundservices.AutoArchive;
+using Cirkla_API.Backgroundservices.AutoCancel;
+using Cirkla_API.Backgroundservices.AutoLate;
 using Cirkla_API.Services.ContractNotifications;
 using Cirkla_DAL.Repositories.ContractNotifications;
 
@@ -44,6 +47,10 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IContractNotificationRepository, ContractNotificationRepository>();
         services.AddScoped<IContractNotificationService, ContractNotificationService>();
+
+        services.AddHostedService<AutoArchiveService>();
+        services.AddHostedService<AutoLateService>();
+        services.AddHostedService<AutoCancelService>();
 
         services.AddSignalR().AddJsonProtocol(options =>
         {
