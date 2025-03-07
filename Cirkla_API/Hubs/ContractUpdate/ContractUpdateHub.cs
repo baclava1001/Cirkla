@@ -1,5 +1,4 @@
-﻿using Cirkla_DAL.Events;
-using Cirkla_DAL.Models;
+﻿using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.SignalR;
 using NuGet.Protocol.Providers;
 
