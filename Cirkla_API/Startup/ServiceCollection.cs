@@ -17,6 +17,7 @@ using Cirkla_API.Backgroundservices.AutoArchive;
 using Cirkla_API.Backgroundservices.AutoCancel;
 using Cirkla_API.Backgroundservices.AutoLate;
 using Cirkla_API.Services.ContractNotifications;
+using Cirkla_API.Services.Users;
 using Cirkla_DAL.Repositories.ContractNotifications;
 
 namespace Cirkla_API.Startup;
@@ -32,6 +33,7 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<AppDbContext>();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ICustomAuthenticationService, CustomAuthenticationService>();
 

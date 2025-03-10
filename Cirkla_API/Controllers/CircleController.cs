@@ -1,6 +1,7 @@
 ﻿using Cirkla_DAL;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,6 +36,22 @@ namespace Cirkla_API.Controllers
         [HttpPost]
         public Circle Post(Circle circle)
         {
+            var user = _dbContext.Users.Find(circle.CreatedById);
+
+            if (user == null)
+            {
+                // TODO: Handle this error
+            }
+
+            if (_dbContext.Entry(user).State == EntityState.Detached)
+            {
+                _dbContext.Attach(user);
+            }
+
+            circle.CreatedBy = user;
+            circle.Administrators = new List<User> { user };
+            circle.Members = new List<User> { user };
+
             _dbContext.Circles.Add(circle);
             _dbContext.SaveChanges();
             return circle;

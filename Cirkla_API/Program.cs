@@ -24,7 +24,8 @@ namespace Cirkla_API
             // Services that need configuring
             builder.Services.AddDbContext<AppDbContext>
                 (options => options.UseSqlServer(builder.Configuration
-                .GetConnectionString("AppConnectionString")));
+                .GetConnectionString("AppConnectionString"))
+                    .EnableSensitiveDataLogging());
 
 
             builder.Services.AddAuthorization();
