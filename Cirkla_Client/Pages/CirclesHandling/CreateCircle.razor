@@ -1,0 +1,57 @@
+﻿@page "/createcircle"
+@inject IClient Client
+
+<PageTitle>Create circle</PageTitle>
+
+<MudGrid>
+    <MudItem>
+        <MudText Typo="Typo.h2">Create new circle</MudText>
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    <MudItem>
+        <EditForm method="post" Model="@_circle" >
+            <DataAnnotationsValidator/>
+            <MudTextField Label="Name" @bind-Value="_circle.Name" Required="true" />
+            <MudTextField Label="Description" @bind-Value="_circle.Description" Required="true" />
+            <MudCheckBox Label="Make public" @bind-Value="_circle.IsPublic" Required="true" />
+            <MudButton
+                ButtonType="ButtonType.Submit"
+                OnClick="SubmitForm"
+                Color="Color.Tertiary"
+                Variant="Variant.Filled"
+                StartIcon="@Icons.Material.Filled.Create"
+                Class="ml-auto">Submit
+            </MudButton>
+        </EditForm>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private Circle _circle = new();
+    private string _tempUserId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed's id, harcoded
+
+
+    private async Task SubmitForm()
+    {
+        _circle.CreatedAt = DateTime.Now;
+        _circle.CreatedById = _tempUserId;
+        _circle.CreatedBy = await Client.ApiUserGetAsync(_tempUserId);
+        _circle.Administrators = new List<User> { _circle.CreatedBy };
+        _circle.Members = new List<User> { _circle.CreatedBy };
+
+        try
+        {
+            await Client.ApiCirclePostAsync(_circle);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

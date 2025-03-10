@@ -11,6 +11,7 @@ namespace Cirkla_DAL.Models
 {
     public class CircleRequest
     {
+        [Required]
         public int Id { get; set; }
         [Required, ForeignKey("CircleId")]
         public Circle Circle { get; set; }

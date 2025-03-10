@@ -1,4 +1,6 @@
 ﻿@page "/circlesoverview"
+@using Cirkla_Client.Pages.Components
+@inject IClient Client
 
 <PageTitle>Circles overview</PageTitle>
 
@@ -8,13 +10,48 @@
     </MudItem>
     <MudItem>
         <MudButton
-            id="Add"
-            ButtonType="ButtonType.Button"
-            Color="Color.Tertiary"
-            Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="ma-6">New Circle</MudButton>
+        id="Add"
+        ButtonType="ButtonType.Button"
+        Color="Color.Tertiary"
+        Variant="Variant.Filled"
+        StartIcon="@Icons.Material.Filled.Add"
+        Class="ma-6"
+        Href="/createcircle">New Circle</MudButton>
     </MudItem>
 </MudGrid>
 
+
+<MudGrid>
+    @if (Circles is null || Circles.Any() is false)
+    {
+        <MudItem>
+            <MudText>No circles to show</MudText>
+        </MudItem>
+    }
+    else
+    {
+        foreach (var circle in Circles)
+        {
+            <MudItem>
+                <CircleCard Circle="circle"/>
+            </MudItem>
+        }
+    }
+</MudGrid>
+
 @code {
+    public ICollection<Circle> Circles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Circles = await Client.ApiCircleGetAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Something went wrong: {ex.Message}");
+        }
+    }
 
 }

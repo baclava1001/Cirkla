@@ -6,6 +6,7 @@ namespace Cirkla_DAL.Models
 {
     public class Contract
     {
+        [Required]
         public int Id { get; set; }
         [Required]
         public Item Item { get; set; }
