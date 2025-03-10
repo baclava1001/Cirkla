@@ -26,7 +26,7 @@ namespace Cirkla_API.Services.Items
             if (item is null)
             {
                 _logger.LogWarning("Attempted creating an item with null value");
-                return ServiceResult<Item>.Fail("Item is null", ErrorType.ValidationError);
+                return ServiceResult<Item>.Fail("Item could not be created", ErrorType.ValidationError);
             }
 
             try

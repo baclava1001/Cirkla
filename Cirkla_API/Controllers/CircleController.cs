@@ -1,4 +1,8 @@
-﻿using Cirkla_DAL;
+﻿using Cirkla_API.Common;
+using Cirkla_API.Helpers;
+using Cirkla_API.Services.Circles;
+using Cirkla_API.Services.Users;
+using Cirkla_DAL;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,69 +15,88 @@ namespace Cirkla_API.Controllers
     [ApiController]
     public class CircleController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly ICircleService _circleService;
+        private readonly IUserService _userService;
+        private readonly ILogger<CircleController> _logger;
 
-        public CircleController(AppDbContext dbContext)
+        public CircleController(ICircleService circleService, IUserService userService, ILogger<CircleController> logger)
         {
-            _dbContext = dbContext;
+            _circleService = circleService;
+            _userService = userService;
+            _logger = logger;
         }
 
         // GET: api/<CircleController>
         [HttpGet]
-        public IEnumerable<Circle> Get()
+        [ProducesResponseType(typeof(IEnumerable<Circle>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAll()
         {
-            return _dbContext.Circles;
+            _logger.LogInformation("Controller received request for all circles");
+            var result = await _circleService.GetAll();
+            return result.ToHttpResponse();
         }
 
         // GET api/<CircleController>/5
         [HttpGet("{id}")]
-        public Circle Get(int id)
+        [ProducesResponseType(typeof(Circle), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get(int id)
         {
-            return _dbContext.Circles.Find(id);
+            _logger.LogInformation("Controller received request for circle with id: {id}", id);
+            var result = await _circleService.GetById(id);
+            return result.ToHttpResponse();
         }
 
         // POST api/<CircleController>
         [HttpPost]
-        public Circle Post(Circle circle)
+        [ProducesResponseType(typeof(Circle), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Post(Circle circle)
         {
-            var user = _dbContext.Users.Find(circle.CreatedById);
-
-            if (user == null)
-            {
-                // TODO: Handle this error
-            }
-
-            if (_dbContext.Entry(user).State == EntityState.Detached)
-            {
-                _dbContext.Attach(user);
-            }
+            _logger.LogInformation("Controller received request to create new circle");
+            _logger.LogInformation("Getting user for populating circle");
+            var userServiceResult = await _userService.GetById(circle.CreatedById);
+            var user = userServiceResult.Payload;
 
             circle.CreatedBy = user;
             circle.Administrators = new List<User> { user };
             circle.Members = new List<User> { user };
 
-            _dbContext.Circles.Add(circle);
-            _dbContext.SaveChanges();
-            return circle;
+            var result = await _circleService.Create(circle);
+            return result.ToHttpResponse();
         }
 
         // PUT api/<CircleController>/5
         [HttpPut("{id}")]
-        public Circle Put(int id, Circle circle)
+        [ProducesResponseType(typeof(Circle), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update(int id, Circle circle)
         {
-            _dbContext.Circles.Update(circle);
-            _dbContext.SaveChanges();
-            return circle;
+            _logger.LogInformation("Controller received request to update circle with id: {id}", id);
+            var result = await _circleService.Update(id, circle);
+            return result.ToHttpResponse();
         }
 
         // DELETE api/<CircleController>/5
         [HttpDelete("{id}")]
-        public StatusCodeResult Delete(int id)
+        [ProducesResponseType(typeof(Circle), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var circle = _dbContext.Circles.Find(id);
-            _dbContext.Circles.Remove(circle);
-            _dbContext.SaveChanges();
-            return Ok();
+            _logger.LogInformation("Controller received request to delete circle with id: {id}", id);
+            var result = await _circleService.GetById(id);
+            return result.ToHttpResponse();
         }
     }
 }
