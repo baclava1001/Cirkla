@@ -1,23 +1,47 @@
-﻿<MudCard>
+﻿@inject IClient Client
+
+<MudCard>
     <MudCardHeader>
         <CardHeaderContent>
-            <MudText Typo="Typo.h6">@Circle.Name</MudText>
+            <MudText Typo="Typo.h6">@Circle?.Name</MudText>
         </CardHeaderContent>
         <CardHeaderActions>
-            <MudIconButton Icon="@Icons.Material.Filled.Settings"></MudIconButton>
+            <MudMenu Icon="@Icons.Material.Filled.Settings">
+                <MudMenuItem Label="Invite" Icon="@Icons.Material.Filled.Add"/>
+                <MudMenuItem Label="Edit" Icon="@Icons.Material.Filled.Edit" />
+                <MudMenuItem Label="Delete" Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteCircle()" />
+            </MudMenu>
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
         <MudText>
-            @Circle.Description
+            @Circle?.Description
         </MudText>
     </MudCardContent>
     <MudCardActions>
         <MudButton>Join</MudButton>
+        <MudButton>Browse</MudButton>
     </MudCardActions>
 </MudCard>
 
 @code {
     [Parameter]
-    public Circle Circle { get; set; }
+    public Circle? Circle { get; set; }
+
+    private async Task DeleteCircle()
+    {
+        try
+        {
+            Console.WriteLine($"Trying to delete circle with ID {Circle.Id}");
+            await Client.ApiCircleDeleteAsync(Circle.Id);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine($"An API related error occured: {ex}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An unexpected error occured: {ex}");
+        }
+    }
 }

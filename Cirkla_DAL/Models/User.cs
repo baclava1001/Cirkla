@@ -17,5 +17,7 @@ namespace Cirkla_DAL.Models
         //[Url]
         public string? ProfilePictureURL { get; set; }
         public List<Item>? Items { get; set; }
+        public List<Circle> AdministeredCircles { get; set; } = new List<Circle>();
+        public List<Circle> MemberCircles { get; set; } = new List<Circle>();
     }
 }

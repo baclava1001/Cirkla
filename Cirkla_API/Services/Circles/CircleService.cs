@@ -53,13 +53,12 @@ namespace Cirkla_API.Services.Circles
         {
             try
             {
-                IEnumerable<Circle> circles = await _circleRepository.Getall();
+                IEnumerable<Circle> circles = await _circleRepository.GetAll();
                 if (!circles.Any())
                 {
                     _logger.LogWarning("No Circles found in database");
                     return ServiceResult<IEnumerable<Circle>>.Fail("No circles found", ErrorType.NotFound);
                 }
-
                 return ServiceResult<IEnumerable<Circle>>.Success(circles);
             }
             catch (Exception ex)

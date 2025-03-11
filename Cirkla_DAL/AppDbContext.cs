@@ -22,58 +22,76 @@ namespace Cirkla_DAL
             base.OnModelCreating(builder);
 
             builder.Entity<Item>()
+                .HasMany(i => i.Pictures)
+                .WithOne(p => p.Item)
+                .HasForeignKey(p => p.ItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Item>()
                 .HasOne(i => i.Owner)
                 .WithMany(o => o.Items)
                 .HasForeignKey(i => i.OwnerId)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            builder.Entity<Item>()
-                .HasMany(i => i.Pictures)
-                .WithOne(p => p.Item)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Contract>()
                 .HasOne(c => c.Owner)
                 .WithMany()
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Restrict); //TODO: Change or handle delete behaviour for 
 
             builder.Entity<Contract>()
                 .HasOne(c => c.Borrower)
                 .WithMany()
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
-
-            // Configure the relationship between Circle and User for Administrators
-            builder.Entity<Circle>()
-                .HasMany(c => c.Administrators)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CircleAdministrator",
-                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientCascade),
-                    j => j.HasOne<Circle>().WithMany().HasForeignKey("CircleId").OnDelete(DeleteBehavior.ClientCascade));
-
-            // Configure the relationship between Circle and User for Members
-            builder.Entity<Circle>()
-                .HasMany(c => c.Members)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "CircleMember",
-                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientCascade),
-                    j => j.HasOne<Circle>().WithMany().HasForeignKey("CircleId").OnDelete(DeleteBehavior.ClientCascade));
-
-            // Configure the relationship between Circle and User for CreatedBy
             builder.Entity<Circle>()
                 .HasOne(c => c.CreatedBy)
                 .WithMany()
+                .IsRequired(false)
                 .HasForeignKey(c => c.CreatedById)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.ClientSetNull); // Sets to null if the user is deleted
 
-            // Configure the relationship between Circle and User for UpdatedBy
             builder.Entity<Circle>()
                 .HasOne(c => c.UpdatedBy)
                 .WithMany()
+                .IsRequired(false)
                 .HasForeignKey(c => c.UpdatedById)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.ClientSetNull); // Sets to null if the user is deleted
+
+            // Configure many-to-many for Administrators. Cascade only deletes the join table records, not the related entities.
+            builder.Entity<Circle>()
+                .HasMany(c => c.Administrators)
+                .WithMany(u => u.AdministeredCircles)
+                .UsingEntity<Dictionary<string, object>>(
+                    "CircleAdministrators",
+                    j => j
+                        .HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j
+                        .HasOne<Circle>()
+                        .WithMany()
+                        .HasForeignKey("CircleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                );
+
+            // Configure many-to-many for Members. Cascade only deletes the join table records, not the related entities.
+            builder.Entity<Circle>()
+                .HasMany(c => c.Members)
+                .WithMany(u => u.MemberCircles)
+                .UsingEntity<Dictionary<string, object>>(
+                    "CircleMembers",
+                    j => j
+                        .HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j
+                        .HasOne<Circle>()
+                        .WithMany()
+                        .HasForeignKey("CircleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                );
         }
     }
 }

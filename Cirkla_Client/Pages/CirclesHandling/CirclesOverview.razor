@@ -1,6 +1,6 @@
 ﻿@page "/circlesoverview"
-@using Cirkla_Client.Pages.Components
-@inject IClient Client
+@using Cirkla_Client.Pages.Components;
+@inject IClient Client;
 
 <PageTitle>Circles overview</PageTitle>
 
@@ -32,21 +32,30 @@
     {
         foreach (var circle in Circles)
         {
-            <MudItem>
-                <CircleCard Circle="circle"/>
-            </MudItem>
+            if (circle is not null)
+            {
+                <MudItem>
+                    <MudText>@circle.Name</MudText>
+                    <CircleCard Circle="circle"/>
+                </MudItem>
+            }
         }
     }
 </MudGrid>
 
 @code {
-    public ICollection<Circle> Circles;
+    public List<Circle>? Circles { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Circles = await Client.ApiCircleGetAsync();
+            var result = await Client.ApiCircleGetAsync();
+            Circles = result.ToList();
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine($"Something went wrong: {ex.Message}");
         }
         catch (Exception ex)
         {
