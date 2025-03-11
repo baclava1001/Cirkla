@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cirkla_DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250306220929_InitialWithCircles")]
-    partial class InitialWithCircles
+    [Migration("20250311105911_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Cirkla_DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CircleAdministrator", b =>
+            modelBuilder.Entity("CircleAdministrators", b =>
                 {
                     b.Property<int>("CircleId")
                         .HasColumnType("int");
@@ -37,10 +37,10 @@ namespace Cirkla_DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CircleAdministrator");
+                    b.ToTable("CircleAdministrators");
                 });
 
-            modelBuilder.Entity("CircleMember", b =>
+            modelBuilder.Entity("CircleMembers", b =>
                 {
                     b.Property<int>("CircleId")
                         .HasColumnType("int");
@@ -52,7 +52,7 @@ namespace Cirkla_DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CircleMember");
+                    b.ToTable("CircleMembers");
                 });
 
             modelBuilder.Entity("Cirkla_DAL.Models.Circle", b =>
@@ -67,7 +67,6 @@ namespace Cirkla_DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -511,33 +510,33 @@ namespace Cirkla_DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CircleAdministrator", b =>
+            modelBuilder.Entity("CircleAdministrators", b =>
                 {
                     b.HasOne("Cirkla_DAL.Models.Circle", null)
                         .WithMany()
                         .HasForeignKey("CircleId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Cirkla_DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CircleMember", b =>
+            modelBuilder.Entity("CircleMembers", b =>
                 {
                     b.HasOne("Cirkla_DAL.Models.Circle", null)
                         .WithMany()
                         .HasForeignKey("CircleId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Cirkla_DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -545,14 +544,11 @@ namespace Cirkla_DAL.Migrations
                 {
                     b.HasOne("Cirkla_DAL.Models.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
                     b.HasOne("Cirkla_DAL.Models.User", "UpdatedBy")
                         .WithMany()
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
 
@@ -589,7 +585,7 @@ namespace Cirkla_DAL.Migrations
                     b.HasOne("Cirkla_DAL.Models.User", "Borrower")
                         .WithMany()
                         .HasForeignKey("BorrowerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Cirkla_DAL.Models.Item", "Item")
@@ -601,7 +597,7 @@ namespace Cirkla_DAL.Migrations
                     b.HasOne("Cirkla_DAL.Models.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Borrower");
@@ -644,7 +640,7 @@ namespace Cirkla_DAL.Migrations
                     b.HasOne("Cirkla_DAL.Models.User", "Owner")
                         .WithMany("Items")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Owner");
@@ -655,7 +651,7 @@ namespace Cirkla_DAL.Migrations
                     b.HasOne("Cirkla_DAL.Models.Item", "Item")
                         .WithMany("Pictures")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Item");

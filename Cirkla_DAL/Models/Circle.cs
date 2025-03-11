@@ -17,12 +17,12 @@ namespace Cirkla_DAL.Models
         public string? Description { get; set; }
         [Required]
         public bool IsPublic { get; set; }
+        // All administrators are also members
         public List<User> Administrators { get; set; }
         public List<User> Members { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
-        [Required]
-        public string CreatedById { get; set; }
+        public string? CreatedById { get; set; }
         public User? CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? UpdatedById { get; set; }

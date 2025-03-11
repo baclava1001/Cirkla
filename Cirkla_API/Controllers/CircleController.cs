@@ -47,7 +47,7 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
-            _logger.LogInformation("Controller received request for circle with id: {id}", id);
+            _logger.LogInformation("Controller received request for circle with id: {Id}", id);
             var result = await _circleService.GetById(id);
             return result.ToHttpResponse();
         }
@@ -81,7 +81,7 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, Circle circle)
         {
-            _logger.LogInformation("Controller received request to update circle with id: {id}", id);
+            _logger.LogInformation("Controller received request to update circle with id: {Id}", id);
             var result = await _circleService.Update(id, circle);
             return result.ToHttpResponse();
         }
@@ -94,8 +94,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.LogInformation("Controller received request to delete circle with id: {id}", id);
-            var result = await _circleService.GetById(id);
+            _logger.LogInformation("Controller received request to delete circle with id: {Id}", id);
+            var result = await _circleService.Delete(id);
             return result.ToHttpResponse();
         }
     }

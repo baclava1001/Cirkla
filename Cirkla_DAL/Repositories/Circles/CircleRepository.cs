@@ -11,7 +11,7 @@ public class CircleRepository(AppDbContext context) : ICircleRepository
         return circle;
     }
 
-    public async Task<IEnumerable<Circle>> Getall()
+    public async Task<IEnumerable<Circle>> GetAll()
     {
         return await context.Circles
             .Include(c => c.Administrators)
@@ -24,6 +24,7 @@ public class CircleRepository(AppDbContext context) : ICircleRepository
     public async Task<Circle?> GetById(int id)
     {
         return await context.Circles
+            .Where(c => c.Id == id)
             .Include(c => c.Administrators)
             .Include(c => c.Members)
             .Include(c => c.CreatedBy)
