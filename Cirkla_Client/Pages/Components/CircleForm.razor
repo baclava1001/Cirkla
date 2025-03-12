@@ -1,0 +1,89 @@
+﻿@inject IClient Client
+@inject NavigationManager NavigationManager
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <EditForm method="post" Model="@Circle">
+            <DataAnnotationsValidator />
+            <MudTextField Label="Name" @bind-Value="Circle.Name" Required="true" />
+            <MudTextField Label="Description" @bind-Value="Circle.Description" Required="true" />
+            <MudCheckBox Label="Make public" @bind-Value="Circle.IsPublic" Required="false" />
+            
+            @if (Circle.Id < 0)
+            {
+                <MudButton ButtonType="ButtonType.Submit"
+                           OnClick="SubmitForm"
+                           Color="Color.Tertiary"
+                           Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Filled.Create"
+                           Class="ml-auto">Submit</MudButton>
+            }
+            else
+            {
+                <MudButton ButtonType="ButtonType.Submit"
+                           OnClick="SaveEdited"
+                           Color="Color.Tertiary"
+                           Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Filled.Save"
+                           Class="ml-auto">Save</MudButton>
+            }
+        </EditForm>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public Circle? Circle { get; set; }
+    private string _tempUserId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //TODO: Samed's id, hardcoded. Remove later.
+
+
+    private async Task SubmitForm()
+    {
+        if (Circle is null)
+        {
+            return; // TODO: Add error handling
+        }
+
+        Circle.CreatedAt = DateTime.Now;
+        Circle.CreatedById = _tempUserId;
+        Circle.CreatedBy = await Client.ApiUserGetAsync(_tempUserId);
+        Circle.Administrators = new List<User> { Circle.CreatedBy };
+        Circle.Members = new List<User> { Circle.CreatedBy };
+
+        try
+        {
+            await Client.ApiCirclePostAsync(Circle);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        NavigationManager.NavigateTo("/circlesoverview");
+    }
+
+
+    private async Task SaveEdited()
+    {
+        if (Circle is null)
+        {
+            return; // TODO: Add error handling
+        }
+        try
+        {
+            await Client.ApiCirclePutAsync(Circle.Id, Circle);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        NavigationManager.NavigateTo("/circlesoverview");
+    }
+}

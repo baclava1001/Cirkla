@@ -36,7 +36,7 @@
             {
                 <MudItem>
                     <MudText>@circle.Name</MudText>
-                    <CircleCard Circle="circle"/>
+                    <CircleCard Circle="circle" OnCircleDeleted="HandleCircleDeleted" />
                 </MudItem>
             }
         }
@@ -47,6 +47,19 @@
     public List<Circle>? Circles { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadCircles();
+    }
+
+
+    private async Task HandleCircleDeleted()
+    {
+        await LoadCircles();
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async Task LoadCircles()
     {
         try
         {
@@ -62,5 +75,4 @@
             Console.WriteLine($"Something went wrong: {ex.Message}");
         }
     }
-
 }
