@@ -105,10 +105,10 @@
         }
         catch (ApiException ex)
         {
-            if(ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            if(ex.StatusCode is >= 200 and <= 299)
             {
                 messageClass = "text-success";
-                tempMessage = $"Your request to borrow {Item.Name} has been succesfully sent to {Item.Owner.FirstName} {Item.Owner.LastName}";
+                tempMessage = $"Your request to borrow {Item.Name} has been successfully sent to {Item.Owner.FirstName} {Item.Owner.LastName}";
             }
             else if(ex.StatusCode >= 400 && ex.StatusCode <= 499)
             {

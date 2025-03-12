@@ -1,0 +1,41 @@
+﻿@page "/editcircle/"
+@using Cirkla_Client.Pages.Components;
+@inject IClient Client;
+
+<PageTitle>Edit circle</PageTitle>
+
+<MudGrid>
+    <MudItem>
+        <MudText Typo="Typo.h2">Edit circle</MudText>
+    </MudItem>
+</MudGrid>
+
+@if (Circle is not null)
+{
+    <CircleForm Circle="Circle" />
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    public Circle? Circle { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Circle = await Client.ApiCircleGetAsync(Id);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine($"An API related error occured: {ex}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An unexpected error occured: {ex}");
+        }
+    }
+
+}
+
