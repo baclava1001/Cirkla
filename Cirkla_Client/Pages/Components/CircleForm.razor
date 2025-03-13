@@ -72,6 +72,11 @@
         {
             return; // TODO: Add error handling
         }
+
+        Circle.UpdatedAt = DateTime.Now;
+        Circle.UpdatedById = _tempUserId;
+        Circle.UpdatedBy = await Client.ApiUserGetAsync(_tempUserId);
+
         try
         {
             await Client.ApiCirclePutAsync(Circle.Id, Circle);
