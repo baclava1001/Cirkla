@@ -24,10 +24,4 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\CircleMembers\" />
-    <Folder Include="Repositories\CircleAdmins\" />
-    <Folder Include="Repositories\CircleRequests\" />
-  </ItemGroup>
-
 </Project>

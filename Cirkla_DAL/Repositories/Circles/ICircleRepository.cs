@@ -8,6 +8,8 @@ public interface ICircleRepository
     Task<IEnumerable<Circle>> GetAll();
     Task<Circle?> GetById(int id);
     Task<Circle> Update(Circle circle);
+    Task<Circle> UpdateMembers(Circle circle);
+    Task<Circle> UpdateAdministrators(Circle circle);
     Task<Circle> Delete(Circle circle);
     Task SaveChanges();
 }
