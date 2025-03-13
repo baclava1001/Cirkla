@@ -34,8 +34,13 @@ public class CircleRepository(AppDbContext context) : ICircleRepository
 
     public async Task<Circle> Update(Circle circle)
     {
-        context.Update(circle);
-        return await Task.FromResult(circle); 
+        context.Circles.Attach(circle);
+        context.Entry(circle).Property(c => c.Name).IsModified = true;
+        context.Entry(circle).Property(c => c.Description).IsModified = true;
+        context.Entry(circle).Property(c => c.IsPublic).IsModified = true;
+        context.Entry(circle).Property(c => c.UpdatedAt).IsModified = true;
+        context.Entry(circle).Property(c => c.UpdatedById).IsModified = true;
+        return await Task.FromResult(circle);
     }
 
     public async Task<Circle> Delete(Circle circle)
@@ -48,7 +53,4 @@ public class CircleRepository(AppDbContext context) : ICircleRepository
     {
         await context.SaveChangesAsync();
     }
-
-
-    // Special, more specific, queries and commands
 }

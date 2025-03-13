@@ -20,7 +20,6 @@ namespace Cirkla_API.Services.Circles
             _logger = logger;
         }
 
-
         public async Task<ServiceResult<Circle>> Create(Circle circle)
         {
             // TODO: Add more validation for: createdby, createdat, etc etc
