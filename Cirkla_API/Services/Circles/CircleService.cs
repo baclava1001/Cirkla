@@ -1,22 +1,23 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Common;
+using Cirkla_API.Common.Constants;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.Users;
-using Cirkla_API.Common;
-using Cirkla_API.Common.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Circles
 {
+    /// <summary>
+    /// Simple CRUD for circles. Members and admins are handled in the CircleMemberService.
+    /// </summary>
     public class CircleService : ICircleService
     {
         private readonly ICircleRepository _circleRepository;
-        private readonly IUserRepository _userRepository;
         private readonly ILogger<CircleService> _logger;
 
-        public CircleService(ICircleRepository circleRepository, IUserRepository userRepository, ILogger<CircleService> logger)
+        public CircleService(ICircleRepository circleRepository, ILogger<CircleService> logger)
         {
             _circleRepository = circleRepository;
-            _userRepository = userRepository;
             _logger = logger;
         }
 

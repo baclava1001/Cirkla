@@ -15,8 +15,12 @@ namespace Cirkla_DAL.Models
         public int Id { get; set; }
         [Required, ForeignKey("CircleId")]
         public Circle Circle { get; set; }
+        [Required, ForeignKey("PendingMemberId")]
+        public User PendingMember { get; set; }
         [Required, ForeignKey("FromUserId")]
         public User FromUser { get; set; }
+        [ForeignKey("UpdatedByUserId")]
+        public User? UpdatedByUser { get; set; }
         [Required]
         public CircleJoinRequestType RequestType { get; set; }
         [Required]
@@ -25,7 +29,5 @@ namespace Cirkla_DAL.Models
         public DateTime RequestDate { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ExpiresAt { get; set; }
-        [ForeignKey("UpdatedByUserId")]
-        public User? UpdatedByUser { get; set; }
     }
 }

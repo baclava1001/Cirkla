@@ -36,7 +36,7 @@ namespace Cirkla_DAL
             builder.Entity<Contract>()
                 .HasOne(c => c.Owner)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Restrict); //TODO: Change or handle delete behaviour for 
+                .OnDelete(DeleteBehavior.Restrict); //TODO: Change or handle delete behaviour for Contracts and Users. Softdelete Contracts or maybe some kind of flat object archive?
 
             builder.Entity<Contract>()
                 .HasOne(c => c.Borrower)
@@ -48,7 +48,7 @@ namespace Cirkla_DAL
                 .WithMany()
                 .IsRequired(false)
                 .HasForeignKey(c => c.CreatedById)
-                .OnDelete(DeleteBehavior.ClientSetNull); // Sets to null if the user is deleted
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Circle>()
                 .HasOne(c => c.UpdatedBy)
@@ -92,6 +92,27 @@ namespace Cirkla_DAL
                         .HasForeignKey("CircleId")
                         .OnDelete(DeleteBehavior.Cascade)
                 );
+
+            builder.Entity<CircleRequest>()
+                .HasOne(cr => cr.FromUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CircleRequest>()
+                .HasOne(cr => cr.PendingMember)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CircleRequest>()
+                .HasOne(cr => cr.UpdatedByUser)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CircleRequest>()
+                .HasOne(cr => cr.Circle)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

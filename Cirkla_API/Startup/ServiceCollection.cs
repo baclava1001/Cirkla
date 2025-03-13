@@ -16,9 +16,11 @@ using System.Text.Json.Serialization;
 using Cirkla_API.Backgroundservices.AutoArchive;
 using Cirkla_API.Backgroundservices.AutoCancel;
 using Cirkla_API.Backgroundservices.AutoLate;
+using Cirkla_API.Services.CircleRequests;
 using Cirkla_API.Services.Circles;
 using Cirkla_API.Services.ContractNotifications;
 using Cirkla_API.Services.Users;
+using Cirkla_DAL.Repositories.CircleRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.ContractNotifications;
 
@@ -54,6 +56,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ICircleRepository, CircleRepository>();
         services.AddScoped<ICircleService, CircleService>();
+
+        services.AddScoped<ICircleRequestRepository, CircleRequestRepository>();
+        services.AddScoped<ICircleRequestService, CircleRequestService>();
 
         services.AddHostedService<AutoArchiveService>();
         services.AddHostedService<AutoLateService>();
