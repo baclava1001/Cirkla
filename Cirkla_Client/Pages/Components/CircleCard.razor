@@ -6,9 +6,10 @@
         <CardHeaderContent>
             <MudText Typo="Typo.h6">@Circle?.Name</MudText>
         </CardHeaderContent>
+        @* TODO: Show CardHeaderActions only to admins *@
         <CardHeaderActions>
             <MudMenu Icon="@Icons.Material.Filled.Settings">
-                <MudMenuItem Label="Invite" Icon="@Icons.Material.Filled.Add"/>
+                <MudMenuItem Label="Members" Icon="@Icons.Material.Filled.People" OnClick="() => EditMemberList()"/>
                 <MudMenuItem Label="Edit" Icon="@Icons.Material.Filled.Edit" OnClick="() => EditCircle()"/>
                 <MudMenuItem Label="Delete" Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteCircle()" />
             </MudMenu>
@@ -20,23 +21,35 @@
         </MudText>
     </MudCardContent>
     <MudCardActions>
-        <MudButton>Join</MudButton>
+        <MudButton OnClick="() => JoinCircle()">Join</MudButton>
         <MudButton>Browse</MudButton>
     </MudCardActions>
 </MudCard>
 
 @code {
-        [Parameter]
-        public Circle? Circle { get; set; }
+    [Parameter]
+    public Circle? Circle { get; set; }
 
-        [Parameter]
-        public EventCallback OnCircleDeleted { get; set; }
+    [Parameter]
+    public EventCallback OnCircleDeleted { get; set; }
+
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+
+    private async Task EditCircle()
+    {
+        if (Circle != null)
+        {
+            NavigationManager.NavigateTo($"/editcircle/?id={Circle.Id}");
+        }
+    }
+
 
     private async Task DeleteCircle()
     {
+        // TODO: Add an "are you sure?"-message before deleting
+
         try
         {
-            Console.WriteLine($"Trying to delete circle with ID {Circle.Id}");
             await Client.ApiCircleDeleteAsync(Circle.Id);
             await OnCircleDeleted.InvokeAsync();
         }
@@ -50,11 +63,37 @@
         }
     }
 
-    private async Task EditCircle()
+    private async Task EditMemberList()
     {
-        if (Circle != null)
+        // Navigate to the member list page
+    }
+
+    private async Task JoinCircle()
+    {
+        var request = new CircleRequest
         {
-            NavigationManager.NavigateTo($"/editcircle/?id={Circle.Id}");
+            CircleId = Circle.Id,
+            Circle = Circle,
+            PendingMemberId = _tempUserId,
+            PendingMember = await Client.ApiUserGetAsync(_tempUserId),
+            FromUserId = _tempUserId,
+            FromUser = await Client.ApiUserGetAsync(_tempUserId),
+            RequestType = CircleJoinRequestType.UserRequestToJoin,
+            Status = CircleRequestStatus.Pending,
+            RequestDate = DateTime.Now,
+            ExpiresAt = DateTime.Now + TimeSpan.FromDays(7)
+        };
+        try
+        {
+            await Client.ApiCircleRequestUserRequestToJoinAsync(request);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
         }
     }
 }

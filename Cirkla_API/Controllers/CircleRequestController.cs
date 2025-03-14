@@ -20,7 +20,12 @@ namespace Cirkla_API.Controllers
             _logger = logger;
         }
 
+
         [HttpPost("UserRequestToJoin")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UserRequestToJoin(CircleRequest circleRequest)
         {
             var result = await _circleRequestService.UserRequestsToJoin(circleRequest);
@@ -28,6 +33,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPost("UserRequestToBecomeAdmin")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UserRequestToBecomeAdmin(CircleRequest circleRequest)
         {
             var result = await _circleRequestService.UserRequestsToBecomeAdmin(circleRequest);
@@ -35,6 +44,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPost("MemberInviteToUser")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> MemberInviteToUser(CircleRequest circleRequest)
         {
             var result = await _circleRequestService.MemberInvitesUser(circleRequest);
@@ -42,6 +55,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPost("MembershipInviteFromAdmin")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> MembershipInviteFromAdmin(CircleRequest circleRequest)
         {
             var result = await _circleRequestService.MembershipInviteFromAdmin(circleRequest);
@@ -49,6 +66,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPost("AdminInviteFromAdmin")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AdminInviteFromAdmin(CircleRequest circleRequest)
         {
             var result = await _circleRequestService.AdminInviteFromAdmin(circleRequest);
@@ -56,6 +77,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet("GetAllRequestsForCircle")]
+        [ProducesResponseType(typeof(IEnumerable<CircleRequest>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllRequestsForCircle(int circleId)
         {
             var result = await _circleRequestService.GetAllRequestsForCircle(circleId);
@@ -63,6 +88,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet("GetAllRequestsForUser")]
+        [ProducesResponseType(typeof(IEnumerable<CircleRequest>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllRequestsForUser(string userId)
         {
             var result = await _circleRequestService.GetAllRequestsForUser(userId);
@@ -70,6 +99,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet("GetRequestById")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetRequestById(int id)
         {
             var result = await _circleRequestService.GetRequestById(id);
@@ -77,6 +110,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("RejectRequest")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RejectRequest(int id, CircleRequest circleRequest)
         {
             var result = await _circleRequestService.RejectRequest(id, circleRequest);
@@ -84,6 +121,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("RevokeRequest")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RevokeRequest(int id, CircleRequest circleRequest)
         {
             var result = await _circleRequestService.RevokeRequest(id, circleRequest);
@@ -91,6 +132,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("AdminAcceptsRequest")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AdminAcceptsRequest(int id, CircleRequest circleRequest)
         {
             var result = await _circleRequestService.AdminAcceptsRequest(id, circleRequest);
@@ -98,6 +143,10 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("UserAcceptsInvite")]
+        [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UserAcceptsInvite(int id, CircleRequest circleRequest)
         {
             var result = await _circleRequestService.UserAcceptsInvite(id, circleRequest);

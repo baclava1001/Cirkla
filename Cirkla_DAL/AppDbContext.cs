@@ -96,22 +96,26 @@ namespace Cirkla_DAL
             builder.Entity<CircleRequest>()
                 .HasOne(cr => cr.FromUser)
                 .WithMany()
+                .HasForeignKey("FromUserId")
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<CircleRequest>()
                 .HasOne(cr => cr.PendingMember)
                 .WithMany()
+                .HasForeignKey("PendingMemberId")
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<CircleRequest>()
                 .HasOne(cr => cr.UpdatedByUser)
                 .WithMany()
                 .IsRequired(false)
+                .HasForeignKey("UpdatedByUserId")
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<CircleRequest>()
                 .HasOne(cr => cr.Circle)
                 .WithMany()
+                .HasForeignKey("CircleId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

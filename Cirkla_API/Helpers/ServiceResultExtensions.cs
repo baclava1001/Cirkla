@@ -8,6 +8,8 @@ public static class ServiceResultExtensions
 {
     public static IActionResult ToHttpResponse<T>(this ServiceResult<T> result)
     {
+        if (result.IsCreated)
+            return new CreatedResult("", result.Payload);
         if (!result.IsError)
             return new OkObjectResult(result.Payload);
 
