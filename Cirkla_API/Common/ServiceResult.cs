@@ -9,17 +9,21 @@ public class ServiceResult<T>
     public ErrorType Error { get; set; }
     public string? ErrorMessage { get; set; }
     public T? Payload { get; set; }
+    public bool IsCreated { get; set; }
 
-    private ServiceResult(bool isError, ErrorType error, string? errorMessage, T? payload)
+    private ServiceResult(bool isError, ErrorType error, string? errorMessage, T? payload, bool isCreated)
     {
         IsError = isError;
         Error = error;
         ErrorMessage = errorMessage;
         Payload = payload;
+        IsCreated = isCreated;
     }
 
-    public static ServiceResult<T> Success(T payload) => new(false, default,null, payload);
-    public static ServiceResult<T> Fail(string errorMessage, ErrorType error) => new(true, error, errorMessage, default);
+
+    public static ServiceResult<T> Created(T payload) => new(false, default, null, payload, true);
+    public static ServiceResult<T> Success(T payload) => new(false, default,null, payload, false);
+    public static ServiceResult<T> Fail(string errorMessage, ErrorType error) => new(true, error, errorMessage, default, false);
 
 
 }

@@ -13,13 +13,16 @@ namespace Cirkla_DAL.Models
     {
         [Required]
         public int Id { get; set; }
-        [Required, ForeignKey("CircleId")]
+        [Required]
+        public int CircleId { get; set; }
         public Circle Circle { get; set; }
-        [Required, ForeignKey("PendingMemberId")]
+        [Required]
+        public string PendingMemberId { get; set; }
         public User PendingMember { get; set; }
-        [Required, ForeignKey("FromUserId")]
+        [Required]
+        public string FromUserId { get; set; }
         public User FromUser { get; set; }
-        [ForeignKey("UpdatedByUserId")]
+        public string? UpdatedByUserId { get; set; }
         public User? UpdatedByUser { get; set; }
         [Required]
         public CircleJoinRequestType RequestType { get; set; }

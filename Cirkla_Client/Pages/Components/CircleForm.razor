@@ -8,25 +8,19 @@
             <MudTextField Label="Name" @bind-Value="Circle.Name" Required="true" />
             <MudTextField Label="Description" @bind-Value="Circle.Description" Required="true" />
             <MudCheckBox Label="Make public" @bind-Value="Circle.IsPublic" Required="false" />
-            
-            @if (Circle.Id < 0)
-            {
-                <MudButton ButtonType="ButtonType.Submit"
-                           OnClick="SubmitForm"
-                           Color="Color.Tertiary"
-                           Variant="Variant.Filled"
-                           StartIcon="@Icons.Material.Filled.Create"
-                           Class="ml-auto">Submit</MudButton>
-            }
-            else
-            {
                 <MudButton ButtonType="ButtonType.Submit"
                            OnClick="SaveEdited"
                            Color="Color.Tertiary"
                            Variant="Variant.Filled"
                            StartIcon="@Icons.Material.Filled.Save"
                            Class="ml-auto">Save</MudButton>
-            }
+
+                <MudButton ButtonType="ButtonType.Submit"
+                           OnClick="SubmitForm"
+                           Color="Color.Tertiary"
+                           Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Filled.Create"
+                           Class="ml-auto">Submit</MudButton>
         </EditForm>
     </MudItem>
 </MudGrid>

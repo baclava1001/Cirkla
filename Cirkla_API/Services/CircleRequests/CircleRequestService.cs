@@ -24,17 +24,30 @@ public class CircleRequestService : ICircleRequestService
 
     public async Task<ServiceResult<CircleRequest>> UserRequestsToJoin(CircleRequest circleRequest)
     {
+        // TODO: Check if user is already a member or admin
         if (circleRequest.RequestType is not CircleJoinRequestType.UserRequestToJoin ||
-            circleRequest.FromUser != circleRequest.PendingMember)
+            circleRequest.FromUser.Id != circleRequest.PendingMember.Id)
         {
-            _logger.LogError("Invalid request type for user request to join circle with {Id}", circleRequest.Circle.Id);
+            _logger.LogError("Invalid request for user with ID {UserId} to join circle with ID {CircleId}", circleRequest.FromUser.Id, circleRequest.Circle.Id);
             return ServiceResult<CircleRequest>.Fail("Invalid request type", ErrorType.ValidationError);
         }
 
         try
         {
-            var createdRequest = await _circleRequestRepository.Create(circleRequest);
-            return ServiceResult<CircleRequest>.Success(createdRequest);
+            // TODO: Refactor to DTO:s and use mapping
+            var requestToDb = new CircleRequest
+            {
+                CircleId = circleRequest.CircleId,
+                PendingMemberId = circleRequest.PendingMemberId,
+                FromUserId = circleRequest.FromUserId,
+                RequestType = circleRequest.RequestType,
+                RequestDate = circleRequest.RequestDate,
+                Status = circleRequest.Status,
+                ExpiresAt = circleRequest.ExpiresAt
+            };
+            var createdRequest = await _circleRequestRepository.Create(requestToDb);
+            await _circleRequestRepository.SaveChanges();
+            return ServiceResult<CircleRequest>.Created(createdRequest);
             // TODO: Send notification to circle admins
         }
         catch (DbUpdateException ex)
@@ -53,7 +66,7 @@ public class CircleRequestService : ICircleRequestService
     public async Task<ServiceResult<CircleRequest>> UserRequestsToBecomeAdmin(CircleRequest circleRequest)
     {
         if (circleRequest.RequestType is not CircleJoinRequestType.UserRequestToBecomeAdmin ||
-            circleRequest.FromUser != circleRequest.PendingMember)
+            circleRequest.FromUser.Id != circleRequest.PendingMember.Id)
         {
             _logger.LogError("Invalid request type for admin request to join circle with {Id}",
                 circleRequest.Circle.Id);
@@ -63,7 +76,8 @@ public class CircleRequestService : ICircleRequestService
         try
         {
             var createdRequest = await _circleRequestRepository.Create(circleRequest);
-            return ServiceResult<CircleRequest>.Success(createdRequest);
+            await _circleRequestRepository.SaveChanges();
+            return ServiceResult<CircleRequest>.Created(createdRequest);
             // TODO: Send notification to circle admins
         }
         catch (DbUpdateException ex)
@@ -82,7 +96,7 @@ public class CircleRequestService : ICircleRequestService
     public async Task<ServiceResult<CircleRequest>> MemberInvitesUser(CircleRequest circleRequest)
     {
         if (circleRequest.RequestType is not CircleJoinRequestType.MemberInviteToUser ||
-            circleRequest.FromUser == circleRequest.PendingMember)
+            circleRequest.FromUser.Id == circleRequest.PendingMember.Id)
         {
             _logger.LogError("Invalid invite to user with {UserId} for circle with {CircleId}", circleRequest.PendingMember.Id, circleRequest.Circle.Id);
             return ServiceResult<CircleRequest>.Fail("Invalid request type", ErrorType.ValidationError);
@@ -90,7 +104,8 @@ public class CircleRequestService : ICircleRequestService
         try
         {
             var createdRequest = await _circleRequestRepository.Create(circleRequest);
-            return ServiceResult<CircleRequest>.Success(createdRequest);
+            await _circleRequestRepository.SaveChanges();
+            return ServiceResult<CircleRequest>.Created(createdRequest);
             // TODO: Send notification to invited user
         }
         catch (DbUpdateException ex)
@@ -118,7 +133,8 @@ public class CircleRequestService : ICircleRequestService
         try
         {
             var createdRequest = await _circleRequestRepository.Create(circleRequest);
-            return ServiceResult<CircleRequest>.Success(createdRequest);
+            await _circleRequestRepository.SaveChanges();
+            return ServiceResult<CircleRequest>.Created(createdRequest);
         }
         catch (DbUpdateException ex)
         {
@@ -145,7 +161,8 @@ public class CircleRequestService : ICircleRequestService
         try
         {
             var createdRequest = await _circleRequestRepository.Create(circleRequest);
-            return ServiceResult<CircleRequest>.Success(createdRequest);
+            await _circleRequestRepository.SaveChanges();
+            return ServiceResult<CircleRequest>.Created(createdRequest);
         }
         catch (DbUpdateException ex)
         {
@@ -238,6 +255,7 @@ public class CircleRequestService : ICircleRequestService
         try
         {
             var request = await _circleRequestRepository.Update(circleRequest);
+            await _circleRequestRepository.SaveChanges();
             if (request == null)
             {
                 return ServiceResult<CircleRequest>.Fail("Request not found", ErrorType.NotFound);
@@ -270,6 +288,7 @@ public class CircleRequestService : ICircleRequestService
         try
         {
             var request = await _circleRequestRepository.Update(circleRequest);
+            await _circleRequestRepository.SaveChanges();
             if (request == null)
             {
                 return ServiceResult<CircleRequest>.Fail("Request not found", ErrorType.NotFound);
@@ -305,6 +324,7 @@ public class CircleRequestService : ICircleRequestService
             await _circleRepository.UpdateMembers(circleRequest.Circle);
             await _circleRepository.UpdateAdministrators(circleRequest.Circle);
             var request = await _circleRequestRepository.Update(circleRequest);
+            await _circleRequestRepository.SaveChanges();
             if (request == null)
             {
                 return ServiceResult<CircleRequest>.Fail("Request not found", ErrorType.NotFound);
@@ -338,6 +358,7 @@ public class CircleRequestService : ICircleRequestService
             await _circleRepository.UpdateMembers(circleRequest.Circle);
             await _circleRepository.UpdateAdministrators(circleRequest.Circle);
             var request = await _circleRequestRepository.Update(circleRequest);
+            await _circleRequestRepository.SaveChanges();
             if (request == null)
             {
                 return ServiceResult<CircleRequest>.Fail("Request not found", ErrorType.NotFound);
