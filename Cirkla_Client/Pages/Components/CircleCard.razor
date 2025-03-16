@@ -1,4 +1,6 @@
-﻿@inject IClient Client
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IClient Client
 @inject NavigationManager NavigationManager
 
 <MudCard>
@@ -16,13 +18,17 @@
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
-        <MudText>
-            @Circle?.Description
-        </MudText>
+        <MudText>@Circle?.Description</MudText>
+        <MudText Typo="Typo.caption"><MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Person"/> Membership-status (Requested, member, administrator)</MudText>
     </MudCardContent>
     <MudCardActions>
-        <MudButton OnClick="() => JoinCircle()">Join</MudButton>
         <MudButton>Browse</MudButton>
+        @* @if(User is not member of this circle && has not sent a request already)*@
+        <MudButton OnClick="() => JoinCircle()">Join</MudButton>
+        @* @if(User is not member of this circle && has sent a request)*@
+        <MudButton OnClick="() => CancelRequest()">Cancel</MudButton>
+        @* @if(User is member of this circle)*@
+        <MudButton OnClick="() => Invite()">Invite</MudButton>
     </MudCardActions>
 </MudCard>
 
@@ -95,5 +101,43 @@
         {
             Console.WriteLine(ex);
         }
+    }
+
+    private async Task CancelRequest()
+    {
+        try
+        {
+            // TODO: Simplify this to make only one roundtrip instead of two (sena PUt/Revoke request without need to fetch all requests first)
+            var userRequests = await Client.ApiCircleRequestGetAllRequestsForUserAsync(_tempUserId);
+            var requestToUpdate = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
+
+            if (requestToUpdate is not null)
+            {
+                requestToUpdate.Status = CircleRequestStatus.Revoked;
+                requestToUpdate.UpdatedAt = DateTime.Now;
+                requestToUpdate.UpdatedByUserId = _tempUserId;
+                requestToUpdate.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
+            }
+            var json = JsonSerializer.Serialize(requestToUpdate, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                //PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Console.WriteLine("Sending JSON: " + json);
+            await Client.ApiCircleRequestRevokeRequestAsync(requestToUpdate.Id, requestToUpdate);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task Invite()
+    {
+
     }
 }

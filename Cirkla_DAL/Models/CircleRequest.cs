@@ -31,6 +31,7 @@ namespace Cirkla_DAL.Models
         [Required]
         public DateTime RequestDate { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        // TODO: Make ExpiresAt required
         public DateTime? ExpiresAt { get; set; }
     }
 }
