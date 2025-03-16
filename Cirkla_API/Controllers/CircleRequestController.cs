@@ -76,7 +76,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpGet("GetAllRequestsForCircle")]
+        [HttpGet("GetAllRequestsForCircle{circleId}")]
         [ProducesResponseType(typeof(IEnumerable<CircleRequest>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -87,7 +87,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpGet("GetAllRequestsForUser")]
+        [HttpGet("GetAllRequestsForUser{userId}")]
         [ProducesResponseType(typeof(IEnumerable<CircleRequest>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -98,7 +98,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpGet("GetRequestById")]
+        [HttpGet("GetRequestById{id}")]
         [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -109,7 +109,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpPut("RejectRequest")]
+        [HttpPut("RejectRequest{id}")]
         [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -120,7 +120,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpPut("RevokeRequest")]
+        [HttpPut("RevokeRequest{id}")]
         [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -131,7 +131,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpPut("AdminAcceptsRequest")]
+        [HttpPut("AdminAcceptsRequest{id}")]
         [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -142,7 +142,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpPut("UserAcceptsInvite")]
+        [HttpPut("UserAcceptsInvite{id}")]
         [ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

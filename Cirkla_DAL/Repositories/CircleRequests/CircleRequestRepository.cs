@@ -15,6 +15,9 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
     {
         return await context.CircleRequests
             .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Administrators)
+            .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Members)
             .Include(cr => cr.PendingMember)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
@@ -25,6 +28,9 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
     {
         return await context.CircleRequests
             .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Administrators)
+            .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Members)
             .Include(cr => cr.PendingMember)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
@@ -36,6 +42,9 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
     {
         return await context.CircleRequests
             .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Administrators)
+            .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Members)
             .Include(cr => cr.PendingMember)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
@@ -47,6 +56,9 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
     {
         return await context.CircleRequests
             .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Administrators)
+            .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Members)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
             .FirstOrDefaultAsync(cr => cr.Id == id);
@@ -57,7 +69,7 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
         context.CircleRequests.Attach(circleRequest);
         context.Entry(circleRequest).Property(cr => cr.Status).IsModified = true;
         context.Entry(circleRequest).Property(cr => cr.UpdatedAt).IsModified = true;
-        context.Entry(circleRequest).Property(cr => cr.UpdatedByUser).IsModified = true;
+        context.Entry(circleRequest).Property(cr => cr.UpdatedByUserId).IsModified = true;
         return await Task.FromResult(circleRequest);
     }
 

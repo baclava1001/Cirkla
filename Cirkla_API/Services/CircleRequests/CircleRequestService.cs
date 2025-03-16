@@ -274,12 +274,12 @@ public class CircleRequestService : ICircleRequestService
         }
     }
 
+    // TODO: Refactor to accept UserId and CircleId to make the whole operation
     public async Task<ServiceResult<CircleRequest>> RevokeRequest(int id, CircleRequest circleRequest)
     {
         if (circleRequest is null ||
             circleRequest.Id != id ||
-            circleRequest.Status is not CircleRequestStatus.Pending ||
-            circleRequest.UpdatedByUser.Id != circleRequest.FromUser.Id)
+            circleRequest.Status is not CircleRequestStatus.Revoked)
         {
             _logger.LogError("Invalid request with {Id}", id);
             return ServiceResult<CircleRequest>.Fail("Invalid request", ErrorType.ValidationError);

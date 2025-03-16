@@ -23,6 +23,7 @@ using Cirkla_API.Services.Users;
 using Cirkla_DAL.Repositories.CircleRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.ContractNotifications;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Startup;
 
@@ -82,6 +83,26 @@ public static class ServiceCollectionExtensions
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         });
+
+
+        // TODO: Remove this later, for debugging
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState
+                    .Where(e => e.Value.Errors.Count > 0)
+                    .SelectMany(e => e.Value.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogWarning("Model validation failed: {Errors}", string.Join("; ", errors));
+
+                return new BadRequestObjectResult(new { Errors = errors });
+            };
+        });
+
 
         services.AddOpenApiDocument();
         services.AddEndpointsApiExplorer();
