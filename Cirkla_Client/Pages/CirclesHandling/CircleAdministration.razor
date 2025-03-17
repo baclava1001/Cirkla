@@ -1,25 +1,20 @@
-﻿@page "/edit-circle/"
-@using Cirkla_Client.Pages.Components;
+﻿@page "/circle-administration"
+@using System.Runtime.CompilerServices
+@using Cirkla_Client.Pages.Components
 @inject IClient Client;
 
-<PageTitle>Edit circle</PageTitle>
+<PageTitle>@Circle?.Name</PageTitle>
 
-<MudGrid>
-    <MudItem>
-        <MudText Typo="Typo.h2">Edit circle</MudText>
-    </MudItem>
-</MudGrid>
+<CircleRequestList Id="Id" Circle="Circle" />
+<br/>
+<CircleMemberList Circle="Circle"/>
 
-@if (Circle is not null)
-{
-    <CircleForm Circle="Circle" />
-}
 
 @code {
     [SupplyParameterFromQuery]
     public int Id { get; set; }
+    public Circle? Circle { get; set; } = new();
 
-    public Circle? Circle { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,5 +32,8 @@
         }
     }
 
+    // List all members, with roles
+    // List all invited and requesting members
+    // Action buttons for each member
+    // Action buttons for the circle (Invite new, edit circle, delete circle))
 }
-

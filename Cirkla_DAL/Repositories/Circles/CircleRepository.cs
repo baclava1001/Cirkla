@@ -27,6 +27,7 @@ public class CircleRepository(AppDbContext context) : ICircleRepository
             .Where(c => c.Id == id)
             .Include(c => c.Administrators)
             .Include(c => c.Members)
+            .ThenInclude(m => m.Items)
             .Include(c => c.CreatedBy)
             .Include(c => c.UpdatedBy)
             .FirstOrDefaultAsync();

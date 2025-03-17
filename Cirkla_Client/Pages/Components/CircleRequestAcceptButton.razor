@@ -1,0 +1,65 @@
+﻿@using System.Text.Json
+@inject IClient Client;
+
+<MudButton
+ButtonType="ButtonType.Button"
+OnClick="() => AcceptJoinRequest()"
+Color="Color.Tertiary"
+Variant="Variant.Filled"
+StartIcon="@Icons.Material.Filled.Check"
+Size="Size.Small"
+Class="ml-auto">Accept</MudButton>
+
+@code {
+    [Parameter] public Circle? Circle { get; set; }
+    [Parameter] public CircleRequest? Request { get; set; }
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+
+    private async Task AcceptJoinRequest()
+    {
+        try
+        {
+            Request.Status = CircleRequestStatus.Accepted;
+            Request.UpdatedAt = DateTime.Now;
+            Request.UpdatedByUserId = _tempUserId;
+            Request.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
+            Console.WriteLine(JsonSerializer.Serialize(Request));
+            if (await IsAdmin())
+            {
+                await Client.ApiCircleRequestAdminAcceptsRequestAsync(Request.Id, Request);
+            }
+            else
+            {
+                await Client.ApiCircleRequestUserAcceptsInviteAsync(Request.Id, Request);
+            }
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task<bool> IsAdmin()
+    {
+        User user = new();
+        try
+        {
+            user = await Client.ApiUserGetAsync(_tempUserId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+
+        if (user.AdministeredCircles.Contains(Circle))
+        {
+            return true;
+        }
+        return false;
+    }
+}

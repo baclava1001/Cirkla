@@ -1,0 +1,48 @@
+﻿@inject IClient Client;
+
+<MudButton
+    ButtonType="ButtonType.Button"
+    OnClick="() => RevokeJoinRequest()"
+    Color="Color.Warning"
+    Variant="Variant.Filled"
+    StartIcon="@Icons.Material.Filled.Undo"
+    Size="Size.Small"
+    Class="ml-auto">Revoke</MudButton>
+
+@code {
+    [Parameter]
+    public Circle? Circle { get; set; }
+    [Parameter]
+    public CircleRequest? Request { get; set; }
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+
+    private async Task RevokeJoinRequest()
+    {
+        try
+        {
+            // TODO: Simplify this to make only one roundtrip instead of two (send a PUT/Revoke request without need to fetch all requests first)
+            var userRequests = await Client.ApiCircleRequestGetAllRequestsForUserAsync(_tempUserId);
+            var requestToUpdate = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
+
+            if (requestToUpdate is null || requestToUpdate.Status is not CircleRequestStatus.Pending)
+            {
+                Console.WriteLine("Request not valid.");
+            }
+            
+            requestToUpdate.Status = CircleRequestStatus.Revoked;
+            requestToUpdate.UpdatedAt = DateTime.Now;
+            requestToUpdate.UpdatedByUserId = _tempUserId;
+            requestToUpdate.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
+
+            await Client.ApiCircleRequestRevokeRequestAsync(requestToUpdate.Id, requestToUpdate);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}

@@ -274,9 +274,15 @@ public class CircleRequestService : ICircleRequestService
         }
     }
 
-    // TODO: Refactor to accept UserId and CircleId to make the whole operation
+    // TODO: Refactor to accept UserId and CircleId to make the whole operation in the backend?
     public async Task<ServiceResult<CircleRequest>> RevokeRequest(int id, CircleRequest circleRequest)
     {
+        // TODO: Check:
+        // if user is the one who created the request,
+        // if request hasn't been answered already
+        // if request hasn't expired
+        // Put all these checks in separate methods for each type of status change
+
         if (circleRequest is null ||
             circleRequest.Id != id ||
             circleRequest.Status is not CircleRequestStatus.Revoked)
@@ -313,7 +319,7 @@ public class CircleRequestService : ICircleRequestService
     {
         if (circleRequest is null ||
             circleRequest.Id != id ||
-            circleRequest.Status is not CircleRequestStatus.Pending ||
+            circleRequest.Status is not CircleRequestStatus.Accepted ||
             circleRequest.UpdatedByUser.Id == circleRequest.FromUser.Id)
         {
             _logger.LogError("Invalid request with {Id}", id);
@@ -347,7 +353,7 @@ public class CircleRequestService : ICircleRequestService
     {
         if (circleRequest is null ||
             circleRequest.Id != id ||
-            circleRequest.Status is not CircleRequestStatus.Pending ||
+            circleRequest.Status is not CircleRequestStatus.Accepted ||
             circleRequest.PendingMember.Id == circleRequest.FromUser.Id)
         {
             _logger.LogError("Invalid request with {Id}", id);

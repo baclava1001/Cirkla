@@ -1,0 +1,65 @@
+﻿@inject IClient Client;
+
+<MudTable Items="PendingCircleRequests" FixedHeader="true" Height="500" Hover="true" SortLabel="Sort by">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@Circle?.Name waiting members</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Picture</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<User, object>(u => u.LastName)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<User, object>(u => u.ZipCode)"></MudTableSortLabel>Zipcode</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<User, object>(u => u.Items?.Count ?? 0)"></MudTableSortLabel>Shared items</MudTh>
+        <MudTh>Requested role</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Picture"><MudImage Src="@context?.PendingMember?.ProfilePictureURL" Width="80" /></MudTd>
+        <MudTd DataLabel="Name">@context?.PendingMember?.FirstName @context?.PendingMember?.LastName</MudTd>
+        <MudTd DataLabel="Zipcode">@context?.PendingMember?.ZipCode</MudTd>
+        <MudTd DataLabel="Shared items">@context?.PendingMember?.Items?.Count</MudTd>
+        <MudTd DataLabel="Request for">@RequestedRole(@context)</MudTd>
+        <MudTd DataLabel="Actions">
+            @switch (@context.RequestType)
+            {
+                case CircleJoinRequestType.AdminInviteFromAdmin:
+                    <CircleRequestRevokeButton Circle="@Circle" Request="@context" />
+                    break;
+                case CircleJoinRequestType.UserRequestToBecomeAdmin:
+                        <CircleRequestRevokeButton Circle="@Circle" Request="@context" />
+                        break;
+                case CircleJoinRequestType.UserRequestToJoin:
+                    <CircleRequestAcceptButton Circle="@Circle" Request="@context" />
+                    <CircleRequestRevokeButton Circle="@Circle" Request="@context" />
+                    break;
+                default:
+                    <CircleRequestRevokeButton Circle="@Circle" Request="@context" />
+                    break;
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    // TODO: Add sorting and filtering to the table, see MudBlazor documentation
+    // TODO: Add some more styling to the table, see MudBlazor documentation
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public Circle? Circle { get; set; }
+    public IEnumerable<CircleRequest?>? PendingCircleRequests { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PendingCircleRequests = await Client.ApiCircleRequestGetAllRequestsForCircleAsync(Id);
+    }
+
+    private string RequestedRole(CircleRequest request)
+    {
+        return request.RequestType switch
+        {
+            CircleJoinRequestType.AdminInviteFromAdmin or
+            CircleJoinRequestType.UserRequestToBecomeAdmin => "Admin",
+            _ => "Member"
+        };
+    }
+}
