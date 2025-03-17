@@ -19,6 +19,7 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
             .Include(cr => cr.Circle)
             .ThenInclude(c => c.Members)
             .Include(cr => cr.PendingMember)
+            .ThenInclude(pm => pm.Items)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
             .ToListAsync();
@@ -32,6 +33,7 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
             .Include(cr => cr.Circle)
             .ThenInclude(c => c.Members)
             .Include(cr => cr.PendingMember)
+            .ThenInclude(pm => pm.Items)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
             .Where(cr => cr.Circle.Id == circleId)
@@ -46,6 +48,7 @@ public class CircleRequestRepository(AppDbContext context) : ICircleRequestRepos
             .Include(cr => cr.Circle)
             .ThenInclude(c => c.Members)
             .Include(cr => cr.PendingMember)
+            .ThenInclude(pm => pm.Items)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
             .Where(cr => cr.PendingMember.Id == userId)

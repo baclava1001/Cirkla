@@ -26,13 +26,15 @@
         @* @if(User is not member of this circle && has not sent a request already)*@
         <MudButton OnClick="() => JoinCircle()">Join</MudButton>
         @* @if(User is not member of this circle && has sent a request)*@
-        <MudButton OnClick="() => CancelRequest()">Cancel</MudButton>
+        <CircleRequestRevokeButton Circle="Circle"/>
         @* @if(User is member of this circle)*@
         <MudButton OnClick="() => Invite()">Invite</MudButton>
     </MudCardActions>
 </MudCard>
 
 @code {
+    // TODO: Move all buttons to their own components that can be shown/hidden based on user role and circle membership status
+
     [Parameter]
     public Circle? Circle { get; set; }
 
@@ -45,10 +47,9 @@
     {
         if (Circle != null)
         {
-            NavigationManager.NavigateTo($"/editcircle/?id={Circle.Id}");
+            NavigationManager.NavigateTo($"/edit-circle/?id={Circle.Id}");
         }
     }
-
 
     private async Task DeleteCircle()
     {
@@ -71,7 +72,10 @@
 
     private async Task EditMemberList()
     {
-        // Navigate to the member list page
+        if (Circle != null)
+        {
+            NavigationManager.NavigateTo($"/circle-administration/?id={Circle.Id}");
+        }
     }
 
     private async Task JoinCircle()
@@ -103,41 +107,8 @@
         }
     }
 
-    private async Task CancelRequest()
-    {
-        try
-        {
-            // TODO: Simplify this to make only one roundtrip instead of two (sena PUt/Revoke request without need to fetch all requests first)
-            var userRequests = await Client.ApiCircleRequestGetAllRequestsForUserAsync(_tempUserId);
-            var requestToUpdate = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
-
-            if (requestToUpdate is not null)
-            {
-                requestToUpdate.Status = CircleRequestStatus.Revoked;
-                requestToUpdate.UpdatedAt = DateTime.Now;
-                requestToUpdate.UpdatedByUserId = _tempUserId;
-                requestToUpdate.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
-            }
-            var json = JsonSerializer.Serialize(requestToUpdate, new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve,
-                //PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Console.WriteLine("Sending JSON: " + json);
-            await Client.ApiCircleRequestRevokeRequestAsync(requestToUpdate.Id, requestToUpdate);
-        }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
-
     private async Task Invite()
     {
-
+        // TODO: Implement this later, when authentication and user management is in place
     }
 }
