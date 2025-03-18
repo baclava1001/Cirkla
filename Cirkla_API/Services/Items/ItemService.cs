@@ -3,6 +3,9 @@ using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
+using Cirkla_DAL.Repositories.Users;
+using Mapping.DTOs.Items;
+using Mapping.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Items
@@ -11,19 +14,21 @@ namespace Cirkla_API.Services.Items
     {
         private readonly IItemRepository _itemRepository;
         private readonly IContractRepository _contractRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<ItemService> _logger;
 
-        public ItemService(IItemRepository itemRepository, IContractRepository contractRepository,ILogger<ItemService> logger)
+        public ItemService(IItemRepository itemRepository, IContractRepository contractRepository, IUserRepository userRepository, ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
             _contractRepository = contractRepository;
+            _userRepository = userRepository;
             _logger = logger;
         }
 
 
-        public async Task<ServiceResult<Item>> Create(Item item)
+        public async Task<ServiceResult<Item>> Create(ItemCreateDTO itemDTO)
         {
-            if (item is null)
+            if (itemDTO is null)
             {
                 _logger.LogWarning("Attempted creating an item with null value");
                 return ServiceResult<Item>.Fail("Item could not be created", ErrorType.ValidationError);
@@ -31,9 +36,11 @@ namespace Cirkla_API.Services.Items
 
             try
             {
-                var createdItem = await _itemRepository.Create(item);
+                var owner = await _userRepository.Get(itemDTO.OwnerId);
+                var itemtoDb = await Mapper.MapToItem(itemDTO, owner);
+                var createdItem = await _itemRepository.Create(itemtoDb);
                 await _itemRepository.SaveChanges();
-                return ServiceResult<Item>.Success(createdItem);
+                return ServiceResult<Item>.Created(createdItem);
             }
             catch (DbUpdateException ex)
             {

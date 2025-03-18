@@ -1,20 +1,21 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
+using Mapping.DTOs.CircleRequests;
 
 namespace Cirkla_API.Services.CircleRequests;
 
 public interface ICircleRequestService
 {
-    Task<ServiceResult<CircleRequest>> UserRequestsToJoin(CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> UserRequestsToBecomeAdmin(CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> MemberInvitesUser(CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> MembershipInviteFromAdmin(CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> AdminInviteFromAdmin(CircleRequest circleRequest);
     Task<ServiceResult<IEnumerable<CircleRequest>>> GetAllRequestsForCircle(int circleId);
     Task<ServiceResult<IEnumerable<CircleRequest>>> GetAllRequestsForUser(string userId);
     Task<ServiceResult<CircleRequest>> GetRequestById(int id);
-    Task<ServiceResult<CircleRequest>> RejectRequest(int id, CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> RevokeRequest(int id, CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> AdminAcceptsRequest(int id, CircleRequest circleRequest);
-    Task<ServiceResult<CircleRequest>> UserAcceptsInvite(int id, CircleRequest circleRequest);
+    Task<ServiceResult<CircleRequest>> UserRequestsToJoin(CircleRequestCreateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> UserRequestsToBecomeAdmin(CircleRequestCreateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> MemberInvitesUser(CircleRequestCreateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> MembershipInviteFromAdmin(CircleRequestCreateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> AdminInviteFromAdmin(CircleRequestCreateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> RejectRequest(int id, CircleRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> RevokeRequest(int id, CircleRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> AdminAcceptsRequest(int id, CircleRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleRequest>> UserAcceptsInvite(int id, CircleRequestUpdateDTO circleRequestDTO);
 }

@@ -1,8 +1,12 @@
 ﻿using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
+using Mapping.DTOs.CircleRequests;
 using Mapping.DTOs.ContractNotifications;
 using Mapping.DTOs.Users;
 using Mapping.DTOs.Contracts;
+using Mapping.DTOs.Items;
+using ApiClient = Cirkla.ApiClient;
+
 
 namespace Mapping.Mappers
 {
@@ -11,6 +15,25 @@ namespace Mapping.Mappers
     
     public static class Mapper
     {
+
+        #region Item
+
+        public static async Task<Item> MapToItem(ItemCreateDTO itemCreateDTO, User owner)
+        {
+            return new Item
+            {
+                Name = itemCreateDTO.Name,
+                Category = itemCreateDTO.Category,
+                Model = itemCreateDTO.Model,
+                Specifications = itemCreateDTO.Specifications,
+                Description = itemCreateDTO.Description,
+                OwnerId = itemCreateDTO.OwnerId,
+                Owner = owner,
+                Pictures = itemCreateDTO.Pictures
+            };
+        }
+
+        #endregion
 
         #region User
 
@@ -30,8 +53,6 @@ namespace Mapping.Mappers
         }
 
         #endregion
-
-
 
         #region Contract
         public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO, Item item, User owner, User borrower)
@@ -140,6 +161,62 @@ namespace Mapping.Mappers
                 Contract = contract
             };
             return contractNotification;
+        }
+
+        #endregion
+
+        #region CircleRequests
+
+        public static async Task<CircleRequest> MapToCircleRequest(CircleRequestCreateDTO circleRequestCreateDTO)
+        {
+            var circleRequest = new CircleRequest
+            {
+                CircleId = circleRequestCreateDTO.CircleId,
+                PendingMemberId = circleRequestCreateDTO.PendingMemberId,
+                FromUserId = circleRequestCreateDTO.FromUserId,
+                RequestType = circleRequestCreateDTO.RequestType,
+                RequestDate = circleRequestCreateDTO.RequestDate,
+                Status = circleRequestCreateDTO.Status,
+                ExpiresAt = circleRequestCreateDTO.ExpiresAt
+            };
+            return circleRequest;
+        }
+
+        public static async Task<CircleRequest> MapToCircleRequest(CircleRequestUpdateDTO circleRequestUpdateDTO, Circle circle)
+        {
+            var circleRequest = new CircleRequest
+            {
+                Id = circleRequestUpdateDTO.Id,
+                CircleId = circleRequestUpdateDTO.CircleId,
+                Circle = circle,
+                PendingMemberId = circleRequestUpdateDTO.PendingMemberId,
+                FromUserId = circleRequestUpdateDTO.FromUserId,
+                UpdatedByUserId = circleRequestUpdateDTO.UpdatedByUserId,
+                RequestType = circleRequestUpdateDTO.RequestType,
+                Status = circleRequestUpdateDTO.Status,
+                RequestDate = circleRequestUpdateDTO.RequestDate,
+                UpdatedAt = circleRequestUpdateDTO.UpdatedAt,
+                ExpiresAt = circleRequestUpdateDTO.ExpiresAt
+            };
+            return circleRequest;
+        }
+
+        public static async Task<ApiClient.CircleRequestUpdateDTO> MapToCircleRequestUpdateDTO(ApiClient.CircleRequest circleRequest)
+        {
+            var circleRequestUpdateDTO = new ApiClient.CircleRequestUpdateDTO
+            {
+                Id = circleRequest.Id,
+                CircleId = circleRequest.CircleId,
+                PendingMemberId = circleRequest.PendingMemberId,
+                FromUserId = circleRequest.FromUserId,
+                UpdatedByUserId = circleRequest.UpdatedByUserId,
+                RequestType = circleRequest.RequestType,
+                Status = circleRequest.Status,
+                RequestDate = circleRequest.RequestDate,
+                UpdatedAt = circleRequest.UpdatedAt,
+                ExpiresAt = circleRequest.ExpiresAt
+            };
+            return circleRequestUpdateDTO;
         }
 
         #endregion

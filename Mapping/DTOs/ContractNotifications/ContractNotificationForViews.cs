@@ -12,7 +12,7 @@ public class ContractNotificationForViews
     public DateTime CreatedAt { get; set; }
     public bool HasBeenRead { get; set; }
 
-    // From Contract properties
+    // Flattened Contract properties
     [Required]
     public int ContractId { get; set; }
     [Required]
