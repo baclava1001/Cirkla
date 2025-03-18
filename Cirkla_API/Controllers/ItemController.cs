@@ -1,6 +1,7 @@
 ﻿using Cirkla_API.Helpers;
 using Cirkla_API.Services.Items;
 using Cirkla_DAL.Models;
+using Mapping.DTOs.Items;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Controllers
@@ -26,9 +27,9 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(Item item)
+        public async Task<IActionResult> Create(ItemCreateDTO itemDTO)
         {
-            var result = await _itemService.Create(item);
+            var result = await _itemService.Create(itemDTO);
             return result.ToHttpResponse();
         }
 

@@ -80,14 +80,11 @@
 
     private async Task JoinCircle()
     {
-        var request = new CircleRequest
+        var request = new CircleRequestCreateDTO
         {
             CircleId = Circle.Id,
-            Circle = Circle,
             PendingMemberId = _tempUserId,
-            PendingMember = await Client.ApiUserGetAsync(_tempUserId),
             FromUserId = _tempUserId,
-            FromUser = await Client.ApiUserGetAsync(_tempUserId),
             RequestType = CircleJoinRequestType.UserRequestToJoin,
             Status = CircleRequestStatus.Pending,
             RequestDate = DateTime.Now,

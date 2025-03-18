@@ -1,4 +1,5 @@
 ﻿@using System.Text.Json
+@using Mapping.Mappers
 @inject IClient Client;
 
 <MudButton
@@ -23,14 +24,15 @@ Class="ml-auto">Accept</MudButton>
             Request.UpdatedAt = DateTime.Now;
             Request.UpdatedByUserId = _tempUserId;
             Request.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
-            Console.WriteLine(JsonSerializer.Serialize(Request));
+            var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
+
             if (await IsAdmin())
             {
-                await Client.ApiCircleRequestAdminAcceptsRequestAsync(Request.Id, Request);
+                await Client.ApiCircleRequestAdminAcceptsRequestAsync(updatedRequest.Id, updatedRequest);
             }
             else
             {
-                await Client.ApiCircleRequestUserAcceptsInviteAsync(Request.Id, Request);
+                await Client.ApiCircleRequestUserAcceptsInviteAsync(updatedRequest.Id, updatedRequest);
             }
         }
         catch (ApiException ex)

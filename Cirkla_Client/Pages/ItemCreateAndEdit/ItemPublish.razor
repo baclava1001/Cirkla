@@ -1,45 +1,46 @@
 ﻿@page "/publishitem"
+@using System.Text.Json
 @using Cirkla_Client.Pages;
 @inject IClient _client;
 
 <PageTitle>Add new item</PageTitle>
 <h3>Add new item</h3>
 <hr />
-<EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit" FormName="PublishItem">
+<EditForm method="post" Model="ItemDTO" OnValidSubmit="OnValidSubmit" FormName="PublishItem">
     <DataAnnotationsValidator />
     <fieldset disabled="@IsPublishingItem">
         <div class="container">
             <div class="row mb-3">
                 <label for="name" class="col-sm-2 col-form-label">Name </label>
                 <div class="col-sm-10">
-                    <InputText id="name" @bind-Value="Item.Name" class="form-control" />
-                    <ValidationMessage For="() => Item.Name" class="text-danger" />
+                    <InputText id="name" @bind-Value="ItemDTO.Name" class="form-control" />
+                    <ValidationMessage For="() => ItemDTO.Name" class="text-danger" />
                 </div>
             </div>
-                <CascadingValue Value="temporaryCategoryList">
-                    <CascadingValue Value="Item">
-                        <CategoryDropdown />
-                    </CascadingValue>
+            <CascadingValue Value="temporaryCategoryList">
+                <CascadingValue Value="ItemDTO">
+                    <CategoryDropdown />
                 </CascadingValue>
+            </CascadingValue>
             <div class="row mb-3">
                 <label for="Model" class="col-sm-2 col-form-label">Model </label>
                 <div class="col-sm-10">
-                    <InputText id="model" @bind-Value="Item.Model" class="form-control" placeholder="Maker, model and year, if applicable" />
-                    <ValidationMessage For="() => Item.Model" class="text-danger" />
+                    <InputText id="model" @bind-Value="ItemDTO.Model" class="form-control" placeholder="Maker, model and year, if applicable" />
+                    <ValidationMessage For="() => ItemDTO.Model" class="text-danger" />
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="specifications" class="col-sm-2 col-form-label">Specifications </label>
                 <div class="col-sm-10">
-                    <InputTextArea id="specifications" @bind-Value="Item.Specifications" class="form-control fs-6" rows="4" placeholder="Good to know technical details and characteristics" />
-                    <ValidationMessage For="() => Item.Specifications" class="=text-danger" />
+                    <InputTextArea id="specifications" @bind-Value="ItemDTO.Specifications" class="form-control fs-6" rows="4" placeholder="Good to know technical details and characteristics" />
+                    <ValidationMessage For="() => ItemDTO.Specifications" class="=text-danger" />
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="description" class="col-sm-2 col-form-label">Description </label>
                 <div class="col-sm-10">
-                    <InputTextArea id="description" @bind-Value="Item.Description" class="form-control fs-6" rows="4" placeholder="General description" />
-                    <ValidationMessage For="() => Item.Description" class="text-danger" />
+                    <InputTextArea id="description" @bind-Value="ItemDTO.Description" class="form-control fs-6" rows="4" placeholder="General description" />
+                    <ValidationMessage For="() => ItemDTO.Description" class="text-danger" />
                 </div>
             </div>
             <CascadingValue Value="ItemPicture">
@@ -52,24 +53,24 @@
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                @if (errorMessage is not null)
+                @if (_errorMessage is not null)
                 {
-                    <p class="text-danger">@errorMessage</p>
+                    <p class="text-danger">@_errorMessage</p>
                 }
                 else
                 {
-                    <p class="text-success">@successMessage</p>
+                    <p class="text-success">@_successMessage</p>
                 }
             </div>
         </div>
     </fieldset>
 </EditForm>
 <div class="mb-3">
-    @if (Item.Pictures is not null)
+    @if (ItemDTO.Pictures is not null)
     {
-        foreach(ItemPicture picture in Item.Pictures)
+        foreach (ItemPicture picture in ItemDTO.Pictures)
         {
-            <img src="@picture.Url" class="img-fluid rounded" alt="Picture of @Item.Name" />
+            <img src="@picture.Url" class="img-fluid rounded" alt="Picture of @ItemDTO.Name" />
         }
     }
 </div>
@@ -80,31 +81,31 @@
     // TODO: Later make Category a separate, prepopulated table in db
 
     [SupplyParameterFromForm]
-    private Item Item { get; set; } = new();
+    private ItemCreateDTO ItemDTO { get; set; } = new();
 
     [CascadingParameter]
     public ItemPicture? ItemPicture { get; set; } = new();
 
-    string[] temporaryCategoryList = ["Transportation", "Houshold & tools", "Accommodation", "Personal stuff", "Electronics", "Leisure & hobby"];
+    string[] temporaryCategoryList = ["Transportation", "Household & tools", "Accommodation", "Personal stuff", "Electronics", "Leisure & hobby"];
 
     public bool IsPublishingItem { get; set; }
 
-    private string? errorMessage;
-    private string? successMessage;
+    private string? _errorMessage;
+    private string? _successMessage;
 
 
     private void AddPictureToList()
     {
-        if (Item.Pictures is null)
+        if (ItemDTO.Pictures is null)
         {
-            Item.Pictures = new List<ItemPicture>();
+            ItemDTO.Pictures = new List<ItemPicture>();
         }
 
         if(ItemPicture is not null)
         {
             ItemPicture itemPicture = new();
             itemPicture.Url = ItemPicture.Url;
-            Item.Pictures.Add(itemPicture);
+            ItemDTO.Pictures.Add(itemPicture);
         }
     }
 
@@ -115,19 +116,25 @@
 
         try
         {
-            Item.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed's id, hardcoded
-            await _client.ApiItemPostAsync(Item);
+            ItemDTO.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed's id, hardcoded
+            string jsonDebug = JsonSerializer.Serialize(ItemDTO);
+            Console.WriteLine(jsonDebug);
+            await _client.ApiItemPostAsync(ItemDTO);
             await Task.Delay(500);
-            errorMessage = null;
-            successMessage = $"{Item.Name} published successfully";
-            Item = new(); // Fresh object reference to empty the form
+            _errorMessage = null;
+            _successMessage = $"{ItemDTO.Name} published successfully";
+        }
+        catch (ApiException ex)
+        {
+            _errorMessage = ex.Message;
         }
         catch(Exception ex)
         {
-            errorMessage = ex.Message;
+            _errorMessage = ex.Message;
         }
         finally
         {
+            ItemDTO = new(); // Fresh object reference to empty the form
             IsPublishingItem = false;
         }
     }

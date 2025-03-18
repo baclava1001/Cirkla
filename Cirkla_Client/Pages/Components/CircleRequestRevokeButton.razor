@@ -1,13 +1,14 @@
-﻿@inject IClient Client;
+﻿@using Mapping.Mappers
+@inject IClient Client;
 
 <MudButton
-    ButtonType="ButtonType.Button"
-    OnClick="() => RevokeJoinRequest()"
-    Color="Color.Warning"
-    Variant="Variant.Filled"
-    StartIcon="@Icons.Material.Filled.Undo"
-    Size="Size.Small"
-    Class="ml-auto">Revoke</MudButton>
+ButtonType="ButtonType.Button"
+OnClick="() => RevokeJoinRequest()"
+Color="Color.Warning"
+Variant="Variant.Filled"
+StartIcon="@Icons.Material.Filled.Undo"
+Size="Size.Small"
+Class="ml-auto">Revoke</MudButton>
 
 @code {
     [Parameter]
@@ -28,13 +29,13 @@
             {
                 Console.WriteLine("Request not valid.");
             }
-            
-            requestToUpdate.Status = CircleRequestStatus.Revoked;
-            requestToUpdate.UpdatedAt = DateTime.Now;
-            requestToUpdate.UpdatedByUserId = _tempUserId;
-            requestToUpdate.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
 
-            await Client.ApiCircleRequestRevokeRequestAsync(requestToUpdate.Id, requestToUpdate);
+            Request.Id = requestToUpdate.Id;
+            Request.Status = CircleRequestStatus.Revoked;
+            Request.UpdatedAt = DateTime.Now;
+            Request.UpdatedByUserId = _tempUserId;
+            var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
+            await Client.ApiCircleRequestRevokeRequestAsync(updatedRequest.Id, updatedRequest);
         }
         catch (ApiException ex)
         {

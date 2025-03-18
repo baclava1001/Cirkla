@@ -2,8 +2,12 @@
 
 namespace Mapping.DTOs.Users
 {
-    public class UserSignupDTO : UserLoginDTO
+    public class UserSignupDTO
     {
+        [Required, EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]
@@ -14,9 +18,5 @@ namespace Mapping.DTOs.Users
         public string ZipCode { get; set; }
         [Url]
         public string? ProfilePictureURL { get; set; }
-
-        // Inherits from UserLoginDTO:
-        // string Email
-        // string password
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
+using Mapping.DTOs.Items;
 
 namespace Cirkla_API.Services.Items
 {
     public interface IItemService
     {
-        Task<ServiceResult<Item>> Create(Item item);
+        Task<ServiceResult<Item>> Create(ItemCreateDTO itemDTO);
         Task<ServiceResult<IEnumerable<Item>>> GetAll();
         Task<ServiceResult<IEnumerable<Item>>> GetAllItemsForUser(string ownerId);
         Task<ServiceResult<Item>> GetById(int id);
