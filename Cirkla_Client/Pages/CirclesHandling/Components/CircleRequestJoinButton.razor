@@ -1,0 +1,47 @@
+﻿@using Mapping.Mappers
+@inject IClient Client;
+
+<MudButton
+    ButtonType="ButtonType.Button"
+    OnClick="() => JoinCircle()"
+    Color="Color.Tertiary
+"
+    Variant="Variant.Filled"
+    StartIcon="@Icons.Material.Filled.PersonAdd"
+    Size="Size.Small"
+    Class="ml-auto">Join</MudButton>
+    
+
+@code {
+    [Parameter]
+    public Circle? Circle { get; set; }
+    public CircleJoinRequest? Request { get; set; }
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+
+
+    private async Task JoinCircle()
+    {
+        var request = new CircleJoinRequestCreateDTO
+        {
+            Type = CircleJoinRequestType.JoinAsMember,
+            CircleId = Circle.Id,
+            TargetMemberId = _tempUserId,
+            FromUserId = _tempUserId,
+            Status = CircleRequestStatus.Pending,
+            RequestDate = DateTime.Now,
+            ExpiresAt = DateTime.Now + TimeSpan.FromDays(7)
+        };
+        try
+        {
+            await Client.MembershipRequestsPostAsync(request);
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}

@@ -15,7 +15,7 @@ namespace Cirkla_DAL
         public DbSet<ContractStatusChange> ContractStatusChanges { get; set; }
         public DbSet<ContractNotification> ContractNotifications { get; set; }
         public DbSet<Circle> Circles { get; set; }
-        public DbSet<CircleRequest> CircleRequests { get; set; }
+        public DbSet<CircleJoinRequest> CircleJoinRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -93,26 +93,26 @@ namespace Cirkla_DAL
                         .OnDelete(DeleteBehavior.Cascade)
                 );
 
-            builder.Entity<CircleRequest>()
+            builder.Entity<CircleJoinRequest>()
                 .HasOne(cr => cr.FromUser)
                 .WithMany()
                 .HasForeignKey("FromUserId")
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<CircleRequest>()
-                .HasOne(cr => cr.PendingMember)
+            builder.Entity<CircleJoinRequest>()
+                .HasOne(cr => cr.TargetMember)
                 .WithMany()
-                .HasForeignKey("PendingMemberId")
+                .HasForeignKey("TargetMemberId")
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<CircleRequest>()
+            builder.Entity<CircleJoinRequest>()
                 .HasOne(cr => cr.UpdatedByUser)
                 .WithMany()
                 .IsRequired(false)
                 .HasForeignKey("UpdatedByUserId")
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<CircleRequest>()
+            builder.Entity<CircleJoinRequest>()
                 .HasOne(cr => cr.Circle)
                 .WithMany()
                 .HasForeignKey("CircleId")

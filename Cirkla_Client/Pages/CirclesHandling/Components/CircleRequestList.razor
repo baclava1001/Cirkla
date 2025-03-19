@@ -1,0 +1,54 @@
+﻿@inject IClient Client;
+
+<MudTable Items="PendingCircleRequests" FixedHeader="true" Height="500" Hover="true" SortLabel="Sort by">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@Circle?.Name waiting members</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Picture</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<User, object>(u => u.LastName)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<User, object>(u => u.ZipCode)"></MudTableSortLabel>Zipcode</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<User, object>(u => u.Items?.Count ?? 0)"></MudTableSortLabel>Shared items</MudTh>
+        <MudTh>Requested role</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Picture"><MudImage Src="@context?.TargetMember?.ProfilePictureURL" Width="80" /></MudTd>
+        <MudTd DataLabel="Name">@context?.TargetMember?.FirstName @context?.TargetMember?.LastName</MudTd>
+        <MudTd DataLabel="Zipcode">@context?.TargetMember?.ZipCode</MudTd>
+        <MudTd DataLabel="Shared items">@context?.TargetMember?.Items?.Count</MudTd>
+        <MudTd DataLabel="Request for">@RequestedRole(@context)</MudTd>
+        <MudTd DataLabel="Actions">
+            <CircleRequestRevokeButton Circle="@Circle" Request="@context" />
+            <CircleRequestAcceptButton Circle="@Circle" Request="@context" />
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    // TODO: make buttons show and disappear more dynamically
+
+    // TODO: Add sorting and filtering to the table, see MudBlazor documentation
+    // TODO: Add some more styling to the table, see MudBlazor documentation
+    [Parameter]
+    public int CircleId { get; set; }
+    [Parameter]
+    public Circle? Circle { get; set; }
+    public IEnumerable<CircleJoinRequest?>? PendingCircleRequests { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PendingCircleRequests = await Client.MembershipRequestsCircleAsync(CircleId);
+    }
+
+    private string RequestedRole(CircleJoinRequest request)
+    {
+        return request.Type switch
+        {
+            CircleJoinRequestType.JoinAsAdmin => "Admin",
+            CircleJoinRequestType.JoinAsMember => "Member",
+            _ => "Not member"
+        };
+    }
+}

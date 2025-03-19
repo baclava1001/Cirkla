@@ -1,12 +1,12 @@
 ﻿@page "/edit-circle/"
-@using Cirkla_Client.Pages.Components;
+@using Cirkla_Client.Pages.CirclesHandling.Components;
 @inject IClient Client;
 
 <PageTitle>Edit circle</PageTitle>
 
 <MudGrid>
     <MudItem>
-        <MudText Typo="Typo.h2">Edit circle</MudText>
+        <MudText Typo="Typo.h2">Edit @Circle?.Name</MudText>
     </MudItem>
 </MudGrid>
 

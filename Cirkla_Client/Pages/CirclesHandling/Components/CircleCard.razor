@@ -19,12 +19,12 @@
     </MudCardHeader>
     <MudCardContent>
         <MudText>@Circle?.Description</MudText>
-        <MudText Typo="Typo.caption"><MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Person"/> Membership-status (Requested, member, administrator)</MudText>
+        <MudText Typo="Typo.caption"><MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Person"/> @_userMembershipStatus</MudText>
     </MudCardContent>
     <MudCardActions>
         <MudButton>Browse</MudButton>
         @* @if(User is not member of this circle && has not sent a request already)*@
-        <MudButton OnClick="() => JoinCircle()">Join</MudButton>
+        <CircleRequestJoinButton Circle="Circle"/>
         @* @if(User is not member of this circle && has sent a request)*@
         <CircleRequestRevokeButton Circle="Circle"/>
         @* @if(User is member of this circle)*@
@@ -41,7 +41,14 @@
     [Parameter]
     public EventCallback OnCircleDeleted { get; set; }
 
+    private string _userMembershipStatus = "";
     private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userMembershipStatus = await UserMembershipStatus();
+    }
 
     private async Task EditCircle()
     {
@@ -78,34 +85,36 @@
         }
     }
 
-    private async Task JoinCircle()
-    {
-        var request = new CircleRequestCreateDTO
-        {
-            CircleId = Circle.Id,
-            PendingMemberId = _tempUserId,
-            FromUserId = _tempUserId,
-            RequestType = CircleJoinRequestType.UserRequestToJoin,
-            Status = CircleRequestStatus.Pending,
-            RequestDate = DateTime.Now,
-            ExpiresAt = DateTime.Now + TimeSpan.FromDays(7)
-        };
-        try
-        {
-            await Client.ApiCircleRequestUserRequestToJoinAsync(request);
-        }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
 
     private async Task Invite()
     {
         // TODO: Implement this later, when authentication and user management is in place
+    }
+
+
+    
+
+    private async Task<string> UserMembershipStatus()
+    {
+        var tempLoggedInUser = await Client.ApiUserGetAsync(_tempUserId);
+        var userJoinRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
+        var joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
+        if (Circle != null && Circle.Administrators.Contains(tempLoggedInUser))
+        {
+            return "You are an administrator";
+        }
+        if (Circle.Members != null && Circle.Members.Contains(tempLoggedInUser))
+        {
+            return "You are a member";
+        }
+        if (joinRequest?.Type == CircleJoinRequestType.JoinAsMember)
+        {
+            return "Waiting for membership";
+        }
+        if (joinRequest?.Type == CircleJoinRequestType.JoinAsAdmin)
+        {
+            return "Waiting for admin status";
+        }
+        return "Not a member";
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
-using Mapping.DTOs.CircleRequests;
+using Mapping.DTOs.CircleJoinRequests;
 using Mapping.DTOs.ContractNotifications;
 using Mapping.DTOs.Users;
 using Mapping.DTOs.Contracts;
@@ -167,32 +167,32 @@ namespace Mapping.Mappers
 
         #region CircleRequests
 
-        public static async Task<CircleRequest> MapToCircleRequest(CircleRequestCreateDTO circleRequestCreateDTO)
+        public static async Task<CircleJoinRequest> MapToCircleRequest(CircleJoinRequestCreateDTO circleJoinRequestCreateDto)
         {
-            var circleRequest = new CircleRequest
+            var circleRequest = new CircleJoinRequest
             {
-                CircleId = circleRequestCreateDTO.CircleId,
-                PendingMemberId = circleRequestCreateDTO.PendingMemberId,
-                FromUserId = circleRequestCreateDTO.FromUserId,
-                RequestType = circleRequestCreateDTO.RequestType,
-                RequestDate = circleRequestCreateDTO.RequestDate,
-                Status = circleRequestCreateDTO.Status,
-                ExpiresAt = circleRequestCreateDTO.ExpiresAt
+                CircleId = circleJoinRequestCreateDto.CircleId,
+                Type = circleJoinRequestCreateDto.Type,
+                TargetMemberId = circleJoinRequestCreateDto.TargetUserId,
+                FromUserId = circleJoinRequestCreateDto.FromUserId,
+                RequestDate = circleJoinRequestCreateDto.RequestDate,
+                Status = circleJoinRequestCreateDto.Status,
+                ExpiresAt = circleJoinRequestCreateDto.ExpiresAt
             };
             return circleRequest;
         }
 
-        public static async Task<CircleRequest> MapToCircleRequest(CircleRequestUpdateDTO circleRequestUpdateDTO, Circle circle)
+        public static async Task<CircleJoinRequest> MapToCircleRequest(CircleJoinRequestUpdateDTO circleRequestUpdateDTO, Circle circle)
         {
-            var circleRequest = new CircleRequest
+            var circleRequest = new CircleJoinRequest
             {
                 Id = circleRequestUpdateDTO.Id,
+                Type = circleRequestUpdateDTO.Type,
                 CircleId = circleRequestUpdateDTO.CircleId,
                 Circle = circle,
-                PendingMemberId = circleRequestUpdateDTO.PendingMemberId,
+                TargetMemberId = circleRequestUpdateDTO.TargetMemberId,
                 FromUserId = circleRequestUpdateDTO.FromUserId,
                 UpdatedByUserId = circleRequestUpdateDTO.UpdatedByUserId,
-                RequestType = circleRequestUpdateDTO.RequestType,
                 Status = circleRequestUpdateDTO.Status,
                 RequestDate = circleRequestUpdateDTO.RequestDate,
                 UpdatedAt = circleRequestUpdateDTO.UpdatedAt,
@@ -201,16 +201,16 @@ namespace Mapping.Mappers
             return circleRequest;
         }
 
-        public static async Task<ApiClient.CircleRequestUpdateDTO> MapToCircleRequestUpdateDTO(ApiClient.CircleRequest circleRequest)
+        public static async Task<ApiClient.CircleJoinRequestUpdateDTO> MapToCircleRequestUpdateDTO(ApiClient.CircleJoinRequest circleRequest)
         {
-            var circleRequestUpdateDTO = new ApiClient.CircleRequestUpdateDTO
+            var circleRequestUpdateDTO = new ApiClient.CircleJoinRequestUpdateDTO
             {
                 Id = circleRequest.Id,
+                Type = circleRequest.Type,
                 CircleId = circleRequest.CircleId,
-                PendingMemberId = circleRequest.PendingMemberId,
+                PendingMemberId = circleRequest.TargetMemberId,
                 FromUserId = circleRequest.FromUserId,
                 UpdatedByUserId = circleRequest.UpdatedByUserId,
-                RequestType = circleRequest.RequestType,
                 Status = circleRequest.Status,
                 RequestDate = circleRequest.RequestDate,
                 UpdatedAt = circleRequest.UpdatedAt,

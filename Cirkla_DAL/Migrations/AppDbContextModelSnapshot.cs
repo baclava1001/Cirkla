@@ -91,7 +91,7 @@ namespace Cirkla_DAL.Migrations
                     b.ToTable("Circles");
                 });
 
-            modelBuilder.Entity("Cirkla_DAL.Models.CircleRequest", b =>
+            modelBuilder.Entity("Cirkla_DAL.Models.CircleJoinRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,23 +103,24 @@ namespace Cirkla_DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ExpiresAt")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FromUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PendingMemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RequestType")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("TargetMemberId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -134,11 +135,11 @@ namespace Cirkla_DAL.Migrations
 
                     b.HasIndex("FromUserId");
 
-                    b.HasIndex("PendingMemberId");
+                    b.HasIndex("TargetMemberId");
 
                     b.HasIndex("UpdatedByUserId");
 
-                    b.ToTable("CircleRequests");
+                    b.ToTable("CircleJoinRequests");
                 });
 
             modelBuilder.Entity("Cirkla_DAL.Models.Contract", b =>
@@ -282,7 +283,7 @@ namespace Cirkla_DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ItemId")
+                    b.Property<int?>("ItemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Url")
@@ -558,7 +559,7 @@ namespace Cirkla_DAL.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("Cirkla_DAL.Models.CircleRequest", b =>
+            modelBuilder.Entity("Cirkla_DAL.Models.CircleJoinRequest", b =>
                 {
                     b.HasOne("Cirkla_DAL.Models.Circle", "Circle")
                         .WithMany()
@@ -572,9 +573,9 @@ namespace Cirkla_DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Cirkla_DAL.Models.User", "PendingMember")
+                    b.HasOne("Cirkla_DAL.Models.User", "TargetMember")
                         .WithMany()
-                        .HasForeignKey("PendingMemberId")
+                        .HasForeignKey("TargetMemberId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -587,7 +588,7 @@ namespace Cirkla_DAL.Migrations
 
                     b.Navigation("FromUser");
 
-                    b.Navigation("PendingMember");
+                    b.Navigation("TargetMember");
 
                     b.Navigation("UpdatedByUser");
                 });
@@ -663,8 +664,7 @@ namespace Cirkla_DAL.Migrations
                     b.HasOne("Cirkla_DAL.Models.Item", "Item")
                         .WithMany("Pictures")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Item");
                 });

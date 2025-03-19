@@ -8,10 +8,7 @@ namespace Cirkla_DAL.Models.Enums
 {
     public enum CircleJoinRequestType
     {
-        UserRequestToJoin,
-        UserRequestToBecomeAdmin,
-        MemberInviteToUser,
-        MembershipInviteFromAdmin,
-        AdminInviteFromAdmin
+        JoinAsMember,
+        JoinAsAdmin
     }
 }

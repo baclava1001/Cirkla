@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Cirkla_DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -239,6 +239,47 @@ namespace Cirkla_DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CircleJoinRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    CircleId = table.Column<int>(type: "int", nullable: false),
+                    TargetMemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FromUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CircleJoinRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CircleJoinRequests_AspNetUsers_FromUserId",
+                        column: x => x.FromUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CircleJoinRequests_AspNetUsers_TargetMemberId",
+                        column: x => x.TargetMemberId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CircleJoinRequests_AspNetUsers_UpdatedByUserId",
+                        column: x => x.UpdatedByUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CircleJoinRequests_Circles_CircleId",
+                        column: x => x.CircleId,
+                        principalTable: "Circles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CircleMembers",
                 columns: table => new
                 {
@@ -256,43 +297,6 @@ namespace Cirkla_DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CircleMembers_Circles_CircleId",
-                        column: x => x.CircleId,
-                        principalTable: "Circles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CircleRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CircleId = table.Column<int>(type: "int", nullable: false),
-                    FromUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RequestType = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CircleRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CircleRequests_AspNetUsers_FromUserId",
-                        column: x => x.FromUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CircleRequests_AspNetUsers_UpdatedByUserId",
-                        column: x => x.UpdatedByUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_CircleRequests_Circles_CircleId",
                         column: x => x.CircleId,
                         principalTable: "Circles",
                         principalColumn: "Id",
@@ -342,7 +346,7 @@ namespace Cirkla_DAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
+                    ItemId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -450,24 +454,29 @@ namespace Cirkla_DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CircleMembers_UserId",
-                table: "CircleMembers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CircleRequests_CircleId",
-                table: "CircleRequests",
+                name: "IX_CircleJoinRequests_CircleId",
+                table: "CircleJoinRequests",
                 column: "CircleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CircleRequests_FromUserId",
-                table: "CircleRequests",
+                name: "IX_CircleJoinRequests_FromUserId",
+                table: "CircleJoinRequests",
                 column: "FromUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CircleRequests_UpdatedByUserId",
-                table: "CircleRequests",
+                name: "IX_CircleJoinRequests_TargetMemberId",
+                table: "CircleJoinRequests",
+                column: "TargetMemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CircleJoinRequests_UpdatedByUserId",
+                table: "CircleJoinRequests",
                 column: "UpdatedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CircleMembers_UserId",
+                table: "CircleMembers",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Circles_CreatedById",
@@ -542,10 +551,10 @@ namespace Cirkla_DAL.Migrations
                 name: "CircleAdministrators");
 
             migrationBuilder.DropTable(
-                name: "CircleMembers");
+                name: "CircleJoinRequests");
 
             migrationBuilder.DropTable(
-                name: "CircleRequests");
+                name: "CircleMembers");
 
             migrationBuilder.DropTable(
                 name: "ContractNotifications");

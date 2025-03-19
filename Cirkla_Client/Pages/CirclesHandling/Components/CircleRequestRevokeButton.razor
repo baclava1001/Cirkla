@@ -13,8 +13,8 @@ Class="ml-auto">Revoke</MudButton>
 @code {
     [Parameter]
     public Circle? Circle { get; set; }
-    [Parameter]
-    public CircleRequest? Request { get; set; }
+    [Parameter] // If coming from Admin view / CircleRequestList
+    public CircleJoinRequest? Request { get; set; }
     private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
 
     private async Task RevokeJoinRequest()
@@ -22,7 +22,7 @@ Class="ml-auto">Revoke</MudButton>
         try
         {
             // TODO: Simplify this to make only one roundtrip instead of two (send a PUT/Revoke request without need to fetch all requests first)
-            var userRequests = await Client.ApiCircleRequestGetAllRequestsForUserAsync(_tempUserId);
+            var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
             var requestToUpdate = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
 
             if (requestToUpdate is null || requestToUpdate.Status is not CircleRequestStatus.Pending)
@@ -35,7 +35,7 @@ Class="ml-auto">Revoke</MudButton>
             Request.UpdatedAt = DateTime.Now;
             Request.UpdatedByUserId = _tempUserId;
             var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
-            await Client.ApiCircleRequestRevokeRequestAsync(updatedRequest.Id, updatedRequest);
+            await Client.MembershipRequestsRevokeAsync(updatedRequest.Id, updatedRequest);
         }
         catch (ApiException ex)
         {

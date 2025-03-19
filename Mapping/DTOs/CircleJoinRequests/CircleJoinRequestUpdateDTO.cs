@@ -7,23 +7,26 @@ using System.Threading.Tasks;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 
-namespace Mapping.DTOs.CircleRequests
+namespace Mapping.DTOs.CircleJoinRequests
 {
-    public class CircleRequestCreateDTO
+    public class CircleJoinRequestUpdateDTO
     {
         [Required]
-        public int CircleId { get; set; }
+        public int Id { get; set; }
         [Required]
-        public string PendingMemberId { get; set; }
+        public CircleJoinRequestType Type { get; set; }
+        [Required]
+        public int CircleId { get; set; }
+
+        [Required] public string TargetMemberId { get; set; }
         [Required]
         public string FromUserId { get; set; }
         public string? UpdatedByUserId { get; set; }
         [Required]
-        public CircleJoinRequestType RequestType { get; set; }
-        [Required]
         public CircleRequestStatus Status { get; set; }
         [Required]
         public DateTime RequestDate { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         [Required]
         public DateTime? ExpiresAt { get; set; }
     }

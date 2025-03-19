@@ -13,7 +13,7 @@ Class="ml-auto">Accept</MudButton>
 
 @code {
     [Parameter] public Circle? Circle { get; set; }
-    [Parameter] public CircleRequest? Request { get; set; }
+    [Parameter] public CircleJoinRequest? Request { get; set; }
     private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
 
     private async Task AcceptJoinRequest()
@@ -26,14 +26,8 @@ Class="ml-auto">Accept</MudButton>
             Request.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
             var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
 
-            if (await IsAdmin())
-            {
-                await Client.ApiCircleRequestAdminAcceptsRequestAsync(updatedRequest.Id, updatedRequest);
-            }
-            else
-            {
-                await Client.ApiCircleRequestUserAcceptsInviteAsync(updatedRequest.Id, updatedRequest);
-            }
+            await Client.MembershipRequestsAcceptAsync(updatedRequest.Id, updatedRequest);
+
         }
         catch (ApiException ex)
         {
