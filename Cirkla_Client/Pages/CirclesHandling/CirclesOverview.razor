@@ -1,5 +1,5 @@
 ﻿@page "/circlesoverview"
-@using Cirkla_Client.Pages.Components;
+@using Cirkla_Client.Pages.CirclesHandling.Components;
 @inject IClient Client;
 
 <PageTitle>Circles overview</PageTitle>
@@ -10,13 +10,23 @@
     </MudItem>
     <MudItem>
         <MudButton
-        id="Add"
-        ButtonType="ButtonType.Button"
-        Color="Color.Tertiary"
-        Variant="Variant.Filled"
-        StartIcon="@Icons.Material.Filled.Add"
-        Class="ma-6"
-        Href="/createcircle">New Circle</MudButton>
+            id="Add"
+            ButtonType="ButtonType.Button"
+            Color="Color.Tertiary"
+            Variant="Variant.Filled"
+            StartIcon="@Icons.Material.Filled.Add"
+            Class="ma-6"
+            Href="/create-circle">New Circle</MudButton>
+    </MudItem>
+    <MudItem>
+        <MudButton
+            id="Find"
+            ButtonType="ButtonType.Button"
+            Color="Color.Tertiary"
+            Variant="Variant.Filled"
+            StartIcon="@Icons.Material.Filled.Search"
+            Class="ma-6"
+            Href="">Find circle</MudButton>
     </MudItem>
 </MudGrid>
 

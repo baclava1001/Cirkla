@@ -1,18 +1,19 @@
 ﻿@page "/circle-administration"
 @using System.Runtime.CompilerServices
-@using Cirkla_Client.Pages.Components
+@using Cirkla_Client.Pages.CirclesHandling.Components
 @inject IClient Client;
 
 <PageTitle>@Circle?.Name</PageTitle>
 
-<CircleRequestList Id="Id" Circle="Circle" />
+<CircleRequestList CircleId="Id" Circle="Circle" />
 <br/>
 <CircleMemberList Circle="Circle"/>
 
 
 @code {
+    // TODO: Put list components in different tabs on this same page
     [SupplyParameterFromQuery]
-    public int Id { get; set; }
+    public int Id { get; set; } // CircleId
     public Circle? Circle { get; set; } = new();
 
 
@@ -31,9 +32,4 @@
             Console.WriteLine($"An unexpected error occured: {ex}");
         }
     }
-
-    // List all members, with roles
-    // List all invited and requesting members
-    // Action buttons for each member
-    // Action buttons for the circle (Invite new, edit circle, delete circle))
 }
