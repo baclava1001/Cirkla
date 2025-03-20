@@ -1,27 +1,31 @@
 ﻿@using Mapping.Mappers
+@inject IDialogService DialogService
 @inject IClient Client;
 
 <MudButton ButtonType="ButtonType.Button"
-           OnClick="() => Invite()"
-           Color="Color.Tertiary"
+           OnClick="@(() => OpenDialogAsync(_fullScreen))"
+           Color="Color.Info"
            Variant="Variant.Filled"
            StartIcon="@Icons.Material.Filled.PersonAdd"
            Size="Size.Small"
            Class="ml-auto">Invite</MudButton>
 
-
 @code {
-
     // TODO: Invite should open a list of users with checkboxes to select who to invite
 
     [Parameter]
     public Circle? Circle { get; set; }
     public CircleJoinRequest? Request { get; set; }
     private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+    private readonly DialogOptions _fullScreen = new() { FullScreen = true, CloseButton = true };
 
-
-    private async Task Invite()
+    private Task OpenDialogAsync(DialogOptions options)
     {
-       
+        var parameters = new DialogParameters
+        {
+            { "Circle", Circle },
+        };
+
+        return DialogService.ShowAsync<InviteDialog>("Invite to circle", parameters, options);
     }
 }

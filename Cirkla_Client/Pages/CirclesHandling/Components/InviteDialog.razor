@@ -1,0 +1,60 @@
+﻿@inject IClient Client;
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.body2">Select a user to invite to the circle</MudText>
+        <MudRadioGroup @bind-Value="SelectedUser" Orientation="Orientation.Vertical">
+            @if (AppUsers != null)
+            {
+                foreach (var user in AppUsers)
+                {
+                    <MudRadio Value="@user" Label="@UserFullName(user)" UncheckedColor="Color.Default" Color="Color.Tertiary"/>
+                    <MudDivider />
+                }
+            }
+        </MudRadioGroup>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="Invite">Invite</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public Circle? Circle { get; set; }
+
+    private IEnumerable<User>? AppUsers;
+    public User? SelectedUser { get; set; }
+
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; // Kalle Kanin
+
+    protected async override Task OnInitializedAsync()
+    {
+        var users = await Client.ApiUserGetAsync();
+        AppUsers = users.OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
+    }
+
+    private async Task Invite()
+    {
+        var joinRequest = new CircleJoinRequestCreateDTO
+        {
+            CircleId = Circle.Id,
+            Type = CircleJoinRequestType.JoinAsMember,
+            TargetUserId = SelectedUser.Id,
+            FromUserId = _tempUserId,
+            Status = CircleRequestStatus.Pending,
+            RequestDate = DateTime.Now,
+            ExpiresAt = DateTime.Now.AddDays(7),
+
+        };
+        await Client.MembershipRequestsPostAsync(joinRequest);
+        // TODO: InviteDialog.Close();
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private string UserFullName(User user) => $"{user.FirstName} {@user.LastName}";
+}

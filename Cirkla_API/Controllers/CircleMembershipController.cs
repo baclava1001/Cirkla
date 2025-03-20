@@ -61,7 +61,7 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RequestToJoin(CircleJoinRequestCreateDTO circleJoinRequestDTO)
+        public async Task<IActionResult> SendJoinRequest(CircleJoinRequestCreateDTO circleJoinRequestDTO)
         {
             var result = await _circleMembershipService.SendJoinRequest(circleJoinRequestDTO);
             return result.ToHttpResponse();
@@ -103,19 +103,9 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        //[HttpPut("CircleInvite{id}/UserAccepts")]
-        //[ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> UserAcceptsInvite(int id, CircleRequestUpdateDTO circleRequestDTO)
-        //{
-        //    var result = await _circleRequestService.UserAcceptsInvite(id, circleRequestDTO);
-        //    return result.ToHttpResponse();
-        //}
 
         // AdminRemoveMember
-        // UserLeavesCircle
-        // AdminRemovesAdmin
+        // AdminRemoveAdmin
+        // UserLeaveCircle
     }
 }
