@@ -185,12 +185,6 @@ namespace Mapping.Mappers
             return circleRequest;
         }
 
-        public static async Task<CircleJoinRequest> MapToCircleRequest(CircleJoinRequestUpdateDTO circleRequestUpdateDTO, CircleJoinRequest existingJoinRequest)
-        {
-            existingJoinRequest.UpdatedByUserId = circleRequestUpdateDTO.UpdatedByUserId;
-            return existingJoinRequest;
-        }
-
         public static async Task<ApiClient.CircleJoinRequestUpdateDTO> MapToCircleRequestUpdateDTO(ApiClient.CircleJoinRequest circleRequest)
         {
             var circleRequestUpdateDTO = new ApiClient.CircleJoinRequestUpdateDTO

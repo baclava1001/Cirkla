@@ -125,8 +125,8 @@ public class CircleMembershipService : ICircleMembershipService
         }
         else if (requestToDb.Type == CircleJoinRequestType.JoinAsAdmin)
         {
-            // Call admin method
-            // return CreateAdminRequest();
+            // TODO: Call CreateAdminRequest method
+            // return await CreateAdminRequest();
         }
         return ServiceResult<CircleJoinRequest>.Fail("Invalid request type", ErrorType.ValidationError);
     }
@@ -170,156 +170,72 @@ public class CircleMembershipService : ICircleMembershipService
         }
 
         var existingRequest = await _circleJoinRequestRepository.GetById(id);
-        var request = await Mapper.MapToCircleRequest(circleRequestDTO, existingRequest);
+        existingRequest.UpdatedByUserId = circleRequestDTO.UpdatedByUserId;
 
-        if (!await PassesFirstCheck(request) || !await CanRevoke(request) || request.CircleId != circleRequestDTO.CircleId)
+        if (!await PassesFirstCheck(existingRequest) || !await CanRevoke(existingRequest) || existingRequest.CircleId != circleRequestDTO.CircleId)
         {
             _logger.LogError("Invalid request update with ID {Id}", id);
             return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
         }
 
-        request.Status = CircleRequestStatus.Revoked;
-        request.UpdatedAt = DateTime.Now;
-        var updatedRequest = await _circleJoinRequestRepository.Update(request);
+        existingRequest.Status = CircleRequestStatus.Revoked;
+        existingRequest.UpdatedAt = DateTime.Now;
+        var updatedRequest = await _circleJoinRequestRepository.Update(existingRequest);
         await _circleJoinRequestRepository.SaveChanges();
         return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
     }
 
-    //public async Task<ServiceResult<CircleJoinRequest>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-    //{
-    //    if (circleRequestDTO is null ||
-    //        circleRequestDTO.Id != id ||
-    //        circleRequestDTO.Status is not CircleRequestStatus.Pending ||
-    //        circleRequestDTO.UpdatedByUserId == circleRequestDTO.FromUserId)
-    //    {
-    //        _logger.LogError("Invalid request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
-    //    }
+    public async Task<ServiceResult<CircleJoinRequest>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
+    {
+        if (circleRequestDTO.Id != id)
+        {
+            _logger.LogError("Invalid request update with mismatching id:s");
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        }
 
-    //    try
-    //    {
-    //        var circle = await _circleRepository.GetById(circleRequestDTO.CircleId);
-    //        var requestToDb = await Mapper.MapToCircleRequest(circleRequestDTO, circle);
-    //        var updatedRequest = await _circleJoinRequestRepository.Update(requestToDb);
-    //        await _circleJoinRequestRepository.SaveChanges();
-    //        if (updatedRequest == null)
-    //        {
-    //            return ServiceResult<CircleJoinRequest>.Fail("Request not found", ErrorType.NotFound);
-    //        }
-    //        return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
-    //    }
-    //    catch (DbUpdateException ex)
-    //    {
-    //        _logger.LogError(ex, "Error rejecting request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Error rejecting request", ErrorType.InternalError);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Unexpected error rejecting request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Error rejecting request", ErrorType.InternalError);
-    //    }
-    //}
+        var existingRequest = await _circleJoinRequestRepository.GetById(id);
+        existingRequest.UpdatedByUserId = circleRequestDTO.UpdatedByUserId;
+
+        if (!await PassesFirstCheck(existingRequest) || !await CanReject(existingRequest) || existingRequest.CircleId != circleRequestDTO.CircleId)
+        {
+            _logger.LogError("Invalid request update with ID {Id}", id);
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        }
+
+        existingRequest.Status = CircleRequestStatus.Rejected;
+        existingRequest.UpdatedAt = DateTime.Now;
+        var updatedRequest = await _circleJoinRequestRepository.Update(existingRequest);
+        await _circleJoinRequestRepository.SaveChanges();
+        return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
+    }
 
     // TODO: Expired, unanswered requests will be handled by a background service
 
-    //public async Task<ServiceResult<CircleJoinRequest>> AdminAcceptsRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-    //{
-    //    if (circleRequestDTO is null ||
-    //        circleRequestDTO.Id != id ||
-    //        circleRequestDTO.Status is not CircleRequestStatus.Accepted ||
-    //        circleRequestDTO.UpdatedByUserId != circleRequestDTO.FromUserId)
-    //    {
-    //        _logger.LogError("Invalid request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
-    //    }
-    //    try
-    //    {
-    //        var circle = await _circleRepository.GetById(circleRequestDTO.CircleId);
-    //        var newMember = await _userRepository.Get(circleRequestDTO.TargetUserId);
-    //        if (true) // TODO: <- Remove this line, for debugging only
-    //        {
-    //            circle.Members.Add(newMember);
-    //            await _circleRepository.UpdateMembers(circle);
-    //        }
-    //        else if (true)
-    //        {
-    //            circle.Administrators.Add(newMember);
-    //            await _circleRepository.UpdateAdministrators(circle);
-    //        }
-    //        else
-    //        {
-    //            // TODO: This chould be checked earlier
-    //            return ServiceResult<CircleJoinRequest>.Fail($"Request type: '{circleRequestDTO.Type}' not valid for this method", ErrorType.ValidationError);
-    //        }
-    //        var requestToDb = await Mapper.MapToCircleRequest(circleRequestDTO, circle);
-    //        await _circleRepository.UpdateMembers(requestToDb.Circle);
-    //        await _circleRepository.UpdateAdministrators(requestToDb.Circle);
-    //        var updatedRequest = await _circleJoinRequestRepository.Update(requestToDb);
-    //        await _circleJoinRequestRepository.SaveChanges();
-    //        if (updatedRequest == null)
-    //        {
-    //            return ServiceResult<CircleJoinRequest>.Fail("Request not found", ErrorType.NotFound);
-    //        }
-    //        return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
-    //    }
-    //    catch (DbUpdateException ex)
-    //    {
-    //        _logger.LogError(ex, "Error accepting request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Error accepting request", ErrorType.InternalError);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Unexpected error accepting request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Error accepting request", ErrorType.InternalError);
-    //    }
-    //}
 
-    //public async Task<ServiceResult<CircleJoinRequest>> UserAcceptsInvite(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-    //{
-    //    if (circleRequestDTO is null ||
-    //        circleRequestDTO.Id != id ||
-    //        circleRequestDTO.Status is not CircleRequestStatus.Accepted ||
-    //        circleRequestDTO.TargetUserId != circleRequestDTO.FromUserId) // TODO: <- Change this to ==
-    //    {
-    //        _logger.LogError("Invalid request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
-    //    }
+    public async Task<ServiceResult<CircleJoinRequest>> AcceptRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
+    {
+        if (circleRequestDTO.Id != id)
+        {
+            _logger.LogError("Invalid request update with mismatching id:s");
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        }
 
-    //    try
-    //    {
-    //        var circle = await _circleRepository.GetById(circleRequestDTO.CircleId);
-    //        var newMember = await _userRepository.Get(circleRequestDTO.TargetUserId);
-    //        if (true) // TODO: <- Remove this line, for debugging only
-    //        {
-    //            circle.Members.Add(newMember);
-    //            await _circleRepository.UpdateMembers(circle);
-    //        }
-    //        else if (true)
-    //        {
-    //            circle.Administrators.Add(newMember);
-    //            await _circleRepository.UpdateAdministrators(circle);
-    //        }
-    //        var requestToDb = await Mapper.MapToCircleRequest(circleRequestDTO, circle);
-    //        var updatedRequest = await _circleJoinRequestRepository.Update(requestToDb);
-    //        await _circleJoinRequestRepository.SaveChanges();
-    //        if (updatedRequest == null)
-    //        {
-    //            return ServiceResult<CircleJoinRequest>.Fail("Request not found", ErrorType.NotFound);
-    //        }
+        var existingRequest = await _circleJoinRequestRepository.GetById(id);
+        existingRequest.UpdatedByUserId = circleRequestDTO.UpdatedByUserId;
 
-    //        return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
-    //    }
-    //    catch (DbUpdateException ex)
-    //    {
-    //        _logger.LogError(ex, "Error accepting request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Error accepting request", ErrorType.InternalError);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Unexpected error accepting request with {Id}", id);
-    //        return ServiceResult<CircleJoinRequest>.Fail("Error accepting request", ErrorType.InternalError);
-    //    }
-    //}
+        if (!await PassesFirstCheck(existingRequest) || !await CanAccept(existingRequest) || existingRequest.CircleId != circleRequestDTO.CircleId)
+        {
+            _logger.LogError("Invalid request update with ID {Id}", id);
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        }
+
+        await UpdateCircleMembersAndAdmins(existingRequest);
+        existingRequest.Status = CircleRequestStatus.Accepted;
+        existingRequest.UpdatedAt = DateTime.Now;
+        var updatedRequest = await _circleJoinRequestRepository.Update(existingRequest);
+        await _circleJoinRequestRepository.SaveChanges();
+        return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
+    }
 
     #endregion
 
@@ -408,18 +324,18 @@ public class CircleMembershipService : ICircleMembershipService
 
 
     // Check role of request sender before updating a request
-    private async Task<bool> IsRequestFromUser(CircleJoinRequest request)
+    private async Task<bool> IsFromUser(CircleJoinRequest request)
     {
         return (request.FromUserId == request.TargetUserId &&
                 !request.Circle.Members.Contains(request.FromUser));
     }
 
-    private async Task<bool> IsInvitationFromMember(CircleJoinRequest request)
+    private async Task<bool> IsFromMember(CircleJoinRequest request)
     {
         return (request.Circle.Members.Contains(request.FromUser) || !request.Circle.Administrators.Contains(request.FromUser));
     }
 
-    private async Task<bool> IsInvitationFromAdmin(CircleJoinRequest request)
+    private async Task<bool> IsFromAdmin(CircleJoinRequest request)
     {
         return request.Circle.Administrators.Contains(request.FromUser);
     }
@@ -427,19 +343,46 @@ public class CircleMembershipService : ICircleMembershipService
     // CanRevoke => only the user who created the request, while request is still pending
     private async Task<bool> CanRevoke(CircleJoinRequest request)
     {
+        if (request.UpdatedByUserId == null)
+        {
+            return false;
+        }
         return (request.Status == CircleRequestStatus.Pending && request.UpdatedByUserId == request.FromUserId);
     }
 
     // CanAccept => only the target user or member/admin, depending on request/invitation
     private async Task<bool> CanAccept(CircleJoinRequest request)
     {
+        if (request.UpdatedByUserId == null)
+        {
+            return false;
+        }
         return request.FromUserId != request.UpdatedByUserId;
     }
 
     // CanReject => only the target user or member/admin, depending on request/invitation
     private async Task<bool> CanReject(CircleJoinRequest request)
     {
+        if (request.UpdatedByUserId == null)
+        {
+            return false;
+        }
         return request.FromUserId != request.UpdatedByUserId;
+    }
+
+
+    private async Task UpdateCircleMembersAndAdmins(CircleJoinRequest request)
+    {
+        if (request.Type == CircleJoinRequestType.JoinAsMember)
+        {
+            request.Circle.Members.Add(request.TargetUser);
+            await _circleRepository.UpdateMembers(request.Circle);
+        }
+        if (request.Type == CircleJoinRequestType.JoinAsAdmin)
+        {
+            request.Circle.Administrators.Add(request.TargetUser);
+            await _circleRepository.UpdateAdministrators(request.Circle);
+        }
     }
 
     #endregion

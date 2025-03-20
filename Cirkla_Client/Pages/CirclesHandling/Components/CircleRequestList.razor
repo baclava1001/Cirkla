@@ -19,8 +19,9 @@
         <MudTd DataLabel="Shared items">@context?.TargetUser?.Items?.Count</MudTd>
         <MudTd DataLabel="Request for">@RequestedRole(@context)</MudTd>
         <MudTd DataLabel="Actions">
-            <CircleRequestRevokeButton Circle="@Circle" Request="@context" />
-            <CircleRequestAcceptButton Circle="@Circle" Request="@context" />
+            <CircleRequestRevokeButton Circle="@Circle" Request="@context"/>
+            <CircleRequestRejectButton Circle="@Circle" Request="@context"/>
+            <CircleRequestAcceptButton Circle="@Circle" Request="@context"/>
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -38,7 +39,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        PendingCircleRequests = await Client.MembershipRequestsCircleAsync(CircleId);
+        var requestsForCircle = await Client.MembershipRequestsCircleAsync(CircleId);
+        PendingCircleRequests = requestsForCircle.Where(r => r.Status == CircleRequestStatus.Pending);
     }
 
     private string RequestedRole(CircleJoinRequest request)

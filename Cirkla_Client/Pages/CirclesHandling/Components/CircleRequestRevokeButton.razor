@@ -13,30 +13,32 @@ Class="ml-auto">Revoke</MudButton>
 @code {
     [Parameter]
     public Circle? Circle { get; set; }
-    [Parameter] // Is populated if coming from Admin view (CircleRequestList component)
+
+    [Parameter] // Will be populated if coming from Admin view (CircleRequestList component)
     public CircleJoinRequest? Request { get; set; }
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; //Kalle Kanin, same as in JoinButton
 
     private async Task RevokeJoinRequest()
     {
         try
         {
-            var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
-            var requestToUpdate = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
-
-            if (requestToUpdate?.Status is not CircleRequestStatus.Pending)
+            if (Request is null)
             {
-                Console.WriteLine("Request not valid.");
+                var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
+                Request = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
             }
 
-            Request ??= new CircleJoinRequest();
+            if (Request.Status is not CircleRequestStatus.Pending)
+            {
+                Console.WriteLine("Request not valid.");
+                // TODO: Show message
+                return;
+            }
 
-            Request.Id = requestToUpdate.Id;
-            Request.CircleId = Circle.Id;
             Request.UpdatedByUserId = _tempUserId;
-
-            var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
-            await Client.MembershipRequestsRevokeAsync(updatedRequest.Id, updatedRequest);
+            var requestUpdateDTO = await Mapper.MapToCircleRequestUpdateDTO(Request);
+            await Client.MembershipRequestsRevokeAsync(requestUpdateDTO.Id, requestUpdateDTO);
         }
         catch (ApiException ex)
         {
