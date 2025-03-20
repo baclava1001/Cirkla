@@ -23,12 +23,11 @@
     </MudCardContent>
     <MudCardActions>
         <MudButton>Browse</MudButton>
-        @* @if(User is not member of this circle && has not sent a request already)*@
         <CircleJoinButton Circle="Circle"/>
-        @* @if(User is member of this circle)*@
-        <CircleInviteButton Circle="Circle" />
-        @* @if(User is not member of this circle && has sent a request)*@
-        <CircleRequestRevokeButton Circle="Circle" />
+        <CircleInviteButton Circle="Circle"/>
+        <CircleRequestRevokeButton Circle="Circle"/>
+        <CircleRequestRejectButton Circle="@Circle"/>
+        <CircleRequestAcceptButton Circle="@Circle" />
     </MudCardActions>
 </MudCard>
 
