@@ -125,22 +125,27 @@ public class CircleMembershipService : ICircleMembershipService
         }
         else if (requestToDb.Type == CircleJoinRequestType.JoinAsAdmin)
         {
-            // TODO: Call CreateAdminRequest method
-            // return await CreateAdminRequest();
+            return await CreateAdminRequest(requestToDb);
         }
         return ServiceResult<CircleJoinRequest>.Fail("Invalid request type", ErrorType.ValidationError);
     }
 
     public async Task<ServiceResult<CircleJoinRequest>> CreateMembershipRequest(CircleJoinRequest request)
     {
-        if (!await CanJoinAsMember(request) && !await CanInviteMembers(request))
+        if (!await CanJoinAsMember(request))
         {
             _logger.LogError("Invalid request to add member with ID {UserId} to circle with ID {CircleId}", request.TargetUserId, request.CircleId);
             return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
         }
+        if (!await CanInviteMembers(request))
+        {
+            _logger.LogError("User with ID {UpdatingUser} not authorized to invite member with ID {UserId} to circle with ID {CircleId}.", request.FromUserId, request.TargetUserId, request.CircleId);
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        }
+
         var createdRequest = await _circleJoinRequestRepository.Create(request);
         await _circleJoinRequestRepository.SaveChanges();
-        return ServiceResult<CircleJoinRequest>.Success(createdRequest);
+        return ServiceResult<CircleJoinRequest>.Created(createdRequest);
     }
 
     public async Task<ServiceResult<CircleJoinRequest>> CreateAdminRequest(CircleJoinRequest request)
@@ -152,7 +157,7 @@ public class CircleMembershipService : ICircleMembershipService
         }
         var createdRequest = await _circleJoinRequestRepository.Create(request);
         await _circleJoinRequestRepository.SaveChanges();
-        return ServiceResult<CircleJoinRequest>.Success(createdRequest);
+        return ServiceResult<CircleJoinRequest>.Created(createdRequest);
     }
 
     #endregion
@@ -160,7 +165,6 @@ public class CircleMembershipService : ICircleMembershipService
 
     #region Updating
 
-    // TODO: Refactor to accept UserId and CircleId to make the whole operation in the backend?
     public async Task<ServiceResult<CircleJoinRequest>> RevokeRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
     {
         if (circleRequestDTO.Id != id)
