@@ -100,9 +100,9 @@ namespace Cirkla_DAL
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<CircleJoinRequest>()
-                .HasOne(cr => cr.TargetMember)
+                .HasOne(cr => cr.TargetUser)
                 .WithMany()
-                .HasForeignKey("TargetMemberId")
+                .HasForeignKey("TargetUserId")
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<CircleJoinRequest>()

@@ -55,6 +55,7 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
+
         [HttpPost("/membership-requests/")]
         [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -62,64 +63,10 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RequestToJoin(CircleJoinRequestCreateDTO circleJoinRequestDTO)
         {
-            var result = await _circleMembershipService.RequestToJoin(circleJoinRequestDTO);
+            var result = await _circleMembershipService.SendJoinRequest(circleJoinRequestDTO);
             return result.ToHttpResponse();
         }
 
-        //[HttpPost("UserRequestsAdmin")]
-        //[ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> UserRequestToBecomeAdmin(CircleJoinRequestCreateDTO circleRequestDTO)
-        //{
-        //    var result = await _circleRequestService.UserRequestsToBecomeAdmin(circleRequestDTO);
-        //    return result.ToHttpResponse();
-        //}
-
-        //[HttpPost("MemberInvitesUser")]
-        //[ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> MemberInviteToUser(CircleJoinRequestCreateDTO circleRequestDTO)
-        //{
-        //    var result = await _circleRequestService.MemberInvitesUser(circleRequestDTO);
-        //    return result.ToHttpResponse();
-        //}
-
-        //[HttpPost("AdminInvitesMember")]
-        //[ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> MembershipInviteFromAdmin(CircleJoinRequestCreateDTO circleRequestDTO)
-        //{
-        //    var result = await _circleRequestService.MembershipInviteFromAdmin(circleRequestDTO);
-        //    return result.ToHttpResponse();
-        //}
-
-        //[HttpPost("AdminInvitesAdmin")]
-        //[ProducesResponseType(typeof(CircleRequest), StatusCodes.Status201Created)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> AdminInvitesAdmin(CircleJoinRequestCreateDTO circleRequestDTO)
-        //{
-        //    var result = await _circleRequestService.AdminInviteFromAdmin(circleRequestDTO);
-        //    return result.ToHttpResponse();
-        //}
-
-        [HttpPut("/membership-requests/{id}/reject")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-        {
-            var result = await _circleMembershipService.RejectRequest(id, circleRequestDTO);
-            return result.ToHttpResponse();
-        }
 
         [HttpPut("/membership-requests/{id}/revoke")]
         [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
@@ -132,16 +79,29 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        [HttpPut("/membership-requests/{id}/Accept")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AdminAcceptsRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-        {
-            var result = await _circleMembershipService.AdminAcceptsRequest(id, circleRequestDTO);
-            return result.ToHttpResponse();
-        }
+
+        //[HttpPut("/membership-requests/{id}/reject")]
+        //[ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        //public async Task<IActionResult> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
+        //{
+        //    var result = await _circleMembershipService.RejectRequest(id, circleRequestDTO);
+        //    return result.ToHttpResponse();
+        //}
+
+
+        //[HttpPut("/membership-requests/{id}/Accept")]
+        //[ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        //public async Task<IActionResult> AdminAcceptsRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
+        //{
+        //    var result = await _circleMembershipService.AdminAcceptsRequest(id, circleRequestDTO);
+        //    return result.ToHttpResponse();
+        //}
 
         //[HttpPut("CircleInvite{id}/UserAccepts")]
         //[ProducesResponseType(typeof(CircleRequest), StatusCodes.Status200OK)]

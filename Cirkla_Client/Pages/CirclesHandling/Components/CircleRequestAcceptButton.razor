@@ -26,7 +26,7 @@ Class="ml-auto">Accept</MudButton>
             Request.UpdatedByUser = await Client.ApiUserGetAsync(_tempUserId);
             var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
 
-            await Client.MembershipRequestsAcceptAsync(updatedRequest.Id, updatedRequest);
+            //await Client.MembershipRequestsAcceptAsync(updatedRequest.Id, updatedRequest);
 
         }
         catch (ApiException ex)

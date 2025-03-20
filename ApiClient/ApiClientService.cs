@@ -147,25 +147,11 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsPostAsync(CircleJoinRequestCreateDTO circleJoinRequestDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRejectAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRejectAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRevokeAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRevokeAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsAcceptAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsAcceptAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContractNotificationForViews>> ApiContractNotificationsGetNotificationsAsync();
@@ -2234,124 +2220,6 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRejectAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-        {
-            return MembershipRequestsRejectAsync(id, circleRequestDTO, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRejectAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO, System.Threading.CancellationToken cancellationToken)
-        {
-            if (id == null)
-                throw new System.ArgumentNullException("id");
-
-            if (circleRequestDTO == null)
-                throw new System.ArgumentNullException("circleRequestDTO");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(circleRequestDTO, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "membership-requests/{id}/reject"
-                    urlBuilder_.Append("membership-requests/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/reject");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<CircleJoinRequest>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsRevokeAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
         {
             return MembershipRequestsRevokeAsync(id, circleRequestDTO, System.Threading.CancellationToken.None);
@@ -2386,124 +2254,6 @@ namespace Cirkla.ApiClient
                     urlBuilder_.Append("membership-requests/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/revoke");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<CircleJoinRequest>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsAcceptAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
-        {
-            return MembershipRequestsAcceptAsync(id, circleRequestDTO, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CircleJoinRequest> MembershipRequestsAcceptAsync(int id, CircleJoinRequestUpdateDTO circleRequestDTO, System.Threading.CancellationToken cancellationToken)
-        {
-            if (id == null)
-                throw new System.ArgumentNullException("id");
-
-            if (circleRequestDTO == null)
-                throw new System.ArgumentNullException("circleRequestDTO");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(circleRequestDTO, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.ByteArrayContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "membership-requests/{id}/Accept"
-                    urlBuilder_.Append("membership-requests/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/Accept");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -5345,12 +5095,12 @@ namespace Cirkla.ApiClient
         [System.Text.Json.Serialization.JsonPropertyName("circle")]
         public Circle? Circle { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("targetMemberId")]
+        [System.Text.Json.Serialization.JsonPropertyName("targetUserId")]
         [System.ComponentModel.DataAnnotations.Required]
-        public string TargetMemberId { get; set; } = default!;
+        public string TargetUserId { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("targetMember")]
-        public User? TargetMember { get; set; } = default!;
+        [System.Text.Json.Serialization.JsonPropertyName("targetUser")]
+        public User? TargetUser { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("fromUserId")]
         [System.ComponentModel.DataAnnotations.Required]
@@ -5417,9 +5167,9 @@ namespace Cirkla.ApiClient
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public CircleJoinRequestType Type { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("targetMemberId")]
+        [System.Text.Json.Serialization.JsonPropertyName("targetUserId")]
         [System.ComponentModel.DataAnnotations.Required]
-        public string TargetMemberId { get; set; } = default!;
+        public string TargetUserId { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("fromUserId")]
         [System.ComponentModel.DataAnnotations.Required]
@@ -5448,36 +5198,16 @@ namespace Cirkla.ApiClient
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("type")]
-        public CircleJoinRequestType Type { get; set; } = default!;
-
         [System.Text.Json.Serialization.JsonPropertyName("circleId")]
         public int CircleId { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("pendingMemberId")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string PendingMemberId { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("fromUserId")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string FromUserId { get; set; } = default!;
-
         [System.Text.Json.Serialization.JsonPropertyName("updatedByUserId")]
-        public string? UpdatedByUserId { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public CircleRequestStatus Status { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("requestDate")]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTime RequestDate { get; set; } = default!;
+        public string UpdatedByUserId { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("updatedAt")]
-        public System.DateTime? UpdatedAt { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("expiresAt")]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTime ExpiresAt { get; set; } = default!;
+        public System.DateTime UpdatedAt { get; set; } = default!;
 
     }
 
