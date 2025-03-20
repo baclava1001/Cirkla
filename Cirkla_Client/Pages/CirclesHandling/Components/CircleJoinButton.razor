@@ -4,8 +4,7 @@
 <MudButton
     ButtonType="ButtonType.Button"
     OnClick="() => JoinCircle()"
-    Color="Color.Tertiary
-"
+    Color="Color.Tertiary"
     Variant="Variant.Filled"
     StartIcon="@Icons.Material.Filled.PersonAdd"
     Size="Size.Small"
@@ -25,7 +24,7 @@
         {
             Type = CircleJoinRequestType.JoinAsMember,
             CircleId = Circle.Id,
-            TargetMemberId = _tempUserId,
+            TargetUserId = _tempUserId,
             FromUserId = _tempUserId,
             Status = CircleRequestStatus.Pending,
             RequestDate = DateTime.Now,

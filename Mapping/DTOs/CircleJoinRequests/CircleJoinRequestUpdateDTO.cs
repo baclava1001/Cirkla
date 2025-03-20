@@ -14,20 +14,8 @@ namespace Mapping.DTOs.CircleJoinRequests
         [Required]
         public int Id { get; set; }
         [Required]
-        public CircleJoinRequestType Type { get; set; }
-        [Required]
         public int CircleId { get; set; }
-
-        [Required] public string TargetMemberId { get; set; }
         [Required]
-        public string FromUserId { get; set; }
-        public string? UpdatedByUserId { get; set; }
-        [Required]
-        public CircleRequestStatus Status { get; set; }
-        [Required]
-        public DateTime RequestDate { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        [Required]
-        public DateTime? ExpiresAt { get; set; }
+        public string UpdatedByUserId { get; set; }
     }
 }

@@ -13,7 +13,7 @@ Class="ml-auto">Revoke</MudButton>
 @code {
     [Parameter]
     public Circle? Circle { get; set; }
-    [Parameter] // If coming from Admin view / CircleRequestList
+    [Parameter] // Is populated if coming from Admin view (CircleRequestList component)
     public CircleJoinRequest? Request { get; set; }
     private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
 
@@ -21,19 +21,20 @@ Class="ml-auto">Revoke</MudButton>
     {
         try
         {
-            // TODO: Simplify this to make only one roundtrip instead of two (send a PUT/Revoke request without need to fetch all requests first)
             var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
             var requestToUpdate = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
 
-            if (requestToUpdate is null || requestToUpdate.Status is not CircleRequestStatus.Pending)
+            if (requestToUpdate?.Status is not CircleRequestStatus.Pending)
             {
                 Console.WriteLine("Request not valid.");
             }
 
+            Request ??= new CircleJoinRequest();
+
             Request.Id = requestToUpdate.Id;
-            Request.Status = CircleRequestStatus.Revoked;
-            Request.UpdatedAt = DateTime.Now;
+            Request.CircleId = Circle.Id;
             Request.UpdatedByUserId = _tempUserId;
+
             var updatedRequest = await Mapper.MapToCircleRequestUpdateDTO(Request);
             await Client.MembershipRequestsRevokeAsync(updatedRequest.Id, updatedRequest);
         }

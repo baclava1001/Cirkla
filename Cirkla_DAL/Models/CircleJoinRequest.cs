@@ -19,8 +19,8 @@ namespace Cirkla_DAL.Models
         public int CircleId { get; set; }
         public Circle Circle { get; set; }
         [Required]
-        public string TargetMemberId { get; set; }
-        public User TargetMember { get; set; }
+        public string TargetUserId { get; set; }
+        public User TargetUser { get; set; }
         [Required]
         public string FromUserId { get; set; }
         public User FromUser { get; set; }

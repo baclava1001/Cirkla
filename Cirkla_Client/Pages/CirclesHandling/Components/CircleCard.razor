@@ -24,11 +24,11 @@
     <MudCardActions>
         <MudButton>Browse</MudButton>
         @* @if(User is not member of this circle && has not sent a request already)*@
-        <CircleRequestJoinButton Circle="Circle"/>
-        @* @if(User is not member of this circle && has sent a request)*@
-        <CircleRequestRevokeButton Circle="Circle"/>
+        <CircleJoinButton Circle="Circle"/>
         @* @if(User is member of this circle)*@
-        <MudButton OnClick="() => Invite()">Invite</MudButton>
+        <CircleInviteButton Circle="Circle" />
+        @* @if(User is not member of this circle && has sent a request)*@
+        <CircleRequestRevokeButton Circle="Circle" />
     </MudCardActions>
 </MudCard>
 
@@ -84,14 +84,6 @@
             NavigationManager.NavigateTo($"/circle-administration/?id={Circle.Id}");
         }
     }
-
-
-    private async Task Invite()
-    {
-        // TODO: Implement this later, when authentication and user management is in place
-    }
-
-
     
 
     private async Task<string> UserMembershipStatus()
