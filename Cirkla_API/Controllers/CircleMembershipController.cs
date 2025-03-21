@@ -104,8 +104,34 @@ namespace Cirkla_API.Controllers
         }
 
 
+
+
+
+        [HttpPost("/membership-requests/user{userId}/make-admin")]
+        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> MakeAdmin(CircleJoinRequestCreateDTO adminRequestDTO)
+        {
+            var result = await _circleMembershipService.MakeAdmin(adminRequestDTO);
+            return result.ToHttpResponse();
+        }
+
+
+        [HttpPost("/membership-requests/user{userId}/remove-admin")]
+        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveAdmin(CircleJoinRequestCreateDTO adminRequestDTO)
+        {
+            var result = await _circleMembershipService.RemoveAdmin(adminRequestDTO);
+            return result.ToHttpResponse();
+        }
+
+
         // AdminRemoveMember
-        // AdminRemoveAdmin
         // UserLeaveCircle
     }
 }
