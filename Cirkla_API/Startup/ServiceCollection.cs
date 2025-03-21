@@ -17,7 +17,6 @@ using Cirkla_API.Backgroundservices.AutoArchive;
 using Cirkla_API.Backgroundservices.AutoCancel;
 using Cirkla_API.Backgroundservices.AutoLate;
 using Cirkla_API.Services.CircleMembership;
-using Cirkla_API.Services.CircleRequests;
 using Cirkla_API.Services.Circles;
 using Cirkla_API.Services.ContractNotifications;
 using Cirkla_API.Services.Users;

@@ -22,18 +22,19 @@
         <MudText Typo="Typo.caption"><MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Person"/> @_userMembershipStatus</MudText>
     </MudCardContent>
     <MudCardActions>
-        <MudButton>Browse</MudButton>
-        <CircleJoinButton Circle="Circle"/>
-        <CircleInviteButton Circle="Circle"/>
-        <CircleRequestRevokeButton Circle="Circle"/>
-        <CircleRequestRejectButton Circle="@Circle"/>
-        <CircleRequestAcceptButton Circle="@Circle" />
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Default"
+                   StartIcon="@Icons.Material.Filled.DoorSliding"
+                   Size="Size.Small">Browse</MudButton>
+        <BtnCircleJoin Circle="Circle"/>
+        <BtnCircleInvite Circle="Circle"/>
+        <BtnCircleRequestRevoke Circle="Circle" />
+        <BtnCircleRequestReject Circle="@Circle" />
+        <BtnCircleRequestAccept Circle="@Circle" />
     </MudCardActions>
 </MudCard>
 
 @code {
-    // TODO: Move all buttons to their own components that can be shown/hidden based on user role and circle membership status
-
     [Parameter]
     public Circle? Circle { get; set; }
 
@@ -87,14 +88,13 @@
 
     private async Task<string> UserMembershipStatus()
     {
-        var tempLoggedInUser = await Client.ApiUserGetAsync(_tempUserId);
         var userJoinRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
         var joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
-        if (Circle != null && Circle.Administrators.Contains(tempLoggedInUser))
+        if (Circle != null && Circle.Administrators.Any(a => a.Id == _tempUserId))
         {
             return "You are an administrator";
         }
-        if (Circle.Members != null && Circle.Members.Contains(tempLoggedInUser))
+        if (Circle.Members != null && Circle.Members.Any(m => m.Id == _tempUserId))
         {
             return "You are a member";
         }

@@ -13,22 +13,21 @@
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Picture"><MudImage Src="@context?.TargetUser?.ProfilePictureURL" Width="80" /></MudTd>
+        <MudTd DataLabel="Picture"><MudImage Src="@context?.TargetUser?.ProfilePictureURL" Width="60" /></MudTd>
         <MudTd DataLabel="Name">@context?.TargetUser?.FirstName @context?.TargetUser?.LastName</MudTd>
         <MudTd DataLabel="Zipcode">@context?.TargetUser?.ZipCode</MudTd>
         <MudTd DataLabel="Shared items">@context?.TargetUser?.Items?.Count</MudTd>
         <MudTd DataLabel="Request for">@RequestedRole(@context)</MudTd>
         <MudTd DataLabel="Actions">
-            <CircleRequestRevokeButton Circle="@Circle" Request="@context"/>
-            <CircleRequestRejectButton Circle="@Circle" Request="@context"/>
-            <CircleRequestAcceptButton Circle="@Circle" Request="@context"/>
+            <BtnCircleRequestRevoke Circle="@Circle" Request="@context"/>
+            <BtnCircleRequestReject Circle="@Circle" Request="@context"/>
+            <BtnCircleRequestAccept Circle="@Circle" Request="@context"/>
         </MudTd>
     </RowTemplate>
 </MudTable>
 
 @code {
     // TODO: make buttons show and disappear more dynamically
-
     // TODO: Add sorting and filtering to the table, see MudBlazor documentation
     // TODO: Add some more styling to the table, see MudBlazor documentation
     [Parameter]

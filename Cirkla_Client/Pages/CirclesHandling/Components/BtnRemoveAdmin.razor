@@ -1,0 +1,36 @@
+﻿@using System.Text.Json
+@using Mapping.Mappers
+@inject IClient Client;
+
+<MudButton
+    ButtonType="ButtonType.Button"
+    OnClick="() => RemoveAdmin()"
+    Color="Color.Primary"
+    Variant="Variant.Filled"
+    StartIcon="@Icons.Material.Filled.RemoveModerator"
+    Size="Size.Small"
+    Class="ml-auto">Remove admin</MudButton>
+
+@code {
+    [Parameter]
+    public Circle? Circle { get; set; }
+
+    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; // Kalle Kanin
+    private string _tempAdminId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed
+
+    private async Task RemoveAdmin()
+    {
+        var request = new CircleJoinRequestCreateDTO
+        {
+            Type = CircleJoinRequestType.JoinAsAdmin,
+            CircleId = Circle.Id,
+            TargetUserId = _tempUserId,
+            FromUserId = _tempAdminId,
+            Status = CircleRequestStatus.Accepted,
+            RequestDate = DateTime.Now,
+            ExpiresAt = DateTime.Now + TimeSpan.FromDays(7),
+            UpdatedByUserId = _tempAdminId
+        };
+        await Client.MembershipRequestsUserRemoveAdminAsync(request.TargetUserId, request);
+    }
+}

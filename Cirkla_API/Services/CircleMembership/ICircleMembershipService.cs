@@ -13,4 +13,6 @@ public interface ICircleMembershipService
     Task<ServiceResult<CircleJoinRequest>> RevokeRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
     Task<ServiceResult<CircleJoinRequest>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
     Task<ServiceResult<CircleJoinRequest>> AcceptRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleJoinRequest>> MakeAdmin(CircleJoinRequestCreateDTO adminRequestDTO);
+    Task<ServiceResult<CircleJoinRequest>> RemoveAdmin(CircleJoinRequestCreateDTO adminRequestDTO);
 }

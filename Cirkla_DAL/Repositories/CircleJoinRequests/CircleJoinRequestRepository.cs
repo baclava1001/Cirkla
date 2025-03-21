@@ -62,6 +62,7 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .ThenInclude(c => c.Administrators)
             .Include(cr => cr.Circle)
             .ThenInclude(c => c.Members)
+            .Include(cr => cr.TargetUser)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
             .FirstOrDefaultAsync(cr => cr.Id == id);

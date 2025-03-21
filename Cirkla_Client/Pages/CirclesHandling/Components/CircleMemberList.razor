@@ -11,12 +11,15 @@
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Picture"><MudImage Src="@context.ProfilePictureURL" Width="80" /></MudTd>
+        <MudTd DataLabel="Picture"><MudImage Src="@context.ProfilePictureURL" Width="60" /></MudTd>
         <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
         <MudTd DataLabel="Zipcode">@context.ZipCode</MudTd>
         <MudTd DataLabel="Shared items">@context.Items?.Count</MudTd>
         <MudTd DataLabel="Role">@MemberOrAdmin(@context)</MudTd>
-        <MudTd DataLabel="Actions">ACTION BUTTONS</MudTd>
+        <MudTd DataLabel="Actions">
+            <BtnMakeAdmin Circle="Circle"/>
+            <BtnRemoveAdmin Circle="Circle" />
+        </MudTd>
     </RowTemplate>
 </MudTable>
 
