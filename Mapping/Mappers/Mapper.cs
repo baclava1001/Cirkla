@@ -33,6 +33,25 @@ namespace Mapping.Mappers
             };
         }
 
+        public static async Task<ApiClient.ItemCreateDTO> MapToItemCreateDTO(ApiClient.Item item)
+        {
+            return new ApiClient.ItemCreateDTO
+            {
+                Name = item.Name,
+                Category = item.Category,
+                Model = item.Model,
+                Specifications = item.Specifications,
+                Description = item.Description,
+                OwnerId = item.OwnerId,
+                Pictures = item.Pictures?.Select(p => new ApiClient.ItemPicture
+                {
+                    Id = p.Id,
+                    Url = p.Url,
+                    ItemId = p.ItemId
+                }).ToList() // Because NSwag uses ICollection instead of List
+            };
+        }
+
         #endregion
 
         #region User

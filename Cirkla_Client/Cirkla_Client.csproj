@@ -17,13 +17,12 @@
     <None Remove="Pages\SharedStuff\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Pages\BorrowItem\ReplyToRequestButtons.razor" />
+    <Content Remove="Pages\Borrowing\ReplyToRequestButtons.razor" />
   </ItemGroup>
 	
 
   <ItemGroup>
     <Content Remove="Pages\Cirkla.razor" />
-    <Content Remove="Pages\ItemCreateAndEdit\ReplyButtons.razor" />
   </ItemGroup>
   <ItemGroup>
 	  <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />

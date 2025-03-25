@@ -121,7 +121,7 @@ namespace Cirkla_API.Services.Circles
             }
         }
 
-
+        // TODO: relation to circle requests stops this from working
         public async Task<ServiceResult<Circle>> Delete(int id)
         {
             Circle circle = await _circleRepository.GetById(id);
