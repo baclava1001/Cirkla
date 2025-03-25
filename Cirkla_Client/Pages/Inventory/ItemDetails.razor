@@ -1,0 +1,65 @@
+﻿@page "/itemdetails"
+@inject IClient _client;
+@inject NavigationManager _navigationManager;
+
+<PageTitle>Details for @Item?.Name</PageTitle>
+<h3>Details for @Item?.Name</h3>
+<hr />
+
+<div>
+    @if (Item is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <img src="@Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Item.Name" class="img-fluid" style="max-width: 350px; height: auto;" />
+        <br />
+        <br />
+        <dl class="row">
+            <dt class="col-sm-2">Category</dt>
+            <dd class="col-sm-10">@Item.Category</dd>
+            <dt class="col-sm-2">Model</dt>
+            <dd class="col-sm-10">@Item.Model</dd>
+            <dt class="col-sm-2">Specifications</dt>
+            <dd class="col-sm-10">@Item.Specifications</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@Item.Description</dd>
+            <dt class="col-sm-2">Owner</dt>
+            <dd class="col-sm-10">@Item.Owner?.FirstName @Item.Owner?.LastName</dd>
+            <dt class="col-sm-2">Zip code</dt>
+            <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
+        </dl>
+    }
+</div>
+
+
+@code {
+    // TODO: Add more pictures in this view
+    [SupplyParameterFromQuery]
+    public int Id { get; set; } //Item id from http-query
+
+    public Item? Item { get; set; } = new();
+
+    public ContractCreateDTO ContractDTO { get; set; } = new();
+
+    string minDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+    string? tempMessage;
+    string? messageClass;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Item = await _client.ApiItemGetAsync(Id);
+            ContractDTO.StartTime = DateTime.Parse(minDateTime);
+            ContractDTO.EndTime = DateTime.Parse(minDateTime);
+        }
+        catch (Exception ex)
+        {
+            messageClass = "text-danger";
+            tempMessage = ex.Message.ToString();
+        }
+    }
+}
+

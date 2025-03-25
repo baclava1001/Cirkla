@@ -1,5 +1,5 @@
 ﻿@page "/inventory"
-@using Cirkla_Client.Pages.Components
+@using Cirkla_Client.Pages.Inventory.Components
 @inject IClient Client;
 
 <PageTitle>My inventory</PageTitle>
@@ -54,7 +54,7 @@
         {
             foreach (var item in MyItems)
             {
-                <ItemCard Item="item"/>
+                <InventoryItemCard Item="item"/>
             }
         }
     </div>
