@@ -1,0 +1,21 @@
+﻿@inject IClient Client;
+@inject NavigationManager NavigationManager;
+@inject ToastNotificationService ToastService;
+
+<MudButton
+    OnClick="() => DeleteItem()"
+    Variant="Variant.Filled"
+    Color="Color.Error"
+    StartIcon="@Icons.Material.Filled.Delete">Delete</MudButton>
+
+@code {
+    [Parameter]
+    public Item? Item { get; set; }
+
+    private async Task DeleteItem()
+    {
+        await Client.ApiItemDeleteAsync(Item.Id);
+        ToastService.ShowSuccess($"{Item.Name} was successfully deleted");
+        NavigationManager.NavigateTo("/inventory", forceLoad:true);
+    }
+}

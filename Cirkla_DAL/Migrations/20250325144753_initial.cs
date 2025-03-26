@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Cirkla_DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -246,7 +246,7 @@ namespace Cirkla_DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
                     CircleId = table.Column<int>(type: "int", nullable: false),
-                    TargetMemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TargetUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FromUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -263,8 +263,8 @@ namespace Cirkla_DAL.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CircleJoinRequests_AspNetUsers_TargetMemberId",
-                        column: x => x.TargetMemberId,
+                        name: "FK_CircleJoinRequests_AspNetUsers_TargetUserId",
+                        column: x => x.TargetUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -464,9 +464,9 @@ namespace Cirkla_DAL.Migrations
                 column: "FromUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CircleJoinRequests_TargetMemberId",
+                name: "IX_CircleJoinRequests_TargetUserId",
                 table: "CircleJoinRequests",
-                column: "TargetMemberId");
+                column: "TargetUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CircleJoinRequests_UpdatedByUserId",

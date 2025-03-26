@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using Cirkla_Client.Pages.Components
+@inherits LayoutComponentBase
 @* Required *@
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -9,9 +10,8 @@
 
 
 <div class="page d-flex flex-column min-vh-100">
-    <div class="navbar">
-        <NavMenu />
-    </div>
+    <NavMenu/>
+    <ToastNotification />
 
     <main class="flex-fill">
         <article class="content px-4">
