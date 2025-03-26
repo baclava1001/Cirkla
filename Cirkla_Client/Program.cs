@@ -21,6 +21,7 @@ namespace Cirkla_Client
             // TODO: Move service registration to separate class
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IApiAuthStateProvider, ApiAuthStateProvider>();
+            builder.Services.AddSingleton<ToastNotificationService>();
             builder.Services.AddSingleton<ComponentNotificationService>();
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();
             builder.Services.AddBlazoredLocalStorage();

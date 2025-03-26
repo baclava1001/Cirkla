@@ -10,7 +10,7 @@
         <MudCardActions>
             <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
             <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit" />
-            <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" />
+            <DeleteItemButton Item="Item"/>
         </MudCardActions>
     </MudCard>
 </div>

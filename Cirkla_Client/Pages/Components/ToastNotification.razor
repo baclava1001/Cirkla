@@ -1,0 +1,88 @@
+﻿@inject ToastNotificationService ToastService;
+
+@if (ShowMessage)
+{
+    <MudAlert Severity="@GetSeverity(SeverityType)"
+              ShowCloseIcon="true"
+              Class="mt-20">
+        @MessageContent
+    </MudAlert>
+}
+@code {
+    private bool ShowMessage { get; set; } = false;
+    private string MessageContent { get; set; } = string.Empty;
+    public int DismissAfter { get; set; } = 3;
+    public string SeverityType { get; set; } = "Normal";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShowMessage && DismissAfter > 0)
+        {
+            await Task.Delay(DismissAfter * 1000);
+            HideMessage();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnShow += (message, type, dismissAfter) => 
+        {
+            _ = ShowToast(message, type, dismissAfter); 
+        };
+        ToastService.OnHide += HideMessage;
+    }
+
+    private async Task ShowToast(string message, string type, int dismissAfter)
+    {
+        MessageContent = message;
+        SeverityType = type;
+        ShowMessage = true;
+        await InvokeAsync(StateHasChanged);
+        if (dismissAfter > 0)
+        {
+            await Task.Delay(dismissAfter * 1000);
+            HideMessage();
+        }
+    }
+
+    // TODO: Delete this, for debug only
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        Console.WriteLine("TOAST RENDERED!!");
+    }
+
+    private void HideMessage()
+    {
+        ShowMessage = false;
+        InvokeAsync(StateHasChanged); // Ensure the UI updates
+    }
+
+    public void Dispose()
+    {
+        ToastService.OnShow -= (message, type, dismissAfter) =>
+        {
+            _ = ShowToast(message, type, dismissAfter);
+        };
+        ToastService.OnHide -= HideMessage;
+    }
+
+    private Severity GetSeverity(string severity)
+    {
+        switch (severity)
+        {
+            case "Normal":
+                return Severity.Normal;
+            case "Info":
+                return Severity.Info;
+            case "Success":
+                return Severity.Success;
+            case "Warning":
+                return Severity.Warning;
+            case "Error":
+                return Severity.Error;
+            default:
+                return Severity.Normal;
+        }
+    }
+}
