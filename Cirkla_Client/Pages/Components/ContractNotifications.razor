@@ -1,7 +1,7 @@
 ﻿@inject NotificationService NotificationService
 @inject IClient Client;
 
-<MudBadge Content="_count" Color="Color.Warning" Overlap="true" Class="mx-6 my-4">
+<MudBadge Content="_count" Color="Color.Warning" Overlap="true" Visible="IsVisible()">
     <MudMenu Icon="@Icons.Material.Filled.WavingHand" Color="Color.Inherit" Size="Size.Small">
         @if (!NotificationsToDisplay.Any())
         {
@@ -81,5 +81,14 @@
         NotificationsToDisplay.AddRange(NotificationService.PushNotifications);
         _count += NotificationService.PushNotifications.Count;
         await InvokeAsync(StateHasChanged);
+    }
+
+    private bool IsVisible()
+    {
+        if (_count > 0)
+        {
+            return true;
+        }
+        return false;
     }
 }

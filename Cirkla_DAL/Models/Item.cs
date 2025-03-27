@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Cirkla_DAL.Models.Enums;
 
 namespace Cirkla_DAL.Models
 {
@@ -15,6 +16,8 @@ namespace Cirkla_DAL.Models
         public string? Description { get; set; }
         // public OwnersTerms { get; set; } // Fkey for coming feature
         // public string List<HashTag> HashTags { get; set; } // Fkey for coming feature
+        [Required]
+        public ItemStatus Status { get; set; } = ItemStatus.Available;
         [Required]
         public string OwnerId { get; set; }
         [ForeignKey("OwnerId")]
