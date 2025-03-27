@@ -1,16 +1,34 @@
-﻿@inject NavigationManager NavigationManager;
+﻿@inject IClient Client;
+@inject NavigationManager NavigationManager;
 
 <div class="col-12 col-sm-6 col-md-3 mb-4">
     <MudCard Elevation="2">
-        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()"/>
+        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" Style="object-fit: cover"/>
         <MudCardContent>
             <MudText Typo="Typo.h5">@Item.Name</MudText>
             <MudText Typo="Typo.body2">@Item.Description</MudText>
         </MudCardContent>
         <MudCardActions>
             <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
-            <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit" />
-            <DeleteItemButton Item="Item"/>
+            <MudSpacer/>
+            <MudMenu Icon="@Icons.Material.Filled.Settings">
+                <MudMenuItem Label="Edit">
+                    <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit" />
+                </MudMenuItem>
+                <MudMenuItem>
+                    <DeleteItemButton Item="Item" />
+                </MudMenuItem>
+                <MudMenuItem>
+                    <div @onclick:stopPropagation="true">
+                        <MudSwitch T="bool"
+                                   Value="@_isAvailable"
+                                   ValueChanged="@((bool val) => ToggleAvailability(val))"
+                                   Label="Available"
+                                   ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                                   ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
+                    </div>
+                </MudMenuItem>
+            </MudMenu>
         </MudCardActions>
     </MudCard>
 </div>
@@ -18,6 +36,42 @@
 @code {
     [Parameter]
     public Item Item { get; set; }
+
+    private bool _isOpen;
+    private bool _isAvailable;
+
+    // public bool IsAvailable
+    // {
+    //     get => _isAvailable;
+    //     set
+    //     {
+    //         if (_isAvailable != value)
+    //         {
+    //             _isAvailable = value;
+    //             Task.Run(async () => await ToggleAvailability(value));
+    //         }
+    //     }
+    // }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isAvailable = (Item.Status == ItemStatus.Available);
+    }
+
+    private async Task ToggleAvailability(bool newValue)
+    {
+        _isAvailable = newValue; // Ensure UI updates immediately
+        Item.Status = newValue ? ItemStatus.Available : ItemStatus.Unavailable;
+        try
+        {
+            await Client.ApiItemPutAsync(Item.Id, Item);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"API update failed: {ex.Message}");
+        }
+    }
 
     private void NavigateToItemDetails()
     {
@@ -31,7 +85,7 @@
         NavigationManager.NavigateTo(url);
     }
 
-    private async Task<string> AltText()
+    private string AltText()
     {
         return $"Picture of {Item.Name}";
     }
