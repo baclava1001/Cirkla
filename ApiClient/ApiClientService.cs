@@ -5220,6 +5220,9 @@ namespace Cirkla.ApiClient
         [System.Text.Json.Serialization.JsonPropertyName("description")]
         public string? Description { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public ItemStatus Status { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("ownerId")]
         [System.ComponentModel.DataAnnotations.Required]
         public string OwnerId { get; set; } = default!;
@@ -5229,6 +5232,20 @@ namespace Cirkla.ApiClient
 
         [System.Text.Json.Serialization.JsonPropertyName("pictures")]
         public System.Collections.Generic.ICollection<ItemPicture>? Pictures { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ItemStatus
+    {
+
+        Unavailable = 0,
+
+        Available = 1,
+
+        Reserved = 2,
+
+        Borrowed = 3,
 
     }
 

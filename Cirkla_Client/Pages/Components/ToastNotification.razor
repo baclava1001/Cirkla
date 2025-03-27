@@ -2,9 +2,9 @@
 
 @if (ShowMessage)
 {
-    <MudAlert Severity="@GetSeverity(SeverityType)"
+    <MudAlert Severity="SeverityType"
               ShowCloseIcon="true"
-              Class="mt-20">
+              Class="mt-15">
         @MessageContent
     </MudAlert>
 }
@@ -12,7 +12,7 @@
     private bool ShowMessage { get; set; } = false;
     private string MessageContent { get; set; } = string.Empty;
     public int DismissAfter { get; set; } = 3;
-    public string SeverityType { get; set; } = "Normal";
+    public Severity SeverityType { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -30,9 +30,10 @@
             _ = ShowToast(message, type, dismissAfter); 
         };
         ToastService.OnHide += HideMessage;
+        ToastService.TryShowPendingMessage();
     }
 
-    private async Task ShowToast(string message, string type, int dismissAfter)
+    private async Task ShowToast(string message, Severity type, int dismissAfter)
     {
         MessageContent = message;
         SeverityType = type;
@@ -45,17 +46,10 @@
         }
     }
 
-    // TODO: Delete this, for debug only
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-        Console.WriteLine("TOAST RENDERED!!");
-    }
-
     private void HideMessage()
     {
         ShowMessage = false;
-        InvokeAsync(StateHasChanged); // Ensure the UI updates
+        InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
@@ -65,24 +59,5 @@
             _ = ShowToast(message, type, dismissAfter);
         };
         ToastService.OnHide -= HideMessage;
-    }
-
-    private Severity GetSeverity(string severity)
-    {
-        switch (severity)
-        {
-            case "Normal":
-                return Severity.Normal;
-            case "Info":
-                return Severity.Info;
-            case "Success":
-                return Severity.Success;
-            case "Warning":
-                return Severity.Warning;
-            case "Error":
-                return Severity.Error;
-            default:
-                return Severity.Normal;
-        }
     }
 }

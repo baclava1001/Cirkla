@@ -1,5 +1,6 @@
 ﻿using Cirkla_DAL;
 using Cirkla_DAL.Models;
+using Cirkla_DAL.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -101,6 +102,7 @@ public class SeedData
                 Model = "Polar Grit X2 Pro Titanium Leather Bronze",
                 Specifications = "GPS + Cellular, 45mm",
                 Description = "Tracks fitness and health metrics.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -111,6 +113,7 @@ public class SeedData
                 Model = "Dell XPS 15",
                 Specifications = "Intel i7, 16GB RAM, 512GB SSD",
                 Description = "Premium laptop for professionals.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -121,6 +124,7 @@ public class SeedData
                 Model = "Louis Vuitton Neverfull",
                 Specifications = "Monogram Canvas, Leather trim",
                 Description = "A timeless and spacious designer bag.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -131,6 +135,7 @@ public class SeedData
                 Model = "Bose 700",
                 Specifications = "Bluetooth, Noise Cancelling",
                 Description = "High-end headphones with superior noise cancellation.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -141,6 +146,7 @@ public class SeedData
                 Model = "iPhone 13 Pro Max",
                 Specifications = "256GB, 6.7-inch display",
                 Description = "Top-tier smartphone with advanced features.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -151,6 +157,7 @@ public class SeedData
                 Model = "Rolex Submariner",
                 Specifications = "Automatic, Stainless Steel",
                 Description = "Iconic luxury diving watch.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -161,6 +168,7 @@ public class SeedData
                 Model = "Segway Ninebot Max",
                 Specifications = "350W Motor, 40 miles range",
                 Description = "High-performance electric scooter.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -171,6 +179,7 @@ public class SeedData
                 Model = "Canon EOS R5",
                 Specifications = "45MP, 8K Video",
                 Description = "Professional-grade mirrorless camera.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -181,6 +190,7 @@ public class SeedData
                 Model = "PlayStation 5",
                 Specifications = "825GB SSD, 4K Gaming",
                 Description = "Next-gen gaming console.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -191,6 +201,7 @@ public class SeedData
                 Model = "Sonos Arc",
                 Specifications = "Dolby Atmos, Wi-Fi",
                 Description = "High-end soundbar for immersive audio.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -201,6 +212,7 @@ public class SeedData
                 Model = "Samsung QLED",
                 Specifications = "65-inch, 4K UHD",
                 Description = "State-of-the-art television with stunning picture quality.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             },
             new Item
@@ -211,6 +223,7 @@ public class SeedData
                 Model = "Montblanc Meisterstück",
                 Specifications = "Resin Barrel, Gold Trim",
                 Description = "Iconic fountain pen with exceptional craftsmanship.",
+                Status = ItemStatus.Available,
                 OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"
             },
             new Item
@@ -221,6 +234,7 @@ public class SeedData
                 Model = "Tesla Model S",
                 Specifications = "Long Range, Autopilot",
                 Description = "Luxury electric car with advanced features.",
+                Status = ItemStatus.Available,
                 OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"
             },
             new Item
@@ -231,6 +245,7 @@ public class SeedData
                 Model = "Google Nest Hub Max",
                 Specifications = "10-inch Display, Google Assistant",
                 Description = "Smart display with built-in assistant.",
+                Status = ItemStatus.Available,
                 OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"
             },
             new Item
@@ -241,6 +256,7 @@ public class SeedData
                 Model = "Dyson Pure Cool",
                 Specifications = "HEPA Filter, Wi-Fi Enabled",
                 Description = "High-end air purifier for cleaner air.",
+                Status = ItemStatus.Available,
                 OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"
             },
             new Item
@@ -251,6 +267,7 @@ public class SeedData
                 Model = "Bang & Olufsen Beosound",
                 Specifications = "360-degree sound, Portable",
                 Description = "Premium portable speaker with excellent sound quality.",
+                Status = ItemStatus.Available,
                 OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"
             },
             new Item
@@ -261,6 +278,7 @@ public class SeedData
                 Model = "DJI Mavic Air 2",
                 Specifications = "4K Camera, 34 min flight time",
                 Description = "High-performance drone for aerial photography.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -271,6 +289,7 @@ public class SeedData
                 Model = "Oculus Quest 2",
                 Specifications = "128GB, All-in-One VR",
                 Description = "Immersive virtual reality experience.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -281,6 +300,7 @@ public class SeedData
                 Model = "Nest Learning Thermostat",
                 Specifications = "Self-Learning, Wi-Fi",
                 Description = "Smart thermostat for energy-efficient home control.",
+                Status = ItemStatus.Available,
                 OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"
             },
             new Item
@@ -291,10 +311,10 @@ public class SeedData
                 Model = "Breville Barista Express",
                 Specifications = "Espresso Machine, Built-in Grinder",
                 Description = "Professional-grade coffee maker for home baristas.",
+                Status = ItemStatus.Available,
                 OwnerId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"
             }
         };
-
         return items;
     }
 
