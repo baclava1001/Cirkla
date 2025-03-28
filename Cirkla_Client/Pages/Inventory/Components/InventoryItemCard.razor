@@ -3,7 +3,7 @@
 
 <div class="col-12 col-sm-6 col-md-3 mb-4">
     <MudCard Elevation="2">
-        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" Style="object-fit: cover"/>
+        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" Style="object-fit:cover; overflow:hidden"/>
         <MudCardContent>
             <MudText Typo="Typo.h5">@Item.Name</MudText>
             <MudText Typo="Typo.body2">@Item.Description</MudText>
@@ -11,22 +11,20 @@
         <MudCardActions>
             <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
             <MudSpacer/>
+            <MudMenuItem>
+                    <MudSwitch T="bool"
+                               Value="@_isAvailable"
+                               ValueChanged="@((bool val) => ToggleAvailability(val))"
+                               Label="Available"
+                               ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                               ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
+            </MudMenuItem>
             <MudMenu Icon="@Icons.Material.Filled.Settings">
                 <MudMenuItem Label="Edit">
-                    <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit" />
+                    <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit"/>
                 </MudMenuItem>
                 <MudMenuItem>
-                    <DeleteItemButton Item="Item" />
-                </MudMenuItem>
-                <MudMenuItem>
-                    <div @onclick:stopPropagation="true">
-                        <MudSwitch T="bool"
-                                   Value="@_isAvailable"
-                                   ValueChanged="@((bool val) => ToggleAvailability(val))"
-                                   Label="Available"
-                                   ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-                                   ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
-                    </div>
+                    <DeleteItemButton Item="Item"/>
                 </MudMenuItem>
             </MudMenu>
         </MudCardActions>
@@ -34,29 +32,18 @@
 </div>
 
 @code {
+
+    // TODO: Add overlay over card when item is unavailable
     [Parameter]
-    public Item Item { get; set; }
+    public Item? Item { get; set; }
 
     private bool _isOpen;
     private bool _isAvailable;
 
-    // public bool IsAvailable
-    // {
-    //     get => _isAvailable;
-    //     set
-    //     {
-    //         if (_isAvailable != value)
-    //         {
-    //             _isAvailable = value;
-    //             Task.Run(async () => await ToggleAvailability(value));
-    //         }
-    //     }
-    // }
-
 
     protected override async Task OnInitializedAsync()
     {
-        _isAvailable = (Item.Status == ItemStatus.Available);
+        _isAvailable = (Item?.Status == ItemStatus.Available);
     }
 
     private async Task ToggleAvailability(bool newValue)
@@ -75,18 +62,18 @@
 
     private void NavigateToItemDetails()
     {
-        var url = $"/itemdetails/?id={Item.Id}";
+        var url = $"/itemdetails/?id={Item?.Id}";
         NavigationManager.NavigateTo(url);
     }
 
     private void NavigateToItemEdit()
     {
-        var url = $"/item/edit/?id={Item.Id}";
+        var url = $"/item/edit/?id={Item?.Id}";
         NavigationManager.NavigateTo(url);
     }
 
     private string AltText()
     {
-        return $"Picture of {Item.Name}";
+        return $"Picture of {Item?.Name}";
     }
 }
