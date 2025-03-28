@@ -11,6 +11,11 @@
             <MudButton @onclick="NavigateToItem" Variant="Variant.Text" Color="Color.Info">
                 More...
             </MudButton>
+            <MudSpacer/>
+            @if (Item.Status != ItemStatus.Available)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Block"/>
+            }
         </MudCardActions>
     </MudCard>
 </div>
