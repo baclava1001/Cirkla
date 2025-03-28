@@ -28,11 +28,6 @@ namespace Cirkla_DAL.Repositories.ItemPictures
             return Task.FromResult(itemPicture);
         }
 
-        public async Task SaveChanges()
-        {
-            await context.SaveChangesAsync();
-        }
-
         public Task<ItemPicture> Update(ItemPicture itemPicture)
         {
             context.Update(itemPicture);

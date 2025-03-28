@@ -9,6 +9,5 @@ namespace Cirkla_DAL.Repositories.Users
         Task<User> Get(string id);
         Task<User> Delete(User user);
         Task<User> Update(User user);
-        Task SaveChanges();
     }
 }

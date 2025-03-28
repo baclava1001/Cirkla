@@ -2,6 +2,7 @@
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.UoW;
 
 namespace Cirkla_API.Backgroundservices.AutoCancel;
 
@@ -39,6 +40,7 @@ public class AutoCancelService : IHostedService, IDisposable
         using (var scope = _serviceProvider.CreateScope())
         {
             var _contractRepository = scope.ServiceProvider.GetRequiredService<IContractRepository>();
+            var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var contractsToCancel = await _contractRepository.GetAcceptedButNotPickedUp();
             foreach (var contract in contractsToCancel)
             {
@@ -51,7 +53,7 @@ public class AutoCancelService : IHostedService, IDisposable
                     To = ContractStatus.Cancelled
                 });
                 await _contractRepository.Update(contract);
-                await _contractRepository.SaveChanges();
+                await _unitOfWork.SaveChangesWithTransaction();
             }
         }
     }

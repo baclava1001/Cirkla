@@ -11,5 +11,4 @@ public interface ICircleRepository
     Task<Circle> UpdateMembers(Circle circle);
     Task<Circle> UpdateAdministrators(Circle circle);
     Task<Circle> Delete(Circle circle);
-    Task SaveChanges();
 }

@@ -49,11 +49,6 @@ namespace Cirkla_DAL.Repositories.Contracts
             return await Task.FromResult(contract);
         }
 
-        public async Task SaveChanges()
-        {
-            await context.SaveChangesAsync();
-        }
-
 
         // Special queries with filtering
         public async Task<IEnumerable<Contract>> GetAllActive()

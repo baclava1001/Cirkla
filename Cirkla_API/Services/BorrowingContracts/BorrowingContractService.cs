@@ -14,6 +14,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cirkla_API.Services.ContractNotifications;
 using Cirkla_DAL.Models.Enums;
+using Cirkla_DAL.Repositories.UoW;
 
 namespace Cirkla_API.Services.BorrowingContracts
 {
@@ -22,6 +23,7 @@ namespace Cirkla_API.Services.BorrowingContracts
         IContractRepository contractRepository,
         IItemRepository itemRepository,
         IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
     {
 
@@ -68,48 +70,26 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Invalid contract details", ErrorType.NotFound);
             }
 
-            try
-            {
-                await contractRepository.Create(contract);
-                await contractRepository.SaveChanges();
-                // TODO: Return a thin and flat DTO instead of full object
-                await contractNotificationService
-                    .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
-                return ServiceResult<Contract>.Success(contract);
-            }
-            catch (DbUpdateException ex)
-            {
-                logger.LogError(ex, "Failed writing new contract to database");
-                return ServiceResult<Contract>.Fail("An error occurred while creating the contract",
-                    ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unexpected error creating new contract");
-                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            await contractRepository.Create(contract);
+            await unitOfWork.SaveChangesWithTransaction();
+            // TODO: Return a thin and flat DTO instead of full object
+            await contractNotificationService
+                .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
+            return ServiceResult<Contract>.Success(contract);
         }
 
 
         public async Task<ServiceResult<Contract>> ViewRequestSummary(int id)
         {
-            try
+            var contract = await contractRepository.GetById(id);
+            if (contract is null)
             {
-                var contract = await contractRepository.GetById(id);
-                if (contract is null)
-                {
-                    logger.LogWarning("Borrowing contract with ID {id} not found", id);
-                    return ServiceResult<Contract>.Fail("Borrowing contract not found", ErrorType.NotFound);
-                }
+                logger.LogWarning("Borrowing contract with ID {id} not found", id);
+                return ServiceResult<Contract>.Fail("Borrowing contract not found", ErrorType.NotFound);
+            }
 
-                // TODO: Return a thin and flat DTO instead of full object
-                return ServiceResult<Contract>.Success(contract);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unexpected error getting borrowing contract with ID {id}", id);
-                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            // TODO: Return a thin and flat DTO instead of full object
+            return ServiceResult<Contract>.Success(contract);
         }
 
 
@@ -138,29 +118,17 @@ namespace Cirkla_API.Services.BorrowingContracts
                 To = contractUpdateDto.CurrentStatus
             });
 
-            try
-            {
-                await contractRepository.Update(contract);
-                await contractRepository.SaveChanges();
-                if (!ServiceResult<Contract>.Success(contract).IsError)
-                {
-                    await contractNotificationService
-                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
-                }
 
-                // TODO: Return a thin and flat DTO instead of full object
-                return ServiceResult<Contract>.Success(contract);
-            }
-            catch (DbUpdateException ex)
+            await contractRepository.Update(contract);
+            await unitOfWork.SaveChangesWithTransaction();
+            if (!ServiceResult<Contract>.Success(contract).IsError)
             {
-                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Error saving updated borrowing contract", ErrorType.InternalError);
+                await contractNotificationService
+                    .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
-            }
+
+            // TODO: Return a thin and flat DTO instead of full object
+            return ServiceResult<Contract>.Success(contract);
         }
 
         public async Task<ServiceResult<Contract>> CancelRequest(int id, ContractUpdateDTO contractUpdateDto)
@@ -184,27 +152,16 @@ namespace Cirkla_API.Services.BorrowingContracts
                 From = contractUpdateDto.LastStatus,
                 To = contractUpdateDto.CurrentStatus
             });
-            try
+
+            await contractRepository.Update(contract);
+            await unitOfWork.SaveChangesWithTransaction();
+            if (!ServiceResult<Contract>.Success(contract).IsError)
             {
-                await contractRepository.Update(contract);
-                await contractRepository.SaveChanges();
-                if (!ServiceResult<Contract>.Success(contract).IsError)
-                {
-                    await contractNotificationService
-                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
-                }
-                return ServiceResult<Contract>.Success(contract);
+                await contractNotificationService
+                    .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
             }
-            catch (DbUpdateException ex)
-            {
-                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Error updating borrowing contract", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<Contract>.Success(contract);
+
         }
 
 
@@ -230,27 +187,14 @@ namespace Cirkla_API.Services.BorrowingContracts
                 To = contractUpdateDto.CurrentStatus
             });
 
-            try
+            await contractRepository.Update(contract);
+            await unitOfWork.SaveChangesWithTransaction();
+            if (!ServiceResult<Contract>.Success(contract).IsError)
             {
-                await contractRepository.Update(contract);
-                await contractRepository.SaveChanges();
-                if (!ServiceResult<Contract>.Success(contract).IsError)
-                {
-                    await contractNotificationService
-                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
-                }
-                return ServiceResult<Contract>.Success(contract);
+                await contractNotificationService
+                    .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
             }
-            catch (DbUpdateException ex)
-            {
-                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Error updating borrowing contract", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<Contract>.Success(contract);
         }
 
 
@@ -276,27 +220,14 @@ namespace Cirkla_API.Services.BorrowingContracts
                 To = contractUpdateDto.CurrentStatus
             });
 
-            try
+            await contractRepository.Update(contract);
+            await unitOfWork.SaveChangesWithTransaction();
+            if (!ServiceResult<Contract>.Success(contract).IsError)
             {
-                await contractRepository.Update(contract);
-                await contractRepository.SaveChanges();
-                if (!ServiceResult<Contract>.Success(contract).IsError)
-                {
-                    await contractNotificationService
-                        .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
-                }
-                return ServiceResult<Contract>.Success(contract);
+                await contractNotificationService
+                    .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
             }
-            catch (DbUpdateException ex)
-            {
-                logger.LogError("Failed writing updated borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Error updating borrowing contract", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unexpected error updating borrowing contract with ID {Id}", id);
-                return ServiceResult<Contract>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<Contract>.Success(contract);
         }
 
     }

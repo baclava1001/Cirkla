@@ -9,6 +9,7 @@ using Cirkla_DAL.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 using Mapping.DTOs.CircleJoinRequests;
 using Mapping.Mappers;
+using Cirkla_DAL.Repositories.UoW;
 
 namespace Cirkla_API.Services.CircleMembership;
 
@@ -17,14 +18,16 @@ public partial class CircleMembershipService : ICircleMembershipService
     private readonly ICircleJoinRequestRepository _circleJoinRequestRepository;
     private readonly ICircleRepository _circleRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CircleMembershipService> _logger;
 
     public CircleMembershipService(ICircleJoinRequestRepository circleJoinRequestRepository,
-        ICircleRepository circleRepository, IUserRepository userRepository, ILogger<CircleMembershipService> logger)
+        ICircleRepository circleRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<CircleMembershipService> logger)
     {
         _circleJoinRequestRepository = circleJoinRequestRepository;
         _circleRepository = circleRepository;
         _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -32,72 +35,27 @@ public partial class CircleMembershipService : ICircleMembershipService
 
     public async Task<ServiceResult<IEnumerable<CircleJoinRequest>>> GetAllRequestsForCircle(int circleId)
     {
-        try
-        {
-            var requests = await _circleJoinRequestRepository.GetAllByCircleId(circleId);
-            return ServiceResult<IEnumerable<CircleJoinRequest>>.Success(requests);
-        }
-        catch (DbUpdateException ex)
-        {
-            _logger.LogError(ex, "Error getting all membership and admin requests for circle with {Id}", circleId);
-            return ServiceResult<IEnumerable<CircleJoinRequest>>.Fail("Error getting all requests for circle",
-                ErrorType.InternalError);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error getting all membership and admin requests for circle with {Id}",
-                circleId);
-            return ServiceResult<IEnumerable<CircleJoinRequest>>.Fail("Error getting all requests for circle",
-                ErrorType.InternalError);
-        }
+        var requests = await _circleJoinRequestRepository.GetAllByCircleId(circleId);
+        return ServiceResult<IEnumerable<CircleJoinRequest>>.Success(requests);
     }
 
 
     public async Task<ServiceResult<IEnumerable<CircleJoinRequest>>> GetAllRequestsForUser(string userId)
     {
-        try
-        {
-            var requests = await _circleJoinRequestRepository.GetAllByTargetUserId(userId);
-            return ServiceResult<IEnumerable<CircleJoinRequest>>.Success(requests);
-        }
-        catch (DbUpdateException ex)
-        {
-            _logger.LogError(ex, "Error getting all membership and admin requests for member with {Id}", userId);
-            return ServiceResult<IEnumerable<CircleJoinRequest>>.Fail("Error getting all requests for this member",
-                ErrorType.InternalError);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error getting all membership and admin requests for member with {Id}",
-                userId);
-            return ServiceResult<IEnumerable<CircleJoinRequest>>.Fail("Error getting all requests for this member",
-                ErrorType.InternalError);
-        }
+        var requests = await _circleJoinRequestRepository.GetAllByTargetUserId(userId);
+        return ServiceResult<IEnumerable<CircleJoinRequest>>.Success(requests);
     }
 
 
     public async Task<ServiceResult<CircleJoinRequest>> GetRequestById(int id)
     {
-        try
+        var request = await _circleJoinRequestRepository.GetById(id);
+        if (request == null)
         {
-            var request = await _circleJoinRequestRepository.GetById(id);
-            if (request == null)
-            {
-                return ServiceResult<CircleJoinRequest>.Fail("Request not found", ErrorType.NotFound);
-            }
+            return ServiceResult<CircleJoinRequest>.Fail("Request not found", ErrorType.NotFound);
+        }
 
-            return ServiceResult<CircleJoinRequest>.Success(request);
-        }
-        catch (DbUpdateException ex)
-        {
-            _logger.LogError(ex, "Error getting request with {Id}", id);
-            return ServiceResult<CircleJoinRequest>.Fail("Error getting request", ErrorType.InternalError);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error getting request with {Id}", id);
-            return ServiceResult<CircleJoinRequest>.Fail("Error getting request", ErrorType.InternalError);
-        }
+        return ServiceResult<CircleJoinRequest>.Success(request);
     }
 
     #endregion
@@ -158,7 +116,7 @@ public partial class CircleMembershipService : ICircleMembershipService
         }
 
         var createdRequest = await _circleJoinRequestRepository.Create(request);
-        await _circleJoinRequestRepository.SaveChanges();
+        await _unitOfWork.SaveChangesWithTransaction();
         return ServiceResult<CircleJoinRequest>.Created(createdRequest);
     }
 
@@ -173,7 +131,7 @@ public partial class CircleMembershipService : ICircleMembershipService
         }
 
         var createdRequest = await _circleJoinRequestRepository.Create(request);
-        await _circleJoinRequestRepository.SaveChanges();
+        await _unitOfWork.SaveChangesWithTransaction();
         return ServiceResult<CircleJoinRequest>.Created(createdRequest);
     }
 
@@ -204,7 +162,7 @@ public partial class CircleMembershipService : ICircleMembershipService
         existingRequest.Status = CircleRequestStatus.Revoked;
         existingRequest.UpdatedAt = DateTime.Now;
         var updatedRequest = await _circleJoinRequestRepository.Update(existingRequest);
-        await _circleJoinRequestRepository.SaveChanges();
+        await _unitOfWork.SaveChangesWithTransaction();
         return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
     }
 
@@ -230,7 +188,7 @@ public partial class CircleMembershipService : ICircleMembershipService
         existingRequest.Status = CircleRequestStatus.Rejected;
         existingRequest.UpdatedAt = DateTime.Now;
         var updatedRequest = await _circleJoinRequestRepository.Update(existingRequest);
-        await _circleJoinRequestRepository.SaveChanges();
+        await _unitOfWork.SaveChangesWithTransaction();
         return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
     }
 
@@ -256,13 +214,14 @@ public partial class CircleMembershipService : ICircleMembershipService
             return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
         }
 
-        // TODO: These methods only add users.
+        // TODO: These methods only ADD users - make them also remove?
         await UpdateCircleMembers(existingRequest);
         await UpdateCircleAdmins(existingRequest);
+
         existingRequest.Status = CircleRequestStatus.Accepted;
         existingRequest.UpdatedAt = DateTime.Now;
         var updatedRequest = await _circleJoinRequestRepository.Update(existingRequest);
-        await _circleJoinRequestRepository.SaveChanges();
+        await _unitOfWork.SaveChangesWithTransaction();
         return ServiceResult<CircleJoinRequest>.Success(updatedRequest);
     }
 
@@ -291,7 +250,7 @@ public partial class CircleMembershipService : ICircleMembershipService
             circle.Administrators.Add(targetUser);
             await _circleRepository.UpdateAdministrators(circle);
             await _circleJoinRequestRepository.Create(requestToDb);
-            await _circleJoinRequestRepository.SaveChanges();
+            await _unitOfWork.SaveChangesWithTransaction();
             return ServiceResult<CircleJoinRequest>.Created(requestToDb);
         }
         return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
@@ -319,7 +278,7 @@ public partial class CircleMembershipService : ICircleMembershipService
         {
             circle.Administrators.Remove(targetUser);
             await _circleRepository.UpdateAdministrators(circle);
-            await _circleRepository.SaveChanges();
+            await _unitOfWork.SaveChangesWithTransaction();
             return ServiceResult<CircleJoinRequest>.Created(requestToDb);
         }
         return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);

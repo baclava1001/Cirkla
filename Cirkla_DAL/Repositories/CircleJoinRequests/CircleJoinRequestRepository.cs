@@ -78,9 +78,4 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
     }
 
     // No delete because requests should be kept for historical purposes. Old requests will be cleaned up in the background in later versions.
-
-    public async Task SaveChanges()
-    {
-        await context.SaveChangesAsync();
-    }
 }

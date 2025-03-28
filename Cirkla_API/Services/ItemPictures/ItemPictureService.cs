@@ -2,6 +2,7 @@
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.ItemPictures;
+using Cirkla_DAL.Repositories.UoW;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.ItemPictures
@@ -9,11 +10,13 @@ namespace Cirkla_API.Services.ItemPictures
     public class ItemPictureService : IItemPictureService
     {
         private readonly IItemPictureRepository _itemPictureRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ItemPictureService> _logger;
 
-        public ItemPictureService(IItemPictureRepository itemPictureRepository, ILogger<ItemPictureService> logger)
+        public ItemPictureService(IItemPictureRepository itemPictureRepository, IUnitOfWork unitOfWork, ILogger<ItemPictureService> logger)
         {
             _itemPictureRepository = itemPictureRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -28,7 +31,7 @@ namespace Cirkla_API.Services.ItemPictures
             try
             {
                 ItemPicture createdItemPicture = await _itemPictureRepository.Create(itemPicture);
-                await _itemPictureRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<ItemPicture>.Success(createdItemPicture);
             }
             catch (DbUpdateException ex)
@@ -55,7 +58,7 @@ namespace Cirkla_API.Services.ItemPictures
             try
             {
                 ItemPicture updatedItemPicture = await _itemPictureRepository.Update(itemPicture);
-                await _itemPictureRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<ItemPicture>.Success(updatedItemPicture);
             }
             catch (DbUpdateException ex)
@@ -84,7 +87,7 @@ namespace Cirkla_API.Services.ItemPictures
             try
             {
                 await _itemPictureRepository.Delete(itemPicture);
-                await _itemPictureRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<ItemPicture>.Success(itemPicture);
             }
             catch (DbUpdateException ex)
