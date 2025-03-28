@@ -10,5 +10,4 @@ public interface ICircleJoinRequestRepository
     Task<IEnumerable<CircleJoinRequest>> GetAllByTargetUserId(string userId);
     Task<CircleJoinRequest> GetById(int id);
     Task<CircleJoinRequest> Update(CircleJoinRequest circleRequest);
-    Task SaveChanges();
 }

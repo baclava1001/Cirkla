@@ -1,6 +1,7 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +13,13 @@ namespace Cirkla_API.Services.Users
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, ILogger<UserService> logger)
+        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -31,7 +34,7 @@ namespace Cirkla_API.Services.Users
             try
             {
                 var createdUser = await _userRepository.Create(user);
-                await _userRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<User>.Success(createdUser);
             }
             catch (DbUpdateException ex)
@@ -65,7 +68,7 @@ namespace Cirkla_API.Services.Users
                 }
 
                 await _userRepository.Delete(user);
-                await _userRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
 
                 return ServiceResult<User>.Success(user);
             }
@@ -130,7 +133,7 @@ namespace Cirkla_API.Services.Users
             try
             {
                 var updatedUser = await _userRepository.Update(user);
-                await _userRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<User>.Success(updatedUser);
             }
             catch (DbUpdateException ex)

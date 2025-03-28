@@ -2,17 +2,17 @@
 
 <div class="col-12 col-sm-6 col-md-3 mb-4">
     <MudCard Elevation="2">
-        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" />
+        <MudCardMedia Height="200" Image="@Item?.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" />
         <MudCardContent>
-            <MudText Typo="Typo.h5">@Item.Name</MudText>
-            <MudText Typo="Typo.body2">@Item.Description</MudText>
+            <MudText Typo="Typo.h5">@Item?.Name</MudText>
+            <MudText Typo="Typo.body2">@Item?.Description</MudText>
         </MudCardContent>
         <MudCardActions>
             <MudButton @onclick="NavigateToItem" Variant="Variant.Text" Color="Color.Info">
                 More...
             </MudButton>
             <MudSpacer/>
-            @if (Item.Status != ItemStatus.Available)
+            @if (Item?.Status != ItemStatus.Available)
             {
                 <MudIcon Icon="@Icons.Material.Filled.Block"/>
             }
@@ -22,16 +22,16 @@
 
 @code {
     [Parameter]
-    public Item Item { get; set; }
+    public Item? Item { get; set; }
 
     private void NavigateToItem()
     {
-        var url = $"/borrowitem/?id={Item.Id}";
+        var url = $"/borrowitem/?id={Item?.Id}";
         NavigationManager.NavigateTo(url);
     }
 
     private async Task<string> AltText()
     {
-        return $"Picture of {Item.Name}";
+        return $"Picture of {Item?.Name}";
     }
 }

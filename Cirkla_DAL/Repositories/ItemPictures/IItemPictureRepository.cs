@@ -9,6 +9,5 @@ namespace Cirkla_DAL.Repositories.ItemPictures
         Task<ItemPicture?> GetById(int id);
         Task<ItemPicture> Delete(ItemPicture itemPicture);
         Task<ItemPicture> Update(ItemPicture itemPicture);
-        Task SaveChanges();
     }
 }

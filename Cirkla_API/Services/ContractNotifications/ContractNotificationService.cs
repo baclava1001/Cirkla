@@ -3,6 +3,7 @@ using Cirkla_API.Common.Constants;
 using Cirkla_API.Hubs.ContractUpdate;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.ContractNotifications;
+using Cirkla_DAL.Repositories.UoW;
 using Mapping.DTOs.ContractNotifications;
 using Mapping.Mappers;
 using Microsoft.AspNetCore.SignalR;
@@ -13,15 +14,18 @@ namespace Cirkla_API.Services.ContractNotifications;
 public class ContractNotificationService : IContractNotificationService
 {
     private readonly IContractNotificationRepository _contractNotificationRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IHubContext<ContractUpdateHub, IContractUpdateClient> _hubContext;
     private readonly ILogger<ContractNotificationService> _logger;
 
     public ContractNotificationService(
         IContractNotificationRepository contractNotificationRepository,
+        IUnitOfWork unitOfWork,
         IHubContext<ContractUpdateHub, IContractUpdateClient> hubcontext,
         ILogger<ContractNotificationService> logger)
     {
         _contractNotificationRepository = contractNotificationRepository;
+        _unitOfWork = unitOfWork;
         _hubContext = hubcontext;
         _logger = logger;
     }
@@ -38,20 +42,13 @@ public class ContractNotificationService : IContractNotificationService
             HasBeenRead = false
         };
         await _contractNotificationRepository.Create(notification);
-        await _contractNotificationRepository.SaveChanges();
-        try
-        {
-            _logger.LogInformation("Clients will now be notified.");
-            var notificationForView = await Mapper.MapToContractNotificationForViews(notification);
-            await _hubContext.Clients.All.ReceiveContractUpdate(notificationForView);
-            _logger.LogInformation("Clients were notified.");
-            return ServiceResult<ContractNotificationForViews>.Success(notificationForView);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Hub failed to send contract update notification to clients");
-            return ServiceResult<ContractNotificationForViews>.Fail("Unable to send notification", ErrorType.InternalError);
-        }
+        await _unitOfWork.SaveChanges();
+        
+        _logger.LogInformation("Clients will now be notified.");
+        var notificationForView = await Mapper.MapToContractNotificationForViews(notification);
+        await _hubContext.Clients.All.ReceiveContractUpdate(notificationForView);
+        _logger.LogInformation("Clients were notified.");
+        return ServiceResult<ContractNotificationForViews>.Success(notificationForView);
     }
 
 
@@ -68,18 +65,12 @@ public class ContractNotificationService : IContractNotificationService
 
         _logger.LogInformation("Mapping notifications to client dto:s");
         var notificationsForClient = new List<ContractNotificationForViews>();
-        try
+
+        foreach (var notification in result)
         {
-            foreach (var notification in result)
-            {
-                notificationsForClient.Add(await Mapper.MapToContractNotificationForViews(notification));
-            }
+            notificationsForClient.Add(await Mapper.MapToContractNotificationForViews(notification));
         }
-        catch(Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error mapping notifications to client dto:s");
-            return ServiceResult<IEnumerable<ContractNotificationForViews>>.Fail("Internal server error", ErrorType.InternalError);
-        }
+
         return ServiceResult<IEnumerable<ContractNotificationForViews>>.Success(notificationsForClient);
     }
 
@@ -96,17 +87,10 @@ public class ContractNotificationService : IContractNotificationService
         }
         notification.HasBeenRead = !notification.HasBeenRead;
 
-        try
-        {
-            _logger.LogInformation("Toggling read status for notification with ID {Id} and saving to db", id);
-            await _contractNotificationRepository.Update(notification);
-            await _contractNotificationRepository.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error toggling read status for notification with ID {Id}", id);
-            return ServiceResult<ContractNotificationForViews>.Fail("Internal server error", ErrorType.InternalError);
-        }
+        _logger.LogInformation("Toggling read status for notification with ID {Id} and saving to db", id);
+        await _contractNotificationRepository.Update(notification);
+        await _unitOfWork.SaveChanges();
+
         return ServiceResult<ContractNotificationForViews>.Success(await Mapper.MapToContractNotificationForViews(notification));
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.UoW;
 
 namespace Cirkla_API.Backgroundservices.AutoLate;
 
@@ -38,6 +39,7 @@ public class AutoLateService : IHostedService, IDisposable
         using (var scope = _serviceProvider.CreateScope())
         {
             var _contractRepository = scope.ServiceProvider.GetRequiredService<IContractRepository>();
+            var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var contractsToMarkLate = await _contractRepository.GetActiveButLate();
             foreach (var contract in contractsToMarkLate)
             {
@@ -50,7 +52,7 @@ public class AutoLateService : IHostedService, IDisposable
                     To = ContractStatus.Late
                 });
                 await _contractRepository.Update(contract);
-                await _contractRepository.SaveChanges();
+                await _unitOfWork.SaveChangesWithTransaction();
             }
         }
     }

@@ -2,6 +2,7 @@
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Circles;
+using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,13 @@ namespace Cirkla_API.Services.Circles
     public class CircleService : ICircleService
     {
         private readonly ICircleRepository _circleRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CircleService> _logger;
 
-        public CircleService(ICircleRepository circleRepository, ILogger<CircleService> logger)
+        public CircleService(ICircleRepository circleRepository, IUnitOfWork unitOfWork, ILogger<CircleService> logger)
         {
             _circleRepository = circleRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -33,7 +36,7 @@ namespace Cirkla_API.Services.Circles
             try
             {
                 var createdCircle = await _circleRepository.Create(circle);
-                await _circleRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<Circle>.Success(createdCircle);
             }
             catch (DbUpdateException ex)
@@ -103,25 +106,14 @@ namespace Cirkla_API.Services.Circles
                 return ServiceResult<Circle>.Fail("Incorrect id", ErrorType.ValidationError);
             }
 
-            try
-            {
-                var updatedCircle = await _circleRepository.Update(circle);
-                await _circleRepository.SaveChanges();
-                return ServiceResult<Circle>.Success(updatedCircle);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error updating circle with ID {CircleId}", id);
-                return ServiceResult<Circle>.Fail("Internal error, could not update circle", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error updating circle with ID {CircleId}", id);
-                return ServiceResult<Circle>.Fail("Internal server error", ErrorType.InternalError);
-            }
+
+            var updatedCircle = await _circleRepository.Update(circle);
+            await _unitOfWork.SaveChanges();
+            return ServiceResult<Circle>.Success(updatedCircle);
         }
 
-        // TODO: relation to circle requests stops this from working
+
+        // TODO: DB-relation to circle requests stops this from working
         public async Task<ServiceResult<Circle>> Delete(int id)
         {
             Circle circle = await _circleRepository.GetById(id);
@@ -131,22 +123,9 @@ namespace Cirkla_API.Services.Circles
                 return ServiceResult<Circle>.Fail("Circle not found", ErrorType.NotFound);
             }
 
-            try
-            {
-                var deletedCircle = await _circleRepository.Delete(circle);
-                await _circleRepository.SaveChanges();
-                return ServiceResult<Circle>.Success(deletedCircle);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error deleting circle with ID {CircleId}", id);
-                return ServiceResult<Circle>.Fail("Internal error, could not delete circle", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error deleting circle with ID {CircleId}", id);
-                return ServiceResult<Circle>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            var deletedCircle = await _circleRepository.Delete(circle);
+            await _unitOfWork.SaveChanges();
+            return ServiceResult<Circle>.Success(deletedCircle);
         }
     }
 }

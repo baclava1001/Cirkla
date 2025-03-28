@@ -3,6 +3,7 @@ using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
+using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
 using Mapping.DTOs.Items;
 using Mapping.Mappers;
@@ -15,13 +16,15 @@ namespace Cirkla_API.Services.Items
         private readonly IItemRepository _itemRepository;
         private readonly IContractRepository _contractRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ItemService> _logger;
 
-        public ItemService(IItemRepository itemRepository, IContractRepository contractRepository, IUserRepository userRepository, ILogger<ItemService> logger)
+        public ItemService(IItemRepository itemRepository, IContractRepository contractRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
             _contractRepository = contractRepository;
             _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -33,25 +36,12 @@ namespace Cirkla_API.Services.Items
                 _logger.LogWarning("Attempted creating an item with null value");
                 return ServiceResult<Item>.Fail("Item could not be created", ErrorType.ValidationError);
             }
+            var owner = await _userRepository.Get(itemDTO.OwnerId);
+            var itemtoDb = await Mapper.MapToItem(itemDTO, owner);
+            var createdItem = await _itemRepository.Create(itemtoDb);
+            await _unitOfWork.SaveChanges();
+            return ServiceResult<Item>.Created(createdItem);
 
-            try
-            {
-                var owner = await _userRepository.Get(itemDTO.OwnerId);
-                var itemtoDb = await Mapper.MapToItem(itemDTO, owner);
-                var createdItem = await _itemRepository.Create(itemtoDb);
-                await _itemRepository.SaveChanges();
-                return ServiceResult<Item>.Created(createdItem);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Failed writing new item to database");
-                return ServiceResult<Item>.Fail("Error saving new item", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error creating new item");
-                return ServiceResult<Item>.Fail("Internal server error", ErrorType.InternalError);
-            }
         }
 
 
@@ -75,7 +65,7 @@ namespace Cirkla_API.Services.Items
             try
             {
                 await _itemRepository.Delete(item);
-                await _itemRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<Item>.Success(item);
             }
             catch (DbUpdateException ex)
@@ -162,7 +152,7 @@ namespace Cirkla_API.Services.Items
             try
             {
                 var updatedItem = await _itemRepository.Update(item);
-                await _itemRepository.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 return ServiceResult<Item>.Success(item);
             }
             catch (DbUpdateException ex)

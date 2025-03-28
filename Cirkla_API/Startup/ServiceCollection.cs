@@ -23,6 +23,7 @@ using Cirkla_API.Services.Users;
 using Cirkla_DAL.Repositories.CircleJoinRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.ContractNotifications;
+using Cirkla_DAL.Repositories.UoW;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Startup;
@@ -60,6 +61,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ICircleJoinRequestRepository, CircleJoinRequestRepository>();
         services.AddScoped<ICircleMembershipService, CircleMembershipService>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddHostedService<AutoArchiveService>();
         services.AddHostedService<AutoLateService>();

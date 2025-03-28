@@ -21,6 +21,5 @@ namespace Cirkla_DAL.Repositories.Contracts
         Task<Contract?> GetById(int id);
         Task<Contract?> Delete(Contract contract);
         Task<Contract?> Update(Contract contract);
-        Task SaveChanges();
     }
 }

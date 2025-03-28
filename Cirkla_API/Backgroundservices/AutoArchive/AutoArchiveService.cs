@@ -1,6 +1,7 @@
 ﻿using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.UoW;
 
 namespace Cirkla_API.Backgroundservices.AutoArchive
 {
@@ -40,6 +41,7 @@ namespace Cirkla_API.Backgroundservices.AutoArchive
 
             using (var scope = _serviceProvider.CreateScope())
             {
+                var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 var _contractRepository = scope.ServiceProvider.GetRequiredService<IContractRepository>();
                 var contractsToArchive = await _contractRepository.GetReadyForArchive();
 
@@ -54,7 +56,7 @@ namespace Cirkla_API.Backgroundservices.AutoArchive
                         To = ContractStatus.Archived
                     });
                     await _contractRepository.Update(contract);
-                    await _contractRepository.SaveChanges();
+                    await _unitOfWork.SaveChangesWithTransaction();
                 }
             }
         }

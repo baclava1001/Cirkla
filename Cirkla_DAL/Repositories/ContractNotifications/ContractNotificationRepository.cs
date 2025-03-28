@@ -50,9 +50,4 @@ public class ContractNotificationRepository(AppDbContext context) : IContractNot
         context.Remove(contractNotification);
         return await Task.FromResult(contractNotification);
     }
-
-    public async Task SaveChanges()
-    {
-        await context.SaveChangesAsync();
-    }
 }

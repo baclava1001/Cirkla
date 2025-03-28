@@ -63,9 +63,4 @@ public class CircleRepository(AppDbContext context) : ICircleRepository
         context.Remove(circle);
         return await Task.FromResult(circle);
     }
-
-    public async Task SaveChanges()
-    {
-        await context.SaveChangesAsync();
-    }
 }

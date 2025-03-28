@@ -9,5 +9,4 @@ public interface IContractNotificationRepository
     Task<ContractNotification?> GetById(int id);
     Task<ContractNotification?> Update(ContractNotification contractNotification);
     Task<ContractNotification?> Delete(ContractNotification contractNotification);
-    Task SaveChanges();
 }

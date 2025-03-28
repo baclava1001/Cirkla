@@ -30,11 +30,6 @@ namespace Cirkla_DAL.Repositories.Users
             return user;
         }
 
-        public async Task SaveChanges()
-        {
-            await context.SaveChangesAsync();
-        }
-
         public async Task<User> Update(User user)
         {
             context.Users.Update(user);

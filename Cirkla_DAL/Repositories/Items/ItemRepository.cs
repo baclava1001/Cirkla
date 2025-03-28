@@ -42,11 +42,6 @@ namespace Cirkla_DAL.Repositories.Items
             return Task.FromResult(item);
         }
 
-        public async Task SaveChanges()
-        {
-            await context.SaveChangesAsync();
-        }
-
         public async Task<Item> Update(Item item)
         {
             context.Update(item);
