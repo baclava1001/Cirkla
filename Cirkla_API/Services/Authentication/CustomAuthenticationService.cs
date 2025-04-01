@@ -55,7 +55,7 @@ public class CustomAuthenticationService : ICustomAuthenticationService
                 return ServiceResult<User>.Fail("Could not sign up user", ErrorType.ValidationError);
             }
             await _userManager.AddToRoleAsync(user, ApiRoles.User);
-            return ServiceResult<User>.Success(user);
+            return ServiceResult<User>.Created(user);
         }
         catch (Exception ex)
         {
