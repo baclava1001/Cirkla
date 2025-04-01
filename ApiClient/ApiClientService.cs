@@ -5169,18 +5169,22 @@ namespace Cirkla.ApiClient
 
         [System.Text.Json.Serialization.JsonPropertyName("firstName")]
         [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(50, MinimumLength = 2)]
         public string FirstName { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("lastName")]
         [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(50, MinimumLength = 2)]
         public string LastName { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("address")]
-        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [System.ComponentModel.DataAnnotations.StringLength(100)]
         public string Address { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("zipCode")]
         [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d{5}(-\d{4})?$")]
         public string ZipCode { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("profilePictureURL")]
@@ -5206,18 +5210,22 @@ namespace Cirkla.ApiClient
 
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(100, MinimumLength = 2)]
         public string Name { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("category")]
         public string? Category { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("model")]
+        [System.ComponentModel.DataAnnotations.StringLength(100)]
         public string? Model { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("specifications")]
+        [System.ComponentModel.DataAnnotations.StringLength(1000)]
         public string? Specifications { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
+        [System.ComponentModel.DataAnnotations.StringLength(2000)]
         public string? Description { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
@@ -5257,7 +5265,9 @@ namespace Cirkla.ApiClient
         public int Id { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("url")]
-        public string? Url { get; set; } = default!;
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [System.ComponentModel.DataAnnotations.StringLength(2000)]
+        public string Url { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("itemId")]
         public int? ItemId { get; set; } = default!;
@@ -5276,9 +5286,11 @@ namespace Cirkla.ApiClient
 
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(100, MinimumLength = 2)]
         public string Name { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
+        [System.ComponentModel.DataAnnotations.StringLength(1000)]
         public string? Description { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("isPublic")]

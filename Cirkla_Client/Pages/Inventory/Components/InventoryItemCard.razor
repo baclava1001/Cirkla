@@ -3,10 +3,10 @@
 
 <div class="col-12 col-sm-6 col-md-3 mb-4">
     <MudCard Elevation="2">
-        <MudCardMedia Height="200" Image="@Item.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" Style="object-fit:cover; overflow:hidden"/>
+        <MudCardMedia Height="200" Image="@Item?.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" Style="object-fit:cover; overflow:hidden"/>
         <MudCardContent>
             <MudText Typo="Typo.h5">@Item.Name</MudText>
-            <MudText Typo="Typo.body2">@Item.Description</MudText>
+            <MudText Typo="Typo.body2">@Item?.Description</MudText>
         </MudCardContent>
         <MudCardActions>
             <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>

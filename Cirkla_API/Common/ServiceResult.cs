@@ -6,7 +6,7 @@ namespace Cirkla_API.Common;
 public class ServiceResult<T>
 {
     public bool IsError { get; set; }
-    public ErrorType Error { get; set; }
+    public ErrorType Error { get; set; } = ErrorType.None;
     public string? ErrorMessage { get; set; }
     public T? Payload { get; set; }
     public bool IsCreated { get; set; }
