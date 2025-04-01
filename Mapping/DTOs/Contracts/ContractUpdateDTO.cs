@@ -4,12 +4,29 @@ using Cirkla_DAL.Models.Enums;
 
 namespace Mapping.DTOs.Contracts
 {
-    public class ContractUpdateDTO : ContractCreateDTO
+    public class ContractUpdateDTO
     {
         [Required]
         public int Id { get; set; }
         [Required]
+        public int ItemId { get; set; }
+        [Required]
+        public string OwnerId { get; set; }
+        [Required]
+        public string BorrowerId { get; set; }
+        [Required]
+        public DateTime Created { get; set; }
+        [Required]
+        public DateTime StartTime { get; set; }
+        [Required]
+        public DateTime EndTime { get; set; }
+        [Required]
         public string UpdatedByUserId { get; set; }
-        public ContractStatus LastStatus { get; set; } // Previous status, change name to clarify
+        [Required]
+        public DateTime UpdatedAt { get; set; }
+        [Required]
+        public ContractStatus FromStatus { get; set; }
+        [Required]
+        public ContractStatus ToStatus { get; set; }
     }
 }

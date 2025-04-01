@@ -3,33 +3,34 @@
 
 @if (Contract is not null)
 {
-    <MudButton id="Completed" Buttontype="ButtonType.Button" Color="Color.Tertiary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Eject" OnClick="() => CompleteRequest()" Class="ml-2">Complete</MudButton>
+        <MudButton id="Cancel" Buttontype="ButtonType.Button" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Stop" OnClick="() => CancelRequest()" Class="ml-2">Cancel</MudButton>
 }
 
 @code {
     [Parameter]
     public Contract? Contract { get; set; }
 
-    private async Task CompleteRequest()
+    private async Task CancelRequest()
     {
         ContractUpdateDTO contractUpdateDTO = new()
         {
             Id = Contract.Id,
             UpdatedByUserId = Contract.Owner.Id,
+            UpdatedAt = DateTime.Now,
             ItemId = Contract.Item.Id,
             OwnerId = Contract.Owner.Id,
             BorrowerId = Contract.Borrower.Id,
             StartTime = Contract.StartTime,
             EndTime = Contract.EndTime,
             Created = Contract.Created,
-            CurrentStatus = ContractStatus.Completed,
-            LastStatus = Contract.StatusChanges.LastOrDefault().To
+            FromStatus = ContractStatus.Cancelled,
+            ToStatus = Contract.StatusChanges.LastOrDefault().To
         };
 
         try
         {
-            await Client.ApiBorrowingContractCompleteRequestAsync(Contract.Id, contractUpdateDTO);
-            Console.WriteLine("Button component completed request successfully");
+            await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id, contractUpdateDTO);
+            Console.WriteLine("Button component cancelled request successfully");
             NavigationManager.NavigateTo("/inventory");
         }
         catch (Exception ex)

@@ -15,15 +15,16 @@
         ContractUpdateDTO contractUpdateDTO = new()
             {
                 Id = Contract.Id,
-                UpdatedByUserId = Contract.Owner.Id,
-                ItemId = Contract.Item.Id,
-                OwnerId = Contract.Owner.Id,
-                BorrowerId = Contract.Borrower.Id,
+                UpdatedByUserId = Contract.OwnerId,
+                UpdatedAt = DateTime.Now,
+                ItemId = Contract.ItemId,
+                OwnerId = Contract.OwnerId,
+                BorrowerId = Contract.BorrowerId,
                 StartTime = Contract.StartTime,
                 EndTime = Contract.EndTime,
                 Created = Contract.Created,
-                CurrentStatus = ContractStatus.Active,
-                LastStatus = Contract.StatusChanges.LastOrDefault().To
+                FromStatus = ContractStatus.Active,
+                ToStatus = Contract.StatusChanges.LastOrDefault().To
             };
 
         try

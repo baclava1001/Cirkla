@@ -51,10 +51,10 @@ namespace Cirkla_API.Services.BorrowingContracts
                     ErrorType.ValidationError);
             }
 
-            var item = await itemRepository.Get(contractDTOFromClient.ItemId);
-            var owner = await userRepository.Get(contractDTOFromClient.OwnerId);
-            var borrower = await userRepository.Get(contractDTOFromClient.BorrowerId);
-            var contract = await Mapper.MapToContract(contractDTOFromClient, item, owner, borrower);
+            //var item = await itemRepository.Get(contractDTOFromClient.ItemId);
+            //var owner = await userRepository.Get(contractDTOFromClient.OwnerId);
+            //var borrower = await userRepository.Get(contractDTOFromClient.BorrowerId);
+            var contract = await Mapper.MapToContract(contractDTOFromClient);
             contract.StatusChanges.Add(new ContractStatusChange
             {
                 Contract = contract,
@@ -104,18 +104,18 @@ namespace Cirkla_API.Services.BorrowingContracts
             }
 
             // TODO: Move to a separate helper/service that fetches all necessary entities and calls mapper
-            var item = await itemRepository.Get(contractUpdateDto.ItemId);
-            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
-            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
-            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            //var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            //var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            //var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto);
 
             contract.StatusChanges.Add(new ContractStatusChange
             {
                 Contract = contract,
                 ChangedAt = DateTime.Now,
                 ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
-                From = contractUpdateDto.LastStatus,
-                To = contractUpdateDto.CurrentStatus
+                From = contractUpdateDto.FromStatus,
+                To = contractUpdateDto.ToStatus
             });
 
 
@@ -140,17 +140,17 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Unable to cancel", ErrorType.ValidationError);
             }
 
-            var item = await itemRepository.Get(contractUpdateDto.ItemId);
-            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
-            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
-            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            //var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            //var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            //var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto);
             contract.StatusChanges.Add(new ContractStatusChange
             {
                 Contract = contract,
                 ChangedAt = DateTime.Now,
                 ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
-                From = contractUpdateDto.LastStatus,
-                To = contractUpdateDto.CurrentStatus
+                From = contractUpdateDto.FromStatus,
+                To = contractUpdateDto.ToStatus
             });
 
             await contractRepository.Update(contract);
@@ -174,17 +174,17 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Unable to cancel", ErrorType.ValidationError);
             }
 
-            var item = await itemRepository.Get(contractUpdateDto.ItemId);
-            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
-            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
-            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            //var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            //var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            //var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto);
             contract.StatusChanges.Add(new ContractStatusChange
             {
                 Contract = contract,
                 ChangedAt = DateTime.Now,
                 ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
-                From = contractUpdateDto.LastStatus,
-                To = contractUpdateDto.CurrentStatus
+                From = contractUpdateDto.FromStatus,
+                To = contractUpdateDto.ToStatus
             });
 
             await contractRepository.Update(contract);
@@ -207,17 +207,17 @@ namespace Cirkla_API.Services.BorrowingContracts
                 return ServiceResult<Contract>.Fail("Unable to cancel", ErrorType.ValidationError);
             }
 
-            var item = await itemRepository.Get(contractUpdateDto.ItemId);
-            var owner = await userRepository.Get(contractUpdateDto.OwnerId);
-            var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
-            var contract = await Mapper.MapToContract(contractUpdateDto, item, owner, borrower);
+            //var item = await itemRepository.Get(contractUpdateDto.ItemId);
+            //var owner = await userRepository.Get(contractUpdateDto.OwnerId);
+            //var borrower = await userRepository.Get(contractUpdateDto.BorrowerId);
+            var contract = await Mapper.MapToContract(contractUpdateDto);
             contract.StatusChanges.Add(new ContractStatusChange
             {
                 Contract = contract,
                 ChangedAt = DateTime.Now,
                 ChangedBy = await userRepository.Get(contractUpdateDto.UpdatedByUserId),
-                From = contractUpdateDto.LastStatus,
-                To = contractUpdateDto.CurrentStatus
+                From = contractUpdateDto.FromStatus,
+                To = contractUpdateDto.ToStatus
             });
 
             await contractRepository.Update(contract);

@@ -43,6 +43,12 @@ namespace Cirkla_DAL
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Contract>()
+                .HasMany(c => c.StatusChanges)
+                .WithOne(csc => csc.Contract)
+                .HasForeignKey(csc => csc.ContractId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Circle>()
                 .HasOne(c => c.CreatedBy)
                 .WithMany()
@@ -116,6 +122,19 @@ namespace Cirkla_DAL
                 .HasOne(cr => cr.Circle)
                 .WithMany()
                 .HasForeignKey("CircleId")
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Update the foreign key constraint for ContractStatusChanges
+            builder.Entity<ContractStatusChange>()
+                .HasOne(csc => csc.Contract)
+                .WithMany(c => c.StatusChanges)
+                .HasForeignKey("ContractId")
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<ContractStatusChange>()
+                .HasOne(csc => csc.ChangedBy)
+                .WithMany()
+                .HasForeignKey("ChangedById")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

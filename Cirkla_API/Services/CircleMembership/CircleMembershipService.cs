@@ -72,10 +72,10 @@ public partial class CircleMembershipService : ICircleMembershipService
         }
 
         // Fetch necessary data from the database and map to the entity for validation
-        var circle = await _circleRepository.GetById(circleRequestDTO.CircleId);
-        var targetUser = await _userRepository.Get(circleRequestDTO.TargetUserId);
-        var fromUser = await _userRepository.Get(circleRequestDTO.FromUserId);
-        var requestToDb = await Mapper.MapToCircleRequest(circleRequestDTO, circle, targetUser, fromUser);
+        //var circle = await _circleRepository.GetById(circleRequestDTO.CircleId);
+        //var targetUser = await _userRepository.Get(circleRequestDTO.TargetUserId);
+        //var fromUser = await _userRepository.Get(circleRequestDTO.FromUserId);
+        var requestToDb = await Mapper.MapToCircleRequest(circleRequestDTO);
 
         if (await AlreadyInvited(requestToDb))
         {
@@ -237,12 +237,13 @@ public partial class CircleMembershipService : ICircleMembershipService
             return ServiceResult<CircleJoinRequest>.Fail("Invalid request type", ErrorType.ValidationError);
         }
 
+        // TODO: Avoid multiple db-queries
         var circle = await _circleRepository.GetById(adminRequestDTO.CircleId);
         var targetUser = await _userRepository.Get(adminRequestDTO.TargetUserId);
         var fromUser = await _userRepository.Get(adminRequestDTO.FromUserId);
         var updatedByUser = await _userRepository.Get(adminRequestDTO.UpdatedByUserId);
 
-        var requestToDb = await Mapper.MapToCircleRequest(adminRequestDTO, circle, targetUser, fromUser);
+        var requestToDb = await Mapper.MapToCircleRequest(adminRequestDTO);
         requestToDb.UpdatedByUser = updatedByUser;
         requestToDb.UpdatedAt = DateTime.Now;
         if (await IsFromAdmin(requestToDb) && await CanInviteAdmin(requestToDb))
@@ -271,7 +272,7 @@ public partial class CircleMembershipService : ICircleMembershipService
         var fromUser = await _userRepository.Get(adminRequestDTO.FromUserId);
         var updatedByUser = await _userRepository.Get(adminRequestDTO.UpdatedByUserId);
 
-        var requestToDb = await Mapper.MapToCircleRequest(adminRequestDTO, circle, targetUser, fromUser);
+        var requestToDb = await Mapper.MapToCircleRequest(adminRequestDTO);
         requestToDb.UpdatedByUser = updatedByUser;
         requestToDb.UpdatedAt = DateTime.Now;
         if (await IsFromAdmin(requestToDb) && await CanInviteAdmin(requestToDb))

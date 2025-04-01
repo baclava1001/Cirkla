@@ -5177,15 +5177,17 @@ namespace Cirkla.ApiClient
         [System.ComponentModel.DataAnnotations.StringLength(50, MinimumLength = 2)]
         public string LastName { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("fullName")]
+        public string? FullName { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("address")]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         [System.ComponentModel.DataAnnotations.StringLength(100)]
         public string Address { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("zipCode")]
-        [System.ComponentModel.DataAnnotations.Required]
         [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d{5}(-\d{4})?$")]
-        public string ZipCode { get; set; } = default!;
+        public string? ZipCode { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("profilePictureURL")]
         public string? ProfilePictureURL { get; set; } = default!;
@@ -5479,17 +5481,25 @@ namespace Cirkla.ApiClient
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("itemId")]
+        public int ItemId { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("item")]
+        public Item? Item { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerId")]
         [System.ComponentModel.DataAnnotations.Required]
-        public Item Item { get; set; } = new Item();
+        public string OwnerId { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("owner")]
+        public User? Owner { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerId")]
         [System.ComponentModel.DataAnnotations.Required]
-        public User Owner { get; set; } = default!;
+        public string BorrowerId { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("borrower")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public User Borrower { get; set; } = default!;
+        public User? Borrower { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("created")]
         [System.ComponentModel.DataAnnotations.Required]
@@ -5515,13 +5525,19 @@ namespace Cirkla.ApiClient
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("contractId")]
+        public int ContractId { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("contract")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Contract Contract { get; set; } = new Contract();
+        public Contract? Contract { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("changedAt")]
         [System.ComponentModel.DataAnnotations.Required]
         public System.DateTime ChangedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("changedById")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string ChangedById { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("changedBy")]
         public User? ChangedBy { get; set; } = default!;
@@ -5593,18 +5609,48 @@ namespace Cirkla.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ContractUpdateDTO : ContractCreateDTO
+    public partial class ContractUpdateDTO
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("itemId")]
+        public int ItemId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerId")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string OwnerId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerId")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string BorrowerId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("created")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.DateTime Created { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("startTime")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.DateTime StartTime { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("endTime")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.DateTime EndTime { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("updatedByUserId")]
         [System.ComponentModel.DataAnnotations.Required]
         public string UpdatedByUserId { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("lastStatus")]
-        public ContractStatus? LastStatus { get; set; } = default!;
+        [System.Text.Json.Serialization.JsonPropertyName("updatedAt")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.DateTime UpdatedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("fromStatus")]
+        public ContractStatus FromStatus { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("toStatus")]
+        public ContractStatus ToStatus { get; set; } = default!;
 
     }
 

@@ -9,11 +9,14 @@ namespace Cirkla_DAL.Models
         public int Id { get; set; }
 
         [Required]
-        public Contract Contract { get; set; }
+        public int ContractId { get; set; }
+        public Contract? Contract { get; set; }
         
         [Required]
         public DateTime ChangedAt { get; set; }
-        
+
+        [Required]
+        public string ChangedById { get; set; }
         public User? ChangedBy { get; set; }
         
         [Required]
