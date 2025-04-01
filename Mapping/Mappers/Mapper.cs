@@ -18,7 +18,7 @@ namespace Mapping.Mappers
 
         #region Item
 
-        public static async Task<Item> MapToItem(ItemCreateDTO itemCreateDTO, User owner)
+        public static async Task<Item> MapToItem(ItemCreateDTO itemCreateDTO)
         {
             return new Item
             {
@@ -28,7 +28,6 @@ namespace Mapping.Mappers
                 Specifications = itemCreateDTO.Specifications,
                 Description = itemCreateDTO.Description,
                 OwnerId = itemCreateDTO.OwnerId,
-                Owner = owner,
                 Pictures = itemCreateDTO.Pictures
             };
         }
@@ -74,13 +73,13 @@ namespace Mapping.Mappers
         #endregion
 
         #region Contract
-        public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO, Item item, User owner, User borrower)
+        public static async Task<Contract> MapToContract(ContractCreateDTO contractCreateDTO)
         {
             var contract = new Contract
             {
-                Item = item,
-                Owner = owner,
-                Borrower = borrower,
+                ItemId = contractCreateDTO.ItemId,
+                OwnerId = contractCreateDTO.OwnerId,
+                BorrowerId = contractCreateDTO.BorrowerId,
                 Created = contractCreateDTO.Created,
                 StartTime = contractCreateDTO.StartTime,
                 EndTime = contractCreateDTO.EndTime,
@@ -89,9 +88,9 @@ namespace Mapping.Mappers
                     new ContractStatusChange
                     {
                         ChangedAt = contractCreateDTO.Created,
-                        ChangedBy = borrower,
+                        ChangedById = contractCreateDTO.BorrowerId,
                         From = ContractStatus.None,
-                        To = contractCreateDTO.CurrentStatus,
+                        To = contractCreateDTO.CurrentStatus
                     }
                 }
             };
@@ -114,17 +113,27 @@ namespace Mapping.Mappers
         }
 
 
-        public static async Task<Contract> MapToContract(ContractUpdateDTO contractUpdateDTO, Item item, User owner, User borrower)
+        public static async Task<Contract> MapToContract(ContractUpdateDTO contractUpdateDTO)
         {
             var contract = new Contract()
             {
                 Id = contractUpdateDTO.Id,
-                Item = item,
-                Owner = owner,
-                Borrower = borrower,
+                ItemId = contractUpdateDTO.ItemId,
+                OwnerId = contractUpdateDTO.OwnerId,
+                BorrowerId = contractUpdateDTO.BorrowerId,
+                Created = contractUpdateDTO.Created,
                 StartTime = contractUpdateDTO.StartTime,
                 EndTime = contractUpdateDTO.EndTime,
-                StatusChanges = new List<ContractStatusChange>()
+                StatusChanges = new List<ContractStatusChange>
+                {
+                    new ContractStatusChange
+                    {
+                        ChangedAt = contractUpdateDTO.UpdatedAt,
+                        ChangedById = contractUpdateDTO.UpdatedByUserId,
+                        From = contractUpdateDTO.FromStatus,
+                        To = contractUpdateDTO.ToStatus,
+                    }
+                }
             };
             return contract;
         }
@@ -134,13 +143,17 @@ namespace Mapping.Mappers
         {
             var contractUpdateDTO = new ContractUpdateDTO()
             {
+                Id = contract.Id,
                 ItemId = contract.Item.Id,
                 OwnerId = contract.Owner.Id,
                 BorrowerId = contract.Borrower.Id,
                 Created = contract.Created,
                 StartTime = contract.StartTime,
                 EndTime = contract.EndTime,
-                CurrentStatus = contract.StatusChanges.Last().To
+                UpdatedByUserId = contract.StatusChanges.Last().ChangedBy.Id,
+                UpdatedAt = contract.StatusChanges.Last().ChangedAt,
+                FromStatus = contract.StatusChanges.Last().From,
+                ToStatus = contract.StatusChanges.Last().To
             };
             return contractUpdateDTO;
         }
@@ -157,10 +170,10 @@ namespace Mapping.Mappers
                 NotificationMessage = contractNotification.NotificationMessage,
                 CreatedAt = contractNotification.CreatedAt,
                 HasBeenRead = contractNotification.HasBeenRead,
-                ContractId = contractNotification.Contract.Id,
+                ContractId = contractNotification.ContractId,
                 ItemName = contractNotification.Contract.Item.Name,
-                OwnerFullName = contractNotification.Contract.Owner.FirstName + " " + contractNotification.Contract.Owner.LastName,
-                BorrowerFullName = contractNotification.Contract.Borrower.FirstName + " " + contractNotification.Contract.Borrower.LastName,
+                OwnerFullName = contractNotification.Contract.Owner.FullName,
+                BorrowerFullName = contractNotification.Contract.Borrower.FullName,
                 Created = contractNotification.Contract.Created,
                 StartTime = contractNotification.Contract.StartTime,
                 EndTime = contractNotification.Contract.EndTime
@@ -169,7 +182,7 @@ namespace Mapping.Mappers
         }
 
 
-        public static async Task<ContractNotification> MapToContractNotification(ContractNotificationForViews contractNotificationForViews, Contract contract)
+        public static async Task<ContractNotification> MapToContractNotification(ContractNotificationForViews contractNotificationForViews)
         {
             var contractNotification = new ContractNotification
             {
@@ -177,7 +190,7 @@ namespace Mapping.Mappers
                 NotificationMessage = contractNotificationForViews.NotificationMessage,
                 CreatedAt = contractNotificationForViews.CreatedAt,
                 HasBeenRead = contractNotificationForViews.HasBeenRead,
-                Contract = contract
+                ContractId = contractNotificationForViews.ContractId
             };
             return contractNotification;
         }
@@ -186,17 +199,14 @@ namespace Mapping.Mappers
 
         #region CircleRequests
 
-        public static async Task<CircleJoinRequest> MapToCircleRequest(CircleJoinRequestCreateDTO circleJoinRequestCreateDto, Circle circle, User targetUser, User fromUser)
+        public static async Task<CircleJoinRequest> MapToCircleRequest(CircleJoinRequestCreateDTO circleJoinRequestCreateDto)
         {
             var circleRequest = new CircleJoinRequest
             {
                 CircleId = circleJoinRequestCreateDto.CircleId,
-                Circle = circle,
                 Type = circleJoinRequestCreateDto.Type,
                 TargetUserId = circleJoinRequestCreateDto.TargetUserId,
-                TargetUser = targetUser,
                 FromUserId = circleJoinRequestCreateDto.FromUserId,
-                FromUser = fromUser,
                 RequestDate = circleJoinRequestCreateDto.RequestDate,
                 Status = circleJoinRequestCreateDto.Status,
                 ExpiresAt = circleJoinRequestCreateDto.ExpiresAt

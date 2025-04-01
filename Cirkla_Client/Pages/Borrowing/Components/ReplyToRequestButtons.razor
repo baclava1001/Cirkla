@@ -21,26 +21,26 @@
         ContractUpdateDTO contractUpdateDTO = new()
             {
                 Id = Contract.Id,
-                UpdatedByUserId = Contract.Owner.Id,
-                ItemId = Contract.Item.Id,
-                OwnerId = Contract.Owner.Id,
-                BorrowerId = Contract.Borrower.Id,
+                UpdatedByUserId = Contract.OwnerId,
+                ItemId = Contract.ItemId,
+                OwnerId = Contract.OwnerId,
+                BorrowerId = Contract.BorrowerId,
                 StartTime = Contract.StartTime,
                 EndTime = Contract.EndTime,
                 Created = Contract.Created,
-                CurrentStatus = ContractStatus.None,
-                LastStatus = Contract.StatusChanges.LastOrDefault().To
+                FromStatus = ContractStatus.None,
+                ToStatus = Contract.StatusChanges.LastOrDefault().To
             };
 
         try
         {
             if (buttonName == "Deny")
             {
-                contractUpdateDTO.CurrentStatus = ContractStatus.Denied;
+                contractUpdateDTO.ToStatus = ContractStatus.Denied;
             }
             else if (buttonName == "Accept")
             {
-                contractUpdateDTO.CurrentStatus = ContractStatus.Accepted;
+                contractUpdateDTO.ToStatus = ContractStatus.Accepted;
             }
             await Client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractUpdateDTO);
             Console.WriteLine("Button component responded to borrower request successfully");

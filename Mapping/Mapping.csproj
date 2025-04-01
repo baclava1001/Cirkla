@@ -16,4 +16,8 @@
     <Folder Include="DTOs\Circles\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+  </ItemGroup>
+
 </Project>

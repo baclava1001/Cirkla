@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Cirkla_DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class NewInitialWithFKeys : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,9 +30,9 @@ namespace Cirkla_DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePictureURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -167,8 +167,8 @@ namespace Cirkla_DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IsPublic = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -196,11 +196,12 @@ namespace Cirkla_DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Model = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Specifications = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Model = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Specifications = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -345,7 +346,7 @@ namespace Cirkla_DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     ItemId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -389,7 +390,7 @@ namespace Cirkla_DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ContractId = table.Column<int>(type: "int", nullable: false),
                     ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ChangedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ChangedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     From = table.Column<int>(type: "int", nullable: false),
                     To = table.Column<int>(type: "int", nullable: false)
                 },
@@ -405,8 +406,7 @@ namespace Cirkla_DAL.Migrations
                         name: "FK_ContractStatusChanges_Contracts_ContractId",
                         column: x => x.ContractId,
                         principalTable: "Contracts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

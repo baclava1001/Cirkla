@@ -23,6 +23,7 @@ namespace Cirkla_DAL.Models
 
         [StringLength(2000, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string? Description { get; set; }
+        
         // public OwnersTerms { get; set; } // Fkey for coming feature
         // public string List<HashTag> HashTags { get; set; } // Fkey for coming feature
         
@@ -31,8 +32,9 @@ namespace Cirkla_DAL.Models
         
         [Required]
         public string OwnerId { get; set; }
-        [ForeignKey("OwnerId")]
+
         public User? Owner { get; set; }
+        
         // public List<Circle> Circles { get; set; } // Fkey for coming feature
         
         public List<ItemPicture>? Pictures { get; set; }

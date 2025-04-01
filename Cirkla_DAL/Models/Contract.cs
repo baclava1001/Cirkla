@@ -10,13 +10,16 @@ namespace Cirkla_DAL.Models
         public int Id { get; set; }
 
         [Required]
-        public Item Item { get; set; }
+        public int ItemId { get; set; }
+        public Item? Item { get; set; }
 
-        [Required, ForeignKey("OwnerId")]
-        public User Owner { get; set; }
+        [Required]
+        public string OwnerId { get; set; }
+        public User? Owner { get; set; }
 
         [Required, ForeignKey("BorrowerId")]
-        public User Borrower { get; set; }
+        public string BorrowerId { get; set; }
+        public User? Borrower { get; set; }
 
         [Required]
         public DateTime Created { get; set; }

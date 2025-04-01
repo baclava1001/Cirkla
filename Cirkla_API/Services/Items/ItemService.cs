@@ -36,8 +36,7 @@ namespace Cirkla_API.Services.Items
                 _logger.LogWarning("Attempted creating an item with null value");
                 return ServiceResult<Item>.Fail("Item could not be created", ErrorType.ValidationError);
             }
-            var owner = await _userRepository.Get(itemDTO.OwnerId);
-            var itemtoDb = await Mapper.MapToItem(itemDTO, owner);
+            var itemtoDb = await Mapper.MapToItem(itemDTO);
             var createdItem = await _itemRepository.Create(itemtoDb);
             await _unitOfWork.SaveChanges();
             return ServiceResult<Item>.Created(createdItem);

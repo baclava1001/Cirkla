@@ -10,7 +10,8 @@ public class ContractNotification
     public string? NotificationMessage { get; set; }
     
     [Required]
-    public Contract Contract { get; set; }
+    public int ContractId { get; set; }
+    public Contract? Contract { get; set; }
 
     [Required]
     public DateTime CreatedAt { get; set; }

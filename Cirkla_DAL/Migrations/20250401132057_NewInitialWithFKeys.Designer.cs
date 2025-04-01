@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cirkla_DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250331082857_ValidationAttributesAdded")]
-    partial class ValidationAttributesAdded
+    [Migration("20250401132057_NewInitialWithFKeys")]
+    partial class NewInitialWithFKeys
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,6 +225,7 @@ namespace Cirkla_DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ChangedById")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ContractId")
@@ -651,12 +652,14 @@ namespace Cirkla_DAL.Migrations
                 {
                     b.HasOne("Cirkla_DAL.Models.User", "ChangedBy")
                         .WithMany()
-                        .HasForeignKey("ChangedById");
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Cirkla_DAL.Models.Contract", "Contract")
                         .WithMany("StatusChanges")
                         .HasForeignKey("ContractId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ChangedBy");
