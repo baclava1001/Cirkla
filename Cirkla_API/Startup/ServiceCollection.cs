@@ -24,7 +24,9 @@ using Cirkla_DAL.Repositories.CircleJoinRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.ContractNotifications;
 using Cirkla_DAL.Repositories.UoW;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Mapping.Validators.Contracts;
 
 namespace Cirkla_API.Startup;
 
@@ -67,6 +69,8 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<AutoArchiveService>();
         services.AddHostedService<AutoLateService>();
         services.AddHostedService<AutoCancelService>();
+
+        services.AddValidatorsFromAssemblyContaining<ContractCreateValidator>();
 
         services.AddSignalR().AddJsonProtocol(options =>
         {

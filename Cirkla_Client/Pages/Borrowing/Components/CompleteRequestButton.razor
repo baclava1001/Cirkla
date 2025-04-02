@@ -8,27 +8,28 @@
 
 @code {
     [Parameter]
-    public Contract? Contract { get; set; }
+    public ContractResponseDTO? Contract { get; set; }
 
     private async Task CompleteRequest()
     {
         ContractUpdateDTO contractUpdateDTO = new()
         {
-            Id = Contract.Id,
-            UpdatedByUserId = Contract.OwnerId,
-            ItemId = Contract.ItemId,
+            Id = Contract.Id.Value,
+            ItemId = Contract.ItemId.Value,
             OwnerId = Contract.OwnerId,
             BorrowerId = Contract.BorrowerId,
-            StartTime = Contract.StartTime,
-            EndTime = Contract.EndTime,
-            Created = Contract.Created,
-            FromStatus = ContractStatus.Completed,
-            ToStatus = Contract.StatusChanges.LastOrDefault().To
+            Created = Contract.Created.Value,
+            StartTime = Contract.StartTime.Value,
+            EndTime = Contract.EndTime.Value,
+            UpdatedByUserId = Contract.OwnerId,
+            UpdatedAt = DateTime.Now,
+            FromStatus = Contract.StatusChanges.LastOrDefault().To,
+            ToStatus = ContractStatus.Completed
         };
 
         try
         {
-            await Client.ApiBorrowingContractCompleteRequestAsync(Contract.Id, contractUpdateDTO);
+            await Client.ApiBorrowingContractCompleteRequestAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component completed request successfully");
             NavigationManager.NavigateTo("/inventory");
         }
