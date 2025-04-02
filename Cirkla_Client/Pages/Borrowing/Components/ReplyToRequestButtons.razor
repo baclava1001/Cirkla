@@ -12,25 +12,24 @@
 
 @code {
     [Parameter]
-    public Contract? Contract { get; set; }
+    public ContractResponseDTO? Contract { get; set; }
 
     private async Task SendReplyToBorrower(string buttonName)
     {
-        //var contractUpdateDTO = Mapper.MapToContractUpdateDTO(Contract); // TODO: Fix this
-
         ContractUpdateDTO contractUpdateDTO = new()
-            {
-                Id = Contract.Id,
-                UpdatedByUserId = Contract.OwnerId,
-                ItemId = Contract.ItemId,
-                OwnerId = Contract.OwnerId,
-                BorrowerId = Contract.BorrowerId,
-                StartTime = Contract.StartTime,
-                EndTime = Contract.EndTime,
-                Created = Contract.Created,
-                FromStatus = ContractStatus.None,
-                ToStatus = Contract.StatusChanges.LastOrDefault().To
-            };
+        {
+            Id = Contract.Id.Value,
+            ItemId = Contract.ItemId.Value,
+            OwnerId = Contract.OwnerId,
+            BorrowerId = Contract.BorrowerId,
+            Created = Contract.Created.Value,
+            StartTime = Contract.StartTime.Value,
+            EndTime = Contract.EndTime.Value,
+            UpdatedByUserId = Contract.OwnerId,
+            UpdatedAt = DateTime.Now,
+            FromStatus = Contract.StatusChanges.LastOrDefault().To
+            // ToStatus is set below
+        };
 
         try
         {
@@ -42,7 +41,7 @@
             {
                 contractUpdateDTO.ToStatus = ContractStatus.Accepted;
             }
-            await Client.ApiBorrowingContractRespondToRequestAsync(Contract.Id, contractUpdateDTO);
+            await Client.ApiBorrowingContractRespondToRequestAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component responded to borrower request successfully");
             NavigationManager.NavigateTo("/inventory");
         }

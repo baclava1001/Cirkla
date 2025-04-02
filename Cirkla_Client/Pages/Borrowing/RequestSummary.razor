@@ -16,20 +16,20 @@
     }
     else
     {
-        <img src="@Contract?.Item?.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Contract?.Item?.Name" class="img-fluid" style="width: 350px; height: auto;" />
+        <img src="@Contract?.ItemPictures?.FirstOrDefault()?.Url" alt="Picture of @Contract?.ItemName" class="img-fluid" style="width: 350px; height: auto;" />
         <br />
         <br />
         <dl class="row">
             <dt class="col-sm-2">Cirkla member</dt>
-            <dd class="col-sm-10">@Contract?.Borrower.FirstName @Contract?.Borrower.LastName</dd>
+            <dd class="col-sm-10">@Contract?.BorrowerFullName</dd>
             <dt class="col-sm-2">Requests to borrow</dt>
-            <dd class="col-sm-10">@Contract?.Item?.Name @Contract?.Item?.Model</dd>
+            <dd class="col-sm-10">@Contract?.ItemName @Contract?.ItemModel</dd>
             <dt class="col-sm-2">From Cirkla member</dt>
-            <dd class="col-sm-10">@Contract?.Owner.FirstName @Contract?.Owner.LastName</dd>
+            <dd class="col-sm-10">@Contract?.OwnerFullName</dd>
             @if (Contract.StatusChanges.Any(sc => sc.To == ContractStatus.Accepted))
             {
                 <dt class="col-sm-2">Contact owner for details</dt>
-                <dd class="col-sm-10">@Contract?.Owner.PhoneNumber</dd>
+                <dd class="col-sm-10">@Contract?.OwnerPhoneNumber</dd>
             }
             <dt class="col-sm-2">From</dt>
             <dd class="col-sm-10">@Contract?.StartTime</dd>
@@ -42,7 +42,7 @@
             <dt class="col-sm-2">Status history</dt>
             <dd class="col-sm-10">
                 <ul>
-                    @foreach (var statusChange in Contract.StatusChanges.Reverse())
+                    @foreach (var statusChange in Contract?.StatusChanges.Reverse())
                     {
                         <li>@statusChange?.ChangedBy?.FirstName</li>
                         <li>@statusChange?.ChangedAt</li>
@@ -85,7 +85,7 @@
     [SupplyParameterFromQuery]
     public int Id { get; set; }
 
-    private Contract? Contract { get; set; }
+    private ContractResponseDTO? Contract { get; set; }
 
     private string? _requestNumber;
     private string? _tempMessage;
@@ -109,7 +109,7 @@
                        !changes.Any(sc => sc.To is ContractStatus.Completed or ContractStatus.Archived);
         _canCancel = changes is not null &&
                          !changes.Any(sc => sc.To is ContractStatus.Archived) &&
-                         lastStatus is not ContractStatus.Cancelled;
+                         lastStatus is not ContractStatus.Cancelled and not ContractStatus.Denied;
         _canComplete = changes is not null &&
                        lastStatus is ContractStatus.Active &&
                        !changes.Any(sc => sc.To is ContractStatus.Completed or ContractStatus.Archived);

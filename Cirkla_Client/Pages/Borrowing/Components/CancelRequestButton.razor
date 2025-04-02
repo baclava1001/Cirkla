@@ -8,28 +8,28 @@
 
 @code {
     [Parameter]
-    public Contract? Contract { get; set; }
+    public ContractResponseDTO? Contract { get; set; }
 
     private async Task CancelRequest()
     {
         ContractUpdateDTO contractUpdateDTO = new()
         {
-            Id = Contract.Id,
-            UpdatedByUserId = Contract.Owner.Id,
+            Id = Contract.Id.Value,
+            ItemId = Contract.ItemId.Value,
+            OwnerId = Contract.OwnerId,
+            BorrowerId = Contract.BorrowerId,
+            Created = Contract.Created.Value,
+            StartTime = Contract.StartTime.Value,
+            EndTime = Contract.EndTime.Value,
+            UpdatedByUserId = Contract.OwnerId,
             UpdatedAt = DateTime.Now,
-            ItemId = Contract.Item.Id,
-            OwnerId = Contract.Owner.Id,
-            BorrowerId = Contract.Borrower.Id,
-            StartTime = Contract.StartTime,
-            EndTime = Contract.EndTime,
-            Created = Contract.Created,
-            FromStatus = ContractStatus.Cancelled,
-            ToStatus = Contract.StatusChanges.LastOrDefault().To
+            FromStatus = Contract.StatusChanges.LastOrDefault().To,
+            ToStatus = ContractStatus.Cancelled
         };
 
         try
         {
-            await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id, contractUpdateDTO);
+            await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component cancelled request successfully");
             NavigationManager.NavigateTo("/inventory");
         }

@@ -42,46 +42,46 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<UserAuthResponseDTO> ApiAuthenticationLoginAsync(UserLoginDTO userLoginDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTOFromClient);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTOFromClient, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractViewRequestSummaryAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractViewRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Contract> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Circle>> ApiCircleGetAsync();
@@ -558,17 +558,17 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Contract> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTOFromClient)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO)
         {
-            return ApiBorrowingContractSendRequestAsync(contractDTOFromClient, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractSendRequestAsync(contractDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Contract> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTOFromClient, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO, System.Threading.CancellationToken cancellationToken)
         {
-            if (contractDTOFromClient == null)
-                throw new System.ArgumentNullException("contractDTOFromClient");
+            if (contractDTO == null)
+                throw new System.ArgumentNullException("contractDTO");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -576,7 +576,7 @@ namespace Cirkla.ApiClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(contractDTOFromClient, JsonSerializerSettings);
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(contractDTO, JsonSerializerSettings);
                     var content_ = new System.Net.Http.ByteArrayContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
@@ -613,7 +613,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContractResponseDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -671,14 +671,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Contract> ApiBorrowingContractViewRequestSummaryAsync(int id)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id)
         {
             return ApiBorrowingContractViewRequestSummaryAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Contract> ApiBorrowingContractViewRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -723,7 +723,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContractResponseDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -781,14 +781,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Contract> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
             return ApiBorrowingContractRespondToRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Contract> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -840,7 +840,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContractResponseDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -898,14 +898,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Contract> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
             return ApiBorrowingContractCancelRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Contract> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -957,7 +957,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContractResponseDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1015,14 +1015,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Contract> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
             return ApiBorrowingContractActivateRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Contract> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1074,7 +1074,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContractResponseDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1132,14 +1132,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Contract> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
             return ApiBorrowingContractCompleteRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Contract> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1191,7 +1191,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Contract>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContractResponseDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -5475,6 +5475,119 @@ namespace Cirkla.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContractResponseDTO
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public int? Id { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("itemId")]
+        public int? ItemId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("itemName")]
+        public string? ItemName { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("itemDescription")]
+        public string? ItemDescription { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("itemModel")]
+        public string? ItemModel { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("itemSpecifications")]
+        public string? ItemSpecifications { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("itemPictures")]
+        public System.Collections.Generic.ICollection<ItemPicture>? ItemPictures { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerId")]
+        public string? OwnerId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerFullName")]
+        public string? OwnerFullName { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerAddress")]
+        public string? OwnerAddress { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerZipCode")]
+        public string? OwnerZipCode { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerEmail")]
+        public string? OwnerEmail { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerPhoneNumber")]
+        public string? OwnerPhoneNumber { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ownerProfilePictureUrl")]
+        public string? OwnerProfilePictureUrl { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerId")]
+        public string? BorrowerId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerFullName")]
+        public string? BorrowerFullName { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerAddress")]
+        public string? BorrowerAddress { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerZipCode")]
+        public string? BorrowerZipCode { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerEmail")]
+        public string? BorrowerEmail { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerPhoneNumber")]
+        public string? BorrowerPhoneNumber { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("borrowerProfilePictureUrl")]
+        public string? BorrowerProfilePictureUrl { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("created")]
+        public System.DateTime? Created { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("startTime")]
+        public System.DateTime? StartTime { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("endTime")]
+        public System.DateTime? EndTime { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("statusChanges")]
+        public System.Collections.Generic.ICollection<ContractStatusChange>? StatusChanges { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContractStatusChange
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public int Id { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("contractId")]
+        public int ContractId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("contract")]
+        public Contract? Contract { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("changedAt")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.DateTime ChangedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("changedById")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string ChangedById { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("changedBy")]
+        public User? ChangedBy { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("from")]
+        public ContractStatus From { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("to")]
+        public ContractStatus To { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Contract
     {
 
@@ -5515,38 +5628,6 @@ namespace Cirkla.ApiClient
 
         [System.Text.Json.Serialization.JsonPropertyName("statusChanges")]
         public System.Collections.Generic.ICollection<ContractStatusChange>? StatusChanges { get; set; } = default!;
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ContractStatusChange
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("id")]
-        public int Id { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("contractId")]
-        public int ContractId { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("contract")]
-        public Contract? Contract { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("changedAt")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.DateTime ChangedAt { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("changedById")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string ChangedById { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("changedBy")]
-        public User? ChangedBy { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("from")]
-        public ContractStatus From { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("to")]
-        public ContractStatus To { get; set; } = default!;
 
     }
 

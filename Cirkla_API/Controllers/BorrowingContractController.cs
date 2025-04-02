@@ -27,20 +27,20 @@ namespace Cirkla_API.Controllers
 
         // Ask to borrow = create contract for item owner to review
         [HttpPost("SendRequest")]
-        [ProducesResponseType(typeof(Contract), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SendRequest(ContractCreateDTO contractDTOFromClient)
+        public async Task<IActionResult> SendRequest(ContractCreateDTO contractDTO)
         {
             _logger.LogInformation("API received http-request to borrow item (creating new contract)");
-            var result = await _borrowingContractService.SendRequest(contractDTOFromClient);
+            var result = await _borrowingContractService.SendRequest(contractDTO);
             return result.ToHttpResponse();
         }
 
 
         [HttpGet("ViewRequestSummary{id}")]
-        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -54,7 +54,7 @@ namespace Cirkla_API.Controllers
 
         // TODO: Refactor to only patch a date instead of put whole object?
         [HttpPut("RespondToRequest{id}")]
-        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -67,7 +67,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("CancelRequest{id}")]
-        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -80,7 +80,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("ActivateRequest{id}")]
-        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -93,7 +93,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("CompleteRequest{id}")]
-        [ProducesResponseType(typeof(Contract), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]

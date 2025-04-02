@@ -1,4 +1,5 @@
-﻿using Cirkla_DAL.Models;
+﻿using System.Net.NetworkInformation;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using Mapping.DTOs.CircleJoinRequests;
 using Mapping.DTOs.ContractNotifications;
@@ -83,16 +84,7 @@ namespace Mapping.Mappers
                 Created = contractCreateDTO.Created,
                 StartTime = contractCreateDTO.StartTime,
                 EndTime = contractCreateDTO.EndTime,
-                StatusChanges = new List<ContractStatusChange>
-                {
-                    new ContractStatusChange
-                    {
-                        ChangedAt = contractCreateDTO.Created,
-                        ChangedById = contractCreateDTO.BorrowerId,
-                        From = ContractStatus.None,
-                        To = contractCreateDTO.CurrentStatus
-                    }
-                }
+                StatusChanges = new List<ContractStatusChange>()
             };
             return contract;
         }
@@ -156,6 +148,44 @@ namespace Mapping.Mappers
                 ToStatus = contract.StatusChanges.Last().To
             };
             return contractUpdateDTO;
+        }
+
+
+        public static async Task<ContractResponseDTO> MapToContractResponseDTO(Contract contract)
+        {
+            var contractResponseDTO = new ContractResponseDTO
+            {
+                Id = contract.Id,
+
+                ItemId = contract.Item.Id,
+                ItemName = contract.Item.Name,
+                ItemDescription = contract.Item.Description,
+                ItemModel = contract.Item.Model,
+                ItemSpecifications = contract.Item.Specifications,
+                ItemPictures = contract.Item.Pictures,
+
+                OwnerId = contract.Owner.Id,
+                OwnerFullName = contract.Owner.FullName,
+                OwnerAddress = contract.Owner.Address,
+                OwnerZipCode = contract.Owner.ZipCode,
+                OwnerEmail = contract.Owner.Email,
+                OwnerPhoneNumber = contract.Owner.PhoneNumber,
+                OwnerProfilePictureUrl = contract.Owner.ProfilePictureURL,
+
+                BorrowerId = contract.Borrower.Id,
+                BorrowerFullName = contract.Borrower.FullName,
+                BorrowerAddress = contract.Borrower.Address,
+                BorrowerZipCode = contract.Borrower.ZipCode,
+                BorrowerEmail = contract.Borrower.Email,
+                BorrowerPhoneNumber = contract.Borrower.PhoneNumber,
+                BorrowerProfilePictureUrl = contract.Borrower.ProfilePictureURL,
+
+                Created = contract.Created,
+                StartTime = contract.StartTime,
+                EndTime = contract.EndTime,
+                StatusChanges = contract.StatusChanges
+            };
+            return contractResponseDTO;
         }
 
         #endregion
