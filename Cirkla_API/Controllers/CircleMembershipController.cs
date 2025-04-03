@@ -106,7 +106,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost("/membership-requests/user{userId}/make-admin")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -118,7 +118,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost("/membership-requests/user{userId}/remove-admin")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]

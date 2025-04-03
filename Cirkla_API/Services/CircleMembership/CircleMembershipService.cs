@@ -208,60 +208,51 @@ public partial class CircleMembershipService(
 
     #region Admin actions
 
-    public async Task<ServiceResult<CircleJoinRequest>> MakeAdmin(CircleJoinRequestCreateDTO adminRequestDTO)
+    public async Task<ServiceResult<int>> MakeAdmin(CircleJoinRequestCreateDTO adminRequestDTO)
     {
         if (adminRequestDTO.Type != CircleJoinRequestType.JoinAsAdmin)
         {
             logger.LogError("Invalid request type for making admin");
-            return ServiceResult<CircleJoinRequest>.Fail("Invalid request type", ErrorType.ValidationError);
+            return ServiceResult<int>.Fail("Invalid request type", ErrorType.ValidationError);
         }
-
-        // TODO: Avoid multiple db-queries
-        var circle = await circleRepository.GetById(adminRequestDTO.CircleId);
-        var targetUser = await userRepository.Get(adminRequestDTO.TargetUserId);
-        var fromUser = await userRepository.Get(adminRequestDTO.FromUserId);
-        var updatedByUser = await userRepository.Get(adminRequestDTO.UpdatedByUserId);
 
         var requestToDb = await Mapper.MapToCircleRequest(adminRequestDTO);
-        requestToDb.UpdatedByUser = updatedByUser;
+        await HydrateRequestAsync(requestToDb);
+
         requestToDb.UpdatedAt = DateTime.Now;
+        requestToDb.Status = CircleRequestStatus.Accepted;
+
         if (await IsFromAdmin(requestToDb) && await CanInviteAdmin(requestToDb))
         {
-            circle.Administrators.Add(targetUser);
-            await circleRepository.UpdateAdministrators(circle);
-            await circleJoinRequestRepository.Create(requestToDb);
-            await unitOfWork.SaveChangesWithTransaction();
-            return ServiceResult<CircleJoinRequest>.Created(requestToDb);
+            requestToDb.Circle.Administrators.Add(requestToDb.TargetUser);
+            await circleRepository.UpdateAdministrators(requestToDb.Circle);
+            return await CreateRequest(requestToDb);
         }
-        return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        return ServiceResult<int>.Fail("Invalid request", ErrorType.ValidationError);
     }
 
 
-    // TODO: Quick and dirty solution, takes a joinrequest DTO but doesn't actually use it against db. Refactor with specific DTO.
-    public async Task<ServiceResult<CircleJoinRequest>> RemoveAdmin(CircleJoinRequestCreateDTO adminRequestDTO)
+    public async Task<ServiceResult<int>> RemoveAdmin(CircleJoinRequestCreateDTO adminRequestDTO)
     {
         if (adminRequestDTO.Type != CircleJoinRequestType.JoinAsAdmin)
         {
             logger.LogError("Invalid request type for removing admin");
-            return ServiceResult<CircleJoinRequest>.Fail("Invalid request type", ErrorType.ValidationError);
+            return ServiceResult<int>.Fail("Invalid request type", ErrorType.ValidationError);
         }
-
-        var circle = await circleRepository.GetById(adminRequestDTO.CircleId);
-        var targetUser = await userRepository.Get(adminRequestDTO.TargetUserId);
-        var fromUser = await userRepository.Get(adminRequestDTO.FromUserId);
-        var updatedByUser = await userRepository.Get(adminRequestDTO.UpdatedByUserId);
 
         var requestToDb = await Mapper.MapToCircleRequest(adminRequestDTO);
-        requestToDb.UpdatedByUser = updatedByUser;
+        await HydrateRequestAsync(requestToDb);
         requestToDb.UpdatedAt = DateTime.Now;
-        if (await IsFromAdmin(requestToDb) && await CanInviteAdmin(requestToDb))
+
+        if (requestToDb.Circle.Administrators.Count > 1 &&
+            await IsFromAdmin(requestToDb) &&
+            await CanInviteAdmin(requestToDb))
         {
-            circle.Administrators.Remove(targetUser);
-            await circleRepository.UpdateAdministrators(circle);
-            await unitOfWork.SaveChangesWithTransaction();
-            return ServiceResult<CircleJoinRequest>.Created(requestToDb);
+            requestToDb.Circle.Administrators.Remove(requestToDb.TargetUser);
+            await circleRepository.UpdateAdministrators(requestToDb.Circle);
+            return await CreateRequest(requestToDb);
         }
-        return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
+        return ServiceResult<int>.Fail("Invalid request", ErrorType.ValidationError);
     }
 
     // TODO: Add a method for removing members
