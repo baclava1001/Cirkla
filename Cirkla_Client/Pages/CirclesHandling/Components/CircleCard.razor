@@ -23,9 +23,9 @@
     </MudCardContent>
     <MudCardActions>
         <MudButton Variant="Variant.Filled"
-                   Color="Color.Default"
-                   StartIcon="@Icons.Material.Filled.DoorSliding"
-                   Size="Size.Small">Browse</MudButton>
+        Color="Color.Default"
+        StartIcon="@Icons.Material.Filled.DoorSliding"
+        Size="Size.Small">Browse</MudButton>
         <BtnCircleJoin Circle="Circle"/>
         <BtnCircleInvite Circle="Circle"/>
         <BtnCircleRequestRevoke Circle="Circle" />
@@ -84,28 +84,43 @@
             NavigationManager.NavigateTo($"/circle-administration/?id={Circle.Id}");
         }
     }
-    
+
 
     private async Task<string> UserMembershipStatus()
     {
-        var userJoinRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
-        var joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
-        if (Circle != null && Circle.Administrators.Any(a => a.Id == _tempUserId))
+        try
         {
-            return "You are an administrator";
+            ICollection<CircleJoinRequest>? userJoinRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
+            var joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
+            if (joinRequest is null)
+            {
+                return "Not a member";
+            }
+
+            if (Circle != null && Circle.Administrators.Any(a => a.Id == _tempUserId))
+            {
+                return "You are an administrator";
+            }
+
+            if (Circle.Members != null && Circle.Members.Any(m => m.Id == _tempUserId))
+            {
+                return "You are a member";
+            }
+
+            if (joinRequest?.Type == CircleJoinRequestType.JoinAsMember)
+            {
+                return "Waiting for membership";
+            }
+
+            if (joinRequest?.Type == CircleJoinRequestType.JoinAsAdmin)
+            {
+                return "Waiting for admin status";
+            }
         }
-        if (Circle.Members != null && Circle.Members.Any(m => m.Id == _tempUserId))
+        catch (Exception ex)
         {
-            return "You are a member";
+            Console.WriteLine("No join requests found");
         }
-        if (joinRequest?.Type == CircleJoinRequestType.JoinAsMember)
-        {
-            return "Waiting for membership";
-        }
-        if (joinRequest?.Type == CircleJoinRequestType.JoinAsAdmin)
-        {
-            return "Waiting for admin status";
-        }
-        return "Not a member";
+        return "Error : Unknown membership status";
     }
 }

@@ -5,13 +5,13 @@ namespace Cirkla_DAL.Repositories.CircleJoinRequests;
 
 public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequestRepository
 {
-    public async Task<CircleJoinRequest> Create(CircleJoinRequest circleRequest)
+    public async Task<CircleJoinRequest?> Create(CircleJoinRequest circleRequest)
     {
          await context.CircleJoinRequests.AddAsync(circleRequest);
          return circleRequest;
     }
 
-    public async Task<IEnumerable<CircleJoinRequest>> GetAll()
+    public async Task<IEnumerable<CircleJoinRequest?>> GetAll()
     {
         return await context.CircleJoinRequests
             .Include(cr => cr.Circle)
@@ -25,7 +25,7 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<CircleJoinRequest>> GetAllByCircleId(int circleId)
+    public async Task<IEnumerable<CircleJoinRequest?>> GetAllByCircleId(int circleId)
     {
         return await context.CircleJoinRequests
             .Include(cr => cr.Circle)
@@ -40,7 +40,7 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<CircleJoinRequest>> GetAllByTargetUserId(string userId)
+    public async Task<IEnumerable<CircleJoinRequest?>> GetAllByTargetUserId(string userId)
     {
         return await context.CircleJoinRequests
             .Include(cr => cr.Circle)
@@ -55,7 +55,22 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .ToListAsync();
     }
 
-    public async Task<CircleJoinRequest> GetById(int id)
+    public async Task<IEnumerable<CircleJoinRequest?>> GetByTargetUserAndCircle(string targetUserId, int circleId)
+    {
+        return await context.CircleJoinRequests
+            .Include(cr => cr.Circle)
+            .Where(c => c.Circle.Id == circleId)
+            .Include(cr => cr.Circle)
+            .ThenInclude(c => c.Members)
+            .Include(cr => cr.Circle)
+            .ThenInclude(cr => cr.Administrators)
+            .Include(cr => cr.FromUser)
+            .Include(cr => cr.TargetUser)
+            .Where(cr => cr.TargetUser.Id == targetUserId)
+            .ToListAsync();
+    }
+
+    public async Task<CircleJoinRequest?> GetById(int id)
     {
         return await context.CircleJoinRequests
             .Include(cr => cr.Circle)
@@ -68,7 +83,7 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .FirstOrDefaultAsync(cr => cr.Id == id);
     }
 
-    public async Task<CircleJoinRequest> Update(CircleJoinRequest circleRequest)
+    public async Task<CircleJoinRequest?> Update(CircleJoinRequest circleRequest)
     {
         context.CircleJoinRequests.Attach(circleRequest);
         context.Entry(circleRequest).Property(cr => cr.Status).IsModified = true;
@@ -77,5 +92,5 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
         return await Task.FromResult(circleRequest);
     }
 
-    // No delete because requests should be kept for historical purposes. Old requests will be cleaned up in the background in later versions.
+    // TODO: No delete because requests should be kept for historical purposes. Old requests will be cleaned up in the background in later versions.
 }
