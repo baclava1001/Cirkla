@@ -101,7 +101,7 @@
         try
         {
             var response = await _client.ApiBorrowingContractSendRequestAsync(ContractDTO);
-            _navigationManager.NavigateTo($"/request/view?id={response.Id}");
+            _navigationManager.NavigateTo($"/request/view?id={response}");
         }
         catch (ApiException ex)
         {

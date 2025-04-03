@@ -27,7 +27,7 @@ namespace Cirkla_API.Controllers
 
         // Ask to borrow = create contract for item owner to review
         [HttpPost("SendRequest")]
-        [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]

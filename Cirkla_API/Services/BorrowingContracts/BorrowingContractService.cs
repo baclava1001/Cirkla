@@ -1,36 +1,25 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
-using Cirkla_API.Hubs.ContractUpdate;
-using Cirkla_DAL;
-using Cirkla_DAL.Models;
-using Cirkla_DAL.Repositories.Contracts;
-using Cirkla_DAL.Repositories.Items;
-using Cirkla_DAL.Repositories.Users;
-using Mapping.DTOs.Contracts;
-using Mapping.Mappers;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Cirkla_API.Services.ContractNotifications;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
+using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.UoW;
 using FluentValidation;
+using Mapping.DTOs.Contracts;
+using Mapping.Mappers;
 
 namespace Cirkla_API.Services.BorrowingContracts
 {
     public class BorrowingContractService(
-        IContractNotificationService contractNotificationService,
         IContractRepository contractRepository,
-        IItemRepository itemRepository,
-        IUserRepository userRepository,
+        IContractNotificationService contractNotificationService,
         IUnitOfWork unitOfWork,
         IValidator<ContractCreateDTO> contractCreateValidator,
         IValidator<ContractUpdateDTO> contractUpdateValidator,
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
+    
     {
-
-
         // Sends a request to borrow an item, by creating a new contract.
         public async Task<ServiceResult<int>> SendRequest(ContractCreateDTO contractDTO)
         {
@@ -52,7 +41,7 @@ namespace Cirkla_API.Services.BorrowingContracts
             _ = contractNotificationService
                 .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
             
-            return ServiceResult<int>.Success(contract.Id);
+            return ServiceResult<int>.Created(contract.Id);
         }
 
 

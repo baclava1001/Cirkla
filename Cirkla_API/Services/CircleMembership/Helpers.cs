@@ -1,5 +1,8 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla_API.Common.Constants;
+using Cirkla_API.Common;
+using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
+using FluentValidation.Results;
 using Mapping.DTOs.CircleJoinRequests;
 
 namespace Cirkla_API.Services.CircleMembership
@@ -13,50 +16,54 @@ namespace Cirkla_API.Services.CircleMembership
             return (expiresAt < DateTime.Now);
         }
 
-        private async Task<bool> PassesFirstCheck(CircleJoinRequestCreateDTO circleJoinRequestDTO)
+        private async Task<bool> InitialValidation(CircleJoinRequestCreateDTO circleJoinRequestDTO)
         {
             if (circleJoinRequestDTO is null || await IsExpired(circleJoinRequestDTO.ExpiresAt) ||
                 circleJoinRequestDTO.Status != CircleRequestStatus.Pending)
             {
-                _logger.LogError("Invalid request is null, expired or already answered");
+                logger.LogError("Invalid request is null, expired or already answered");
                 return false;
             }
 
             return true;
         }
 
-        private async Task<bool> PassesFirstCheck(CircleJoinRequest request)
+        private async Task<bool> InitialValidation(CircleJoinRequest request)
         {
             if (request is null || await IsExpired(request.ExpiresAt) || request.Status != CircleRequestStatus.Pending)
             {
-                _logger.LogError("Invalid request is null, expired or already answered");
+                logger.LogError("Invalid request is null, expired or already answered");
                 return false;
             }
 
             return true;
         }
 
-        // TODO: This might return true for expired or invalid requests, or requests that are persisted even after a user has left the circle
+
         private async Task<bool> AlreadyInvited(CircleJoinRequest request)
         {
-            var requests = await _circleJoinRequestRepository.GetAllByCircleId(request.CircleId);
-            return requests.Any(r => r.TargetUserId == request.TargetUserId);
+            var requests = await circleJoinRequestRepository.GetByTargetUserAndCircle(request.TargetUserId, request.CircleId);
+            return (requests.Any(cr => cr.Status is CircleRequestStatus.Pending)) || // Already invited
+                   (requests.Any(cr => cr.Circle.Members.Any(m => m == request.TargetUser))); // Already a member
         }
 
         private async Task<bool> CanJoinAsMember(CircleJoinRequest request)
         {
-            return (!request.Circle.Members.Contains(request.TargetUser));
+            return (request.TargetUserId == request.FromUserId &&
+                    !request.Circle.Members.Contains(request.TargetUser));
         }
 
         private async Task<bool> CanInviteMembers(CircleJoinRequest request)
         {
-            return (request.Circle.Members.Contains(request.FromUser) ||
+            return (request.FromUserId != request.TargetUserId &&
+                    request.Circle.Members.Contains(request.FromUser) ||
                     request.Circle.Administrators.Contains(request.FromUser));
         }
 
         private async Task<bool> CanInviteAdmin(CircleJoinRequest request)
         {
-            return request.Circle.Administrators.Contains(request.FromUser);
+            return (request.Circle.Administrators.Contains(request.FromUser)
+                    && request.FromUserId != request.TargetUserId);
         }
 
         private async Task<bool> IsFromUser(CircleJoinRequest request)
@@ -179,21 +186,54 @@ namespace Cirkla_API.Services.CircleMembership
 
         #endregion
 
-        private async Task UpdateCircleMembers(CircleJoinRequest request)
+        private ServiceResult<T> LogAndReturnValidationError<T>(IEnumerable<ValidationFailure> errors)
+        {
+            var errorMessages = string.Join(", ", errors.Select(e => e.ErrorMessage));
+            logger.LogWarning("Circle join request validation failed: {Errors}", errorMessages);
+            return ServiceResult<T>.Fail(errorMessages, ErrorType.ValidationError);
+        }
+
+
+        private async Task HydrateRequestAsync(CircleJoinRequest request)
+        {
+            request.Circle = await circleRepository.GetById(request.CircleId);
+            request.TargetUser = await userRepository.Get(request.TargetUserId);
+            request.FromUser = await userRepository.Get(request.FromUserId);
+        }
+
+
+        private async Task<ServiceResult<int>> CreateRequest(CircleJoinRequest request)
+        {
+            var createdRequest = await circleJoinRequestRepository.Create(request);
+            await unitOfWork.SaveChangesWithTransaction();
+            // TODO: Send notification to target user
+            return ServiceResult<int>.Created(createdRequest.Id);
+        }
+
+
+        private async Task<ServiceResult<object>> UpdateRequest(CircleJoinRequest request, CircleRequestStatus status)
+        {
+            if (status is CircleRequestStatus.Accepted)
+            {
+                await AddCircleMembersAndAdmins(request);
+            }
+            request.Status = status;
+            request.UpdatedAt = DateTime.Now;
+            await circleJoinRequestRepository.Update(request);
+            await unitOfWork.SaveChangesWithTransaction();
+            return ServiceResult<object>.Success(null);
+        }
+
+
+        private async Task AddCircleMembersAndAdmins(CircleJoinRequest request)
         {
             if (request.Type == CircleJoinRequestType.JoinAsMember)
             {
                 request.Circle.Members.Add(request.TargetUser);
-                await _circleRepository.UpdateMembers(request.Circle);
             }
-        }
-
-        private async Task UpdateCircleAdmins(CircleJoinRequest request)
-        {
             if (request.Type == CircleJoinRequestType.JoinAsAdmin)
             {
                 request.Circle.Administrators.Add(request.TargetUser);
-                await _circleRepository.UpdateAdministrators(request.Circle);
             }
         }
     }

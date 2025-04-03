@@ -57,7 +57,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost("/membership-requests/")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -69,7 +69,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("/membership-requests/{id}/revoke")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -81,7 +81,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("/membership-requests/{id}/reject")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -93,7 +93,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("/membership-requests/{id}/Accept")]
-        [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -102,8 +102,6 @@ namespace Cirkla_API.Controllers
             var result = await _circleMembershipService.AcceptRequest(id, circleRequestDTO);
             return result.ToHttpResponse();
         }
-
-
 
 
 

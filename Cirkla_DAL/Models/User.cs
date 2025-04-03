@@ -37,6 +37,6 @@ namespace Cirkla_DAL.Models
 
         public List<Circle> AdministeredCircles { get; set; } = new List<Circle>();
 
-        public List<Circle> MemberCircles { get; set; } = new List<Circle>();
+        public List<Circle> MemberCircles { get; set; } = new List<Circle>(); // TODO: Rename to MemberInCircles
     }
 }
