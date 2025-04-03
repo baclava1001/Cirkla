@@ -16,15 +16,14 @@ namespace Cirkla_API.Services.CircleMembership
             return (expiresAt < DateTime.Now);
         }
 
-        private async Task<bool> InitialValidation(CircleJoinRequestCreateDTO circleJoinRequestDTO)
+        private async Task<bool> InitialValidation(CircleJoinRequestCreateDTO requestDTO)
         {
-            if (circleJoinRequestDTO is null || await IsExpired(circleJoinRequestDTO.ExpiresAt) ||
-                circleJoinRequestDTO.Status != CircleRequestStatus.Pending)
+            if (requestDTO is null || await IsExpired(requestDTO.ExpiresAt) ||
+                requestDTO.Status != CircleRequestStatus.Pending)
             {
                 logger.LogError("Invalid request is null, expired or already answered");
                 return false;
             }
-
             return true;
         }
 
@@ -35,10 +34,8 @@ namespace Cirkla_API.Services.CircleMembership
                 logger.LogError("Invalid request is null, expired or already answered");
                 return false;
             }
-
             return true;
         }
-
 
         private async Task<bool> AlreadyInvited(CircleJoinRequest request)
         {
@@ -137,54 +134,9 @@ namespace Cirkla_API.Services.CircleMembership
             return false;
         }
 
-        // Early return:
-        // Is the request expired?
-        // Is the request still unanswered? (Could be easily inferred from the status, no need for validation method)
-
-        // From which user role is the request coming from?
-        // Is the request coming from the user herself?
-        // Is the invitation coming from a member?
-        // Is the invitation coming from an admin?
-
-        // Is the request valid?
-        // CanJoin => not already a member or admin
-        // CanInvite => must be a member or admin
-        // CanInviteAdmin => must be an admin
-
-        // Who answered/updated the request?
-        // CanRevoke => only the user who created the request, while request is still pending
-        // CanAccept => only the target user or member/admin, depending on request/invitation
-        // CanReject => only the target user or member/admin, depending on request/invitation
-
-        // Validation tree:
-        // CREATION:
-        // EARLY RETURN: Expired? Already answered? => return
-        // AlreadyInvited? => return
-        // TYPE OF REQUEST: Member or admin? => different paths
-        // REQUEST VALIDATION: CanJoin, CanInvite, CanInviteAdmin => return if not valid
-
-        // UPDATING:
-        // WHO ANSWERED: CanRevoke, CanAccept, CanReject => return if not valid
-
-
-        // Early return
-
-        // CanJoin => not already a member (all admins are also members)
-
-        // CanInvite => must be a member or admin
-
-        // CanInviteAdmin => must be an admin
-
-
-        // Check role of request sender before updating a request
-
-        // CanRevoke => only the user who created the request, while request is still pending
-
-        // CanAccept => only the target user or member/admin, depending on request/invitation
-
-        // CanReject => only the target user or member/admin, depending on request/invitation
-
         #endregion
+
+
 
         private ServiceResult<T> LogAndReturnValidationError<T>(IEnumerable<ValidationFailure> errors)
         {
@@ -199,6 +151,7 @@ namespace Cirkla_API.Services.CircleMembership
             request.Circle = await circleRepository.GetById(request.CircleId);
             request.TargetUser = await userRepository.Get(request.TargetUserId);
             request.FromUser = await userRepository.Get(request.FromUserId);
+            request.UpdatedByUser = await userRepository.Get(request.UpdatedByUserId);
         }
 
 
@@ -230,10 +183,12 @@ namespace Cirkla_API.Services.CircleMembership
             if (request.Type == CircleJoinRequestType.JoinAsMember)
             {
                 request.Circle.Members.Add(request.TargetUser);
+                await circleRepository.UpdateAdministrators(request.Circle);
             }
             if (request.Type == CircleJoinRequestType.JoinAsAdmin)
             {
                 request.Circle.Administrators.Add(request.TargetUser);
+                await circleRepository.UpdateAdministrators(request.Circle);
             }
         }
     }
