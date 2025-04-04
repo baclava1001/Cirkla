@@ -39,8 +39,8 @@ namespace Cirkla_API.Services.Circles
                 return ServiceResult<int>.Fail("Circle could not be created", ErrorType.ValidationError);
             }
             circle.CreatedBy = creatingUser;
-            circle.Administrators = new List<User> { creatingUser };
-            circle.Members = new List<User> { creatingUser };   
+            circle.Administrators.Add(creatingUser);
+            circle.Members.Add(creatingUser);   
 
             await circleRepository.Create(circle);
             await unitOfWork.SaveChanges();

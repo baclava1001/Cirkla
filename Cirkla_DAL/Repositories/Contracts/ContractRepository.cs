@@ -185,7 +185,10 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.Borrower)
                 .Include(c => c.StatusChanges)!
                 .ThenInclude(sc => sc.ChangedBy)
-                .Where(c => c.Item.Id == itemId && c.StatusChanges.Any(sc => sc.To == ContractStatus.Active))
+                .Where(c => c.Item.Id == itemId &&
+                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Active ||
+                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Accepted ||
+                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Late)
                 .ToListAsync();
         }
 

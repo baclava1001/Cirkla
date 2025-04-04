@@ -9,49 +9,40 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Cirkla_API.Services.TokenGenerator;
 
-public class TokenService : ITokenService
+public class TokenService(UserManager<User> userManager, 
+                            IConfiguration configuration, 
+                            ILogger<TokenService> logger) : ITokenService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<TokenService> _logger;
-
-    public TokenService(UserManager<User> userManager, IConfiguration configuration, ILogger<TokenService> logger)
-    {
-        _userManager = userManager;
-        _configuration = configuration;
-        _logger = logger;
-    }
-
     public async Task<ServiceResult<string>> GenerateToken(User user)
     {
         if (user == null)
         {
-            _logger.LogWarning("Attempted to generate a token for a null user.");
-            return ServiceResult<string>.Fail("User cannot be null", ErrorType.ValidationError);
+            logger.LogWarning("Attempted to generate a token for a null user.");
+            return ServiceResult<string>.Fail("Authentication error", ErrorType.ValidationError);
         }
 
         try
         {
-            _logger.LogInformation("Generating access token for user with {Email}", user.Email);
+            logger.LogInformation("Generating access token for user with {Email}", user.Email);
 
-            var key = _configuration["JwtSettings:Key"];
-            var issuer = _configuration["JwtSettings:Issuer"];
-            var audience = _configuration["JwtSettings:Audience"];
-            var durationString = _configuration["JwtSettings:DurationInMinutes"];
+            var key = configuration["JwtSettings:Key"];
+            var issuer = configuration["JwtSettings:Issuer"];
+            var audience = configuration["JwtSettings:Audience"];
+            var durationString = configuration["JwtSettings:DurationInMinutes"];
 
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience) || string.IsNullOrWhiteSpace(durationString))
             {
-                _logger.LogError("JWT configuration settings are missing or invalid.");
-                return ServiceResult<string>.Fail("Invalid JWT configuration", ErrorType.InternalError);
+                logger.LogError("JWT configuration settings are missing or invalid.");
+                return ServiceResult<string>.Fail("Authentication error", ErrorType.InternalError);
             }
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await userManager.GetRolesAsync(user);
             var roleClaims = roles?.Select(r => new Claim(ClaimTypes.Role, r)).ToList() ?? new List<Claim>();
 
-            var userClaims = await _userManager.GetClaimsAsync(user) ?? new List<Claim>();
+            var userClaims = await userManager.GetClaimsAsync(user) ?? new List<Claim>();
 
             var claims = new List<Claim>
             {
@@ -65,8 +56,8 @@ public class TokenService : ITokenService
 
             if (!int.TryParse(durationString, out var durationMinutes))
             {
-                _logger.LogError("Invalid JWT duration configuration.");
-                return ServiceResult<string>.Fail("Invalid JWT duration configuration", ErrorType.InternalError);
+                logger.LogError("Invalid JWT duration configuration.");
+                return ServiceResult<string>.Fail("Authentication error", ErrorType.InternalError);
             }
 
             var token = new JwtSecurityToken(
@@ -81,8 +72,8 @@ public class TokenService : ITokenService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while generating JWT token.");
-            return ServiceResult<string>.Fail("An error occurred while generating the token", ErrorType.InternalError);
+            logger.LogError(ex, "Error occurred while generating JWT token.");
+            return ServiceResult<string>.Fail("Authentication error", ErrorType.InternalError);
         }
     }
 
