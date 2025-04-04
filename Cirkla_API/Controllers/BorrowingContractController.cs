@@ -25,7 +25,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        // Ask to borrow = create contract for item owner to review
+        // Send request to borrow = create contract for item owner to review
         [HttpPost("SendRequest")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -52,7 +52,6 @@ namespace Cirkla_API.Controllers
         }
 
 
-        // TODO: Refactor to only patch a date instead of put whole object?
         [HttpPut("RespondToRequest{id}")]
         [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

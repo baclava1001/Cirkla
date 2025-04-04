@@ -4,7 +4,9 @@ using Cirkla_API.Services.ContractNotifications;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using Cirkla_DAL.Repositories.Contracts;
+using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.UoW;
+using Cirkla_DAL.Repositories.Users;
 using FluentValidation;
 using Mapping.DTOs.Contracts;
 using Mapping.Mappers;
@@ -13,6 +15,8 @@ namespace Cirkla_API.Services.BorrowingContracts
 {
     public class BorrowingContractService(
         IContractRepository contractRepository,
+        IItemRepository itemRepository,
+        IUserRepository userRepository,
         IContractNotificationService contractNotificationService,
         IUnitOfWork unitOfWork,
         IValidator<ContractCreateDTO> contractCreateValidator,
@@ -32,8 +36,15 @@ namespace Cirkla_API.Services.BorrowingContracts
             }
 
             var contract = await Mapper.MapToContract(contractDTO);
-            await UpdateContractStatus(contract, ContractStatus.Pending, contract.BorrowerId);
 
+            // TODO: Fine tune this validation method to check if the item is already borrowed - at an overlapping timeframe
+            if (await IsAlreadyBorrowed(contract.ItemId))
+            {
+                logger.LogWarning("Item with ID {ItemId} is already borrowed", contract.ItemId);
+                return ServiceResult<int>.Fail("Item is already borrowed", ErrorType.ValidationError);
+            }
+
+            await UpdateContractStatus(contract, ContractStatus.Pending, contract.BorrowerId);
             await contractRepository.Create(contract);
             await unitOfWork.SaveChangesWithTransaction();
 
@@ -177,6 +188,13 @@ namespace Cirkla_API.Services.BorrowingContracts
 
         #region Helpers
 
+        private async Task HydrateContract(Contract contract)
+        {
+            contract.Item = await itemRepository.Get(contract.ItemId);
+            contract.Owner = await userRepository.Get(contract.OwnerId);
+            contract.Borrower = await userRepository.Get(contract.BorrowerId);
+        }
+
         private void UpdateContractAndStatus(Contract contract, ContractUpdateDTO contractUpdateDto)
         {
             contract.ItemId = contractUpdateDto.ItemId;
@@ -205,6 +223,17 @@ namespace Cirkla_API.Services.BorrowingContracts
                 From = contract.StatusChanges.LastOrDefault()?.To ?? ContractStatus.None,
                 To = toStatus
             });
+        }
+
+
+        public async Task<bool> IsAlreadyBorrowed(int itemId)
+        {
+            var contract = await contractRepository.GetActiveForItem(itemId);
+            if (contract.Any())
+            {
+                return true;
+            }
+            return false;
         }
 
         #endregion

@@ -198,11 +198,11 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<ContractNotificationForViews> ApiContractNotificationsToggleMarkAsReadAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Item> ApiItemPostAsync(ItemCreateDTO itemDTO);
+        System.Threading.Tasks.Task<int> ApiItemPostAsync(ItemCreateDTO itemDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Item> ApiItemPostAsync(ItemCreateDTO itemDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> ApiItemPostAsync(ItemCreateDTO itemDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Item>> ApiItemByUserIdAsync(string? ownerId);
@@ -226,25 +226,25 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<Item> ApiItemGetAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Item> ApiItemPutAsync(int id, Item item);
+        System.Threading.Tasks.Task<object> ApiItemPutAsync(int id, Item item);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Item> ApiItemPutAsync(int id, Item item, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<object> ApiItemPutAsync(int id, Item item, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Item> ApiItemDeleteAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Item> ApiItemDeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePostAsync(ItemPicture itemPicture);
+        System.Threading.Tasks.Task<object> ApiItemDeleteAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePostAsync(ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<object> ApiItemDeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<int> ApiItemPicturePostAsync(ItemPicture itemPicture);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<int> ApiItemPicturePostAsync(ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ItemPicture>> ApiItemPictureGetAsync(int? itemId);
@@ -261,18 +261,18 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<ItemPicture> ApiItemPictureGetAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePutAsync(int id, ItemPicture itemPicture);
+        System.Threading.Tasks.Task<object> ApiItemPicturePutAsync(int id, ItemPicture itemPicture);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePutAsync(int id, ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<object> ApiItemPicturePutAsync(int id, ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemPicture> ApiItemPictureDeleteAsync(int id);
+        System.Threading.Tasks.Task<object> ApiItemPictureDeleteAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemPicture> ApiItemPictureDeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<object> ApiItemPictureDeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Contract>> ApiTimeLineBorrowingTimeLineAsync(string? userId);
@@ -1637,7 +1637,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -1747,7 +1747,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -3057,14 +3057,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Item> ApiItemPostAsync(ItemCreateDTO itemDTO)
+        public virtual System.Threading.Tasks.Task<int> ApiItemPostAsync(ItemCreateDTO itemDTO)
         {
             return ApiItemPostAsync(itemDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Item> ApiItemPostAsync(ItemCreateDTO itemDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> ApiItemPostAsync(ItemCreateDTO itemDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (itemDTO == null)
                 throw new System.ArgumentNullException("itemDTO");
@@ -3112,7 +3112,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Item>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3498,14 +3498,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Item> ApiItemPutAsync(int id, Item item)
+        public virtual System.Threading.Tasks.Task<object> ApiItemPutAsync(int id, Item item)
         {
             return ApiItemPutAsync(id, item, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Item> ApiItemPutAsync(int id, Item item, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> ApiItemPutAsync(int id, Item item, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3555,9 +3555,9 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Item>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3615,14 +3615,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Item> ApiItemDeleteAsync(int id)
+        public virtual System.Threading.Tasks.Task<object> ApiItemDeleteAsync(int id)
         {
             return ApiItemDeleteAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Item> ApiItemDeleteAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> ApiItemDeleteAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3665,9 +3665,9 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Item>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3725,14 +3725,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePostAsync(ItemPicture itemPicture)
+        public virtual System.Threading.Tasks.Task<int> ApiItemPicturePostAsync(ItemPicture itemPicture)
         {
             return ApiItemPicturePostAsync(itemPicture, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePostAsync(ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> ApiItemPicturePostAsync(ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken)
         {
             if (itemPicture == null)
                 throw new System.ArgumentNullException("itemPicture");
@@ -3780,7 +3780,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ItemPicture>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3890,7 +3890,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ItemPicture>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -4000,7 +4000,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ItemPicture>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -4060,14 +4060,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePutAsync(int id, ItemPicture itemPicture)
+        public virtual System.Threading.Tasks.Task<object> ApiItemPicturePutAsync(int id, ItemPicture itemPicture)
         {
             return ApiItemPicturePutAsync(id, itemPicture, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ItemPicture> ApiItemPicturePutAsync(int id, ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> ApiItemPicturePutAsync(int id, ItemPicture itemPicture, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -4117,9 +4117,9 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 204)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ItemPicture>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -4177,14 +4177,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ItemPicture> ApiItemPictureDeleteAsync(int id)
+        public virtual System.Threading.Tasks.Task<object> ApiItemPictureDeleteAsync(int id)
         {
             return ApiItemPictureDeleteAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ItemPicture> ApiItemPictureDeleteAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> ApiItemPictureDeleteAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -4227,9 +4227,9 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 204)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ItemPicture>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -4887,7 +4887,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -4997,7 +4997,7 @@ namespace Cirkla.ApiClient
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)

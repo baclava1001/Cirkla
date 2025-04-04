@@ -20,7 +20,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -33,7 +33,7 @@ namespace Cirkla_API.Controllers
 
         // Gets all images belonging to a specific item
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ItemPicture>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(IEnumerable<ItemPicture>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -46,7 +46,7 @@ namespace Cirkla_API.Controllers
 
         // Gets a specific image
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -58,7 +58,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -70,7 +70,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]

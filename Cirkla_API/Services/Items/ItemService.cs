@@ -11,159 +11,97 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Items
 {
-    public class ItemService : IItemService
+    public class ItemService(
+        IItemRepository itemRepository,
+        IContractRepository contractRepository,
+        IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
+        ILogger<ItemService> logger) : IItemService
     {
-        private readonly IItemRepository _itemRepository;
-        private readonly IContractRepository _contractRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<ItemService> _logger;
 
-        public ItemService(IItemRepository itemRepository, IContractRepository contractRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<ItemService> logger)
-        {
-            _itemRepository = itemRepository;
-            _contractRepository = contractRepository;
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
-
-
-        public async Task<ServiceResult<Item>> Create(ItemCreateDTO itemDTO)
+        public async Task<ServiceResult<int>> Create(ItemCreateDTO itemDTO)
         {
             if (itemDTO is null)
             {
-                _logger.LogWarning("Attempted creating an item with null value");
-                return ServiceResult<Item>.Fail("Item could not be created", ErrorType.ValidationError);
+                logger.LogWarning("Attempted creating an item with null value");
+                return ServiceResult<int>.Fail("Item could not be created", ErrorType.ValidationError);
             }
             var itemtoDb = await Mapper.MapToItem(itemDTO);
-            var createdItem = await _itemRepository.Create(itemtoDb);
-            await _unitOfWork.SaveChanges();
-            return ServiceResult<Item>.Created(createdItem);
-
+            await itemRepository.Create(itemtoDb);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<int>.Created(itemtoDb.Id);
         }
 
 
-        public async Task<ServiceResult<Item>> Delete(int id)
+        public async Task<ServiceResult<object>> Delete(int id)
         {
-            Item item = await _itemRepository.Get(id);
+            var item = await itemRepository.Get(id);
             if (item is null)
             {
-                _logger.LogWarning("Attempted to delete a non-existent item with ID {ItemId}", id);
-                return ServiceResult<Item>.Fail("Item not found", ErrorType.NotFound);
+                logger.LogWarning("Attempted to delete a non-existent item with ID {ItemId}", id);
+                return ServiceResult<object>.Fail("Item not found", ErrorType.NotFound);
             }
 
-            // Check if there are any active contracts before allowing deletion!
-            var activeContracts = await _contractRepository.GetActiveForItem(id);
+            var activeContracts = await contractRepository.GetActiveForItem(id);
             if (activeContracts.Any())
             {
-                _logger.LogWarning("Attempted to delete item with ID {ItemId} which still has active contracts", id);
-                return ServiceResult<Item>.Fail("Item with active contracts cannot be deleted", ErrorType.ValidationError);
+                logger.LogWarning("Attempted to delete item with ID {ItemId} which still has active contracts", id);
+                return ServiceResult<object>.Fail("Item with active contracts cannot be deleted", ErrorType.ValidationError);
             }
 
-            try
-            {
-                await _itemRepository.Delete(item);
-                await _unitOfWork.SaveChanges();
-                return ServiceResult<Item>.Success(item);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Failed deleting item with ID {ItemId} from database", id);
-                return ServiceResult<Item>.Fail("Error deleting item", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error deleting item with ID {ItemId}", id);
-                return ServiceResult<Item>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            await itemRepository.Delete(item);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<object>.Success(null);
         }
 
 
         public async Task<ServiceResult<Item>> GetById(int id)
         {
-            try
+            var item = await itemRepository.Get(id);
+            if (item is null)
             {
-                var item = await _itemRepository.Get(id);
-                if (item is null)
-                {
-                    _logger.LogWarning("Item with ID {ItemId} not found", id);
-                    return ServiceResult<Item>.Fail("Item not found", ErrorType.NotFound);
-                }
-                return ServiceResult<Item>.Success(item);
+                logger.LogWarning("Item with ID {ItemId} not found", id);
+                return ServiceResult<Item>.Fail("Item not found", ErrorType.NotFound);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error getting item with ID {ItemId}", id);
-                return ServiceResult<Item>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<Item>.Success(item);
         }
 
 
         public async Task<ServiceResult<IEnumerable<Item>>> GetAll()
         {
-            try
+            IEnumerable<Item> items = await itemRepository.GetAll();
+            if (!items.Any())
             {
-                IEnumerable<Item> items = await _itemRepository.GetAll();
-                if (!items.Any())
-                {
-                    _logger.LogWarning("No items found in database");
-                    return ServiceResult<IEnumerable<Item>>.Fail("No items found", ErrorType.NotFound);
-                }
-                return ServiceResult<IEnumerable<Item>>.Success(items);
+                logger.LogInformation("No items found in database");
+                return ServiceResult<IEnumerable<Item>>.Fail("No items found", ErrorType.NotFound);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error getting all items");
-                return ServiceResult<IEnumerable<Item>>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<IEnumerable<Item>>.Success(items);
         }
 
 
         public async Task<ServiceResult<IEnumerable<Item>>> GetAllItemsForUser(string userId)
         {
-            try
+            IEnumerable<Item> items = await itemRepository.GetAllByOwnerId(userId);
+            if (!items.Any())
             {
-                IEnumerable<Item> items = await _itemRepository.GetAllByOwnerId(userId);
-                if (!items.Any())
-                {
-                    _logger.LogWarning("No items found in database for user with ID {UserId}", userId);
-                    return ServiceResult<IEnumerable<Item>>.Fail("No items found", ErrorType.NotFound);
-                }
-                return ServiceResult<IEnumerable<Item>>.Success(items);
+                logger.LogInformation("No items found in database for user with ID {UserId}", userId);
+                return ServiceResult<IEnumerable<Item>>.Fail("No items found", ErrorType.NotFound);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error getting all items for user with ID {UserId}", userId);
-                return ServiceResult<IEnumerable<Item>>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<IEnumerable<Item>>.Success(items);
         }
 
 
-        public async Task<ServiceResult<Item>> Update(int id, Item item)
+        public async Task<ServiceResult<object>> Update(int id, Item item)
         {
             if (id != item.Id)
             {
-                _logger.LogWarning("Item ID mismatch");
-                return ServiceResult<Item>.Fail("Incorrect id", ErrorType.ValidationError);
+                logger.LogWarning("Item ID mismatch");
+                return ServiceResult<object>.Fail("Incorrect id", ErrorType.ValidationError);
             }
 
-            try
-            {
-                var updatedItem = await _itemRepository.Update(item);
-                await _unitOfWork.SaveChanges();
-                return ServiceResult<Item>.Success(item);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error updating item with ID {UserId}", id);
-                return ServiceResult<Item>.Fail("Internal error, could not update item", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error updating item with ID {UserId}", id);
-                return ServiceResult<Item>.Fail("Internal error", ErrorType.InternalError);
-            }
+            await itemRepository.Update(item);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<object>.Success(null);
         }
     }
 }
