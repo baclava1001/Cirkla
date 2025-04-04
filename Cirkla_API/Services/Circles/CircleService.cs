@@ -1,9 +1,13 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.CircleJoinRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
+using Mapping.DTOs.Circles;
+using Mapping.Mappers;
+using Mapping.Validators.Circles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Circles
@@ -11,121 +15,99 @@ namespace Cirkla_API.Services.Circles
     /// <summary>
     /// Simple CRUD for circles. Members and admins are handled in the CircleMemberService.
     /// </summary>
-    public class CircleService : ICircleService
+    public class CircleService(ICircleRepository circleRepository,
+                                IUserRepository userRepository,
+                                IUnitOfWork unitOfWork,
+                                CircleCreateValidator circleCreateValidator,
+                                ILogger<CircleService> logger) : ICircleService
     {
-        private readonly ICircleRepository _circleRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CircleService> _logger;
 
-        public CircleService(ICircleRepository circleRepository, IUnitOfWork unitOfWork, ILogger<CircleService> logger)
+        public async Task<ServiceResult<int>> Create(CircleCreateDTO circleDTO)
         {
-            _circleRepository = circleRepository;
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
-
-        public async Task<ServiceResult<Circle>> Create(Circle circle)
-        {
-            // TODO: Add more validation for: createdby, createdat, etc etc
-            if (circle is null)
+            var validationResult = await circleCreateValidator.ValidateAsync(circleDTO);
+            if (!validationResult.IsValid)
             {
-                _logger.LogWarning("Attempted creating a circle with null value");
-                return ServiceResult<Circle>.Fail("Circle could not be created", ErrorType.ValidationError);
+                logger.LogWarning("Circle creation failed due to validation errors: {Errors}", validationResult.Errors);
+                return ServiceResult<int>.Fail("Circle could not be created", ErrorType.ValidationError);
             }
 
-            try
+            var circle = await Mapper.MapToCircle(circleDTO);
+            var creatingUser = await userRepository.Get(circleDTO.CreatedById);
+            if (creatingUser is null)
             {
-                var createdCircle = await _circleRepository.Create(circle);
-                await _unitOfWork.SaveChanges();
-                return ServiceResult<Circle>.Success(createdCircle);
+                logger.LogWarning("Circle creation failed: User with ID {UserId} not found", circleDTO.CreatedById);
+                return ServiceResult<int>.Fail("Circle could not be created", ErrorType.ValidationError);
             }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Failed writing new circle to database");
-                return ServiceResult<Circle>.Fail("Error saving new circle", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error creating new circle");
-                return ServiceResult<Circle>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            circle.CreatedBy = creatingUser;
+            circle.Administrators = new List<User> { creatingUser };
+            circle.Members = new List<User> { creatingUser };   
+
+            await circleRepository.Create(circle);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<int>.Created(circle.Id);
         }
 
 
         public async Task<ServiceResult<IEnumerable<Circle>>> GetAll()
         {
-            try
+            IEnumerable<Circle> circles = await circleRepository.GetAll();
+            if (!circles.Any())
             {
-                IEnumerable<Circle> circles = await _circleRepository.GetAll();
-                if (!circles.Any())
-                {
-                    _logger.LogWarning("No Circles found in database");
-                    return ServiceResult<IEnumerable<Circle>>.Fail("No circles found", ErrorType.NotFound);
-                }
-                return ServiceResult<IEnumerable<Circle>>.Success(circles);
+                logger.LogWarning("No Circles found in database");
+                return ServiceResult<IEnumerable<Circle>>.Fail("No circles found", ErrorType.NotFound);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error getting all circles");
-                return ServiceResult<IEnumerable<Circle>>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<IEnumerable<Circle>>.Success(circles);
         }
 
 
         public async Task<ServiceResult<Circle>> GetById(int id)
         {
-            try
+            var circle = await circleRepository.GetById(id);
+            if (circle is null)
             {
-                var circle = await _circleRepository.GetById(id);
-                if (circle is null)
-                {
-                    _logger.LogWarning("Circle with ID {CircleId} not found", id);
-                    return ServiceResult<Circle>.Fail("Circle not found", ErrorType.NotFound);
-                }
-                return ServiceResult<Circle>.Success(circle);
+                logger.LogWarning("Circle with ID {CircleId} not found", id);
+                return ServiceResult<Circle>.Fail("Circle not found", ErrorType.NotFound);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error getting circle with id {CircleId}", id);
-                return ServiceResult<Circle>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            return ServiceResult<Circle>.Success(circle);
         }
 
 
-        public async Task<ServiceResult<Circle>> Update(int id, Circle circle)
+        public async Task<ServiceResult<object>> Update(int id, Circle circle)
         {
             if (circle is null)
             {
-                _logger.LogWarning("Attempted to update a non-existent circle with ID {CircleId}", id);
-                ServiceResult<Circle>.Fail("Circle could not be updated", ErrorType.ValidationError);
+                logger.LogWarning("Attempted to update a non-existent circle with ID {CircleId}", id);
+                ServiceResult<object>.Fail("Circle could not be updated", ErrorType.ValidationError);
             }
 
             if (id != circle.Id)
             {
-                _logger.LogWarning("Circle ID {CircleId} does not match the ID in the request body", id);
-                return ServiceResult<Circle>.Fail("Incorrect id", ErrorType.ValidationError);
+                logger.LogWarning("Circle ID {CircleId} does not match the ID in the request body", id);
+                return ServiceResult<object>.Fail("Incorrect id", ErrorType.ValidationError);
             }
 
 
-            var updatedCircle = await _circleRepository.Update(circle);
-            await _unitOfWork.SaveChanges();
-            return ServiceResult<Circle>.Success(updatedCircle);
+            var updatedCircle = await circleRepository.Update(circle);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<object>.Success(null);
         }
 
 
         // TODO: DB-relation to circle requests stops this from working
-        public async Task<ServiceResult<Circle>> Delete(int id)
+        public async Task<ServiceResult<object>> Delete(int id)
         {
-            Circle circle = await _circleRepository.GetById(id);
+            Circle circle = await circleRepository.GetById(id);
             if (circle is null)
             {
-                _logger.LogWarning("Attempted to delete a non-existent circle with ID {CircleId}", id);
-                return ServiceResult<Circle>.Fail("Circle not found", ErrorType.NotFound);
+                logger.LogWarning("Attempted to delete a non-existent circle with ID {CircleId}", id);
+                return ServiceResult<object>.Fail("Circle not found", ErrorType.NotFound);
             }
 
-            var deletedCircle = await _circleRepository.Delete(circle);
-            await _unitOfWork.SaveChanges();
-            return ServiceResult<Circle>.Success(deletedCircle);
+            // TODO: Fetch all related circle join requests and delete them
+
+            await circleRepository.Delete(circle);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<object>.Success(null);
         }
     }
 }

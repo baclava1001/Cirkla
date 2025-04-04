@@ -38,15 +38,20 @@
             return; // TODO: Add error handling
         }
 
-        Circle.CreatedAt = DateTime.Now;
-        Circle.CreatedById = _tempUserId;
-        Circle.CreatedBy = await Client.ApiUserGetAsync(_tempUserId);
-        Circle.Administrators = new List<User> { Circle.CreatedBy };
-        Circle.Members = new List<User> { Circle.CreatedBy };
+        var circleDTO = new CircleCreateDTO
+        {
+            Name = Circle.Name,
+            Description = Circle.Description,
+            IsPublic = Circle.IsPublic,
+            CreatedAt = DateTime.Now,
+            CreatedById = _tempUserId,
+            Administrators = new List<User> { Circle.CreatedBy },
+            Members = new List<User> { Circle.CreatedBy }
+        };
 
         try
         {
-            await Client.ApiCirclePostAsync(Circle);
+            await Client.ApiCirclePostAsync(circleDTO);
         }
         catch (ApiException ex)
         {

@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\ItemPictures\" />
-    <Folder Include="DTOs\Circles\" />
+    <Folder Include="Validators\Circles\" />
   </ItemGroup>
 
   <ItemGroup>
