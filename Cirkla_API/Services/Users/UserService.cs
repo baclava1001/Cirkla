@@ -1,151 +1,121 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
+using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Users
 {
-    /// <summary>
-    /// Simple CRUD-service for internal use in other classes
-    /// </summary>
-    public class UserService : IUserService
+    public class UserService(
+        IUserRepository userRepository,
+        IContractRepository contractRepository,
+        IUnitOfWork unitOfWork,
+        ILogger<UserService> logger) : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<UserService> _logger;
-
-        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<UserService> logger)
+        public async Task<ServiceResult<string>> Create(User user)
         {
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
-            _logger = logger;
+            if (user is null)
+            {
+                logger.LogWarning("Attempted creating a user with null value");
+                return ServiceResult<string>.Fail("User is null", ErrorType.ValidationError);
+            }
+
+            var createdUser = await userRepository.Create(user);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<string>.Created(createdUser.Id);
         }
 
-        public async Task<ServiceResult<User>> Create(User user)
-        {
-            if (user == null)
-            {
-                _logger.LogWarning("Attempted creating a user with null value");
-                return ServiceResult<User>.Fail("User is null", ErrorType.ValidationError);
-            }
 
-            try
-            {
-                var createdUser = await _userRepository.Create(user);
-                await _unitOfWork.SaveChanges();
-                return ServiceResult<User>.Success(createdUser);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Failed writing new user to database");
-                return ServiceResult<User>.Fail("Error saving new user", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error creating new user");
-                return ServiceResult<User>.Fail("Internal server error", ErrorType.InternalError);
-            }
-        }
-
-        public async Task<ServiceResult<User>> Delete(string id)
+        public async Task<ServiceResult<object>> Delete(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
-                _logger.LogWarning("Attempted to delete a non-existent user with ID {UserId} not found", id);
-                return ServiceResult<User>.Fail("User not found", ErrorType.ValidationError);
+                logger.LogWarning("ID value is null or empty");
+                return ServiceResult<object>.Fail("Invalid ID", ErrorType.ValidationError);
             }
 
-            // TODO: Check if there are any active contracts before allowing deletion!
-
-            try
+            if (!await CanDelete(id))
             {
-                var user = await _userRepository.Get(id);
-                if (user == null)
-                {
-                    return ServiceResult<User>.Fail("User not found", ErrorType.NotFound);
-                }
+                logger.LogWarning("Attempted to delete user with ID {UserId} who has active borrowings or sharings",
+                    id);
+                return ServiceResult<object>.Fail("Unable to delete users with active", ErrorType.ValidationError);
+            }
 
-                await _userRepository.Delete(user);
-                await _unitOfWork.SaveChanges();
+            var user = await userRepository.Get(id);
+            if (user is null)
+            {
+                logger.LogWarning("Attempted to delete a non-existent user with ID {UserId}", id);
+                return ServiceResult<object>.Fail("User not found", ErrorType.NotFound);
+            }
 
-                return ServiceResult<User>.Success(user);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error deleting user with ID {UserId}", id);
-                return ServiceResult<User>.Fail("Internal error, could not delete user", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error deleting user with ID {UserId}", id);
-                return ServiceResult<User>.Fail("Internal server error", ErrorType.InternalError);
-            }
+            await userRepository.Delete(user);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<object>.Success(null);
         }
+
 
         public async Task<ServiceResult<User>> GetById(string id)
         {
-            try
+            if (string.IsNullOrEmpty(id))
             {
-                var user = await _userRepository.Get(id);
-                if (user == null)
-                {
-                    _logger.LogWarning("User with ID {UserId} not found", id);
-                    return ServiceResult<User>.Fail("User not found", ErrorType.NotFound);
-                }
-                return ServiceResult<User>.Success(user);
+                logger.LogWarning("ID value is null or empty");
+                return ServiceResult<User>.Fail("Invalid ID", ErrorType.ValidationError);
             }
-            catch (Exception ex)
+
+            var user = await userRepository.Get(id);
+            if (user is null)
             {
-                _logger.LogError(ex, "Unexpected error getting user with ID {UserId}", id);
-                return ServiceResult<User>.Fail("Internal server error", ErrorType.InternalError);
+                logger.LogWarning("User with ID {UserId} not found", id);
+                return ServiceResult<User>.Fail("User not found", ErrorType.NotFound);
             }
+
+            return ServiceResult<User>.Success(user);
         }
 
         public async Task<ServiceResult<IEnumerable<User>>> GetAll()
         {
-            try
+            var users = await userRepository.GetAll();
+            if (users is null)
             {
-                var users = await _userRepository.GetAll();
-                if (users == null)
-                {
-                    _logger.LogWarning("No users found");
-                    return ServiceResult<IEnumerable<User>>.Fail("No users found", ErrorType.NotFound);
-                }
-                return ServiceResult<IEnumerable<User>>.Success(users);
+                logger.LogWarning("No users found");
+                return ServiceResult<IEnumerable<User>>.Fail("No users found", ErrorType.NotFound);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error getting all users");
-                return ServiceResult<IEnumerable<User>>.Fail("Internal server error", ErrorType.InternalError);
-            }
+
+            return ServiceResult<IEnumerable<User>>.Success(users);
         }
 
-        public async Task<ServiceResult<User>> Update(string id, User user)
+        public async Task<ServiceResult<object>> Update(string id, User user)
         {
             if (string.IsNullOrEmpty(id) || user.Id != id)
             {
-                _logger.LogWarning("User with ID {UserId} not found", id);
-                return ServiceResult<User>.Fail("User not found", ErrorType.ValidationError);
+                logger.LogWarning("User with ID {UserId} not found", id);
+                return ServiceResult<object>.Fail("User not found", ErrorType.ValidationError);
             }
 
-            try
-            {
-                var updatedUser = await _userRepository.Update(user);
-                await _unitOfWork.SaveChanges();
-                return ServiceResult<User>.Success(updatedUser);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Error updating user with ID {UserId}", id);
-                return ServiceResult<User>.Fail("Internal error, could not update user", ErrorType.InternalError);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error updating user with ID {UserId}", id);
-                return ServiceResult<User>.Fail("Internal error", ErrorType.InternalError);
-            }
+            var updatedUser = await userRepository.Update(user);
+            await unitOfWork.SaveChanges();
+            return ServiceResult<object>.Success(null);
         }
+
+
+        #region Helpers
+
+        private async Task<bool> CanDelete(string id)
+        {
+            var activeBorrowings = await contractRepository.GetActiveWhereUserIsBorrower(id);
+            var activeSharings = await contractRepository.GetActiveWhereUserIsOwner(id);
+
+            if (activeBorrowings.Any() || activeSharings.Any())
+            {
+                logger.LogWarning("Attempted to delete user with ID {UserId} who has active borrowings or sharings",
+                    id);
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
     }
 }
