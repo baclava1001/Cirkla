@@ -6,56 +6,51 @@ using Cirkla_DAL.Repositories.Users;
 
 namespace Cirkla_API.Services.TimeLines;
 
-public class TimeLineService : ITimeLineService
+public class TimeLineService(IContractRepository contractRepository,
+                            ILogger<TimeLineService> logger) : ITimeLineService
 {
-
-    private readonly IContractRepository _contractRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ILogger<TimeLineService> _logger;
-
-    public TimeLineService(IContractRepository contractRepository, IUserRepository userRepository, ILogger<TimeLineService> logger)
-    {
-        _contractRepository = contractRepository;
-        _userRepository = userRepository;
-        _logger = logger;
-    }
-
     public async Task<ServiceResult<IEnumerable<Contract>>> GetActiveWhereUserIsBorrower(string userId)
     {
-        try
+        var contracts = await contractRepository.GetActiveWhereUserIsBorrower(userId);
+        if (!contracts.Any())
         {
-            var contracts = await _contractRepository.GetActiveWhereUserIsBorrower(userId);
-            if (!contracts.Any())
-            {
-                _logger.LogWarning("No active contracts where user with id {Id} is borrower", userId);
-                return ServiceResult<IEnumerable<Contract>>.Fail("No active contracts where user is borrower", ErrorType.NotFound);
-            }
-            return ServiceResult<IEnumerable<Contract>>.Success(contracts);
+            logger.LogWarning("No active contracts where user with id {Id} is borrower", userId);
+            return ServiceResult<IEnumerable<Contract>>.Fail("No active contracts where user is borrower", ErrorType.NotFound);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting active contracts where user with id {Id} is borrower", userId);
-            return ServiceResult<IEnumerable<Contract>>.Fail("Error retrieving contracts", ErrorType.InternalError);
-        }
+        return ServiceResult<IEnumerable<Contract>>.Success(contracts);
     }
 
 
     public async Task<ServiceResult<IEnumerable<Contract>>> GetActiveWhereUserIsOwner(string userId)
     {
-        try
+        var contracts = await contractRepository.GetActiveWhereUserIsOwner(userId);
+        if (!contracts.Any())
         {
-            var contracts = await _contractRepository.GetActiveWhereUserIsOwner(userId);
-            if (!contracts.Any())
-            {
-                _logger.LogWarning("No active contracts where user with id {Id} is owner", userId);
-                return ServiceResult<IEnumerable<Contract>>.Fail("No active contracts where user is owner", ErrorType.NotFound);
-            }
-            return ServiceResult<IEnumerable<Contract>>.Success(contracts);
+            logger.LogWarning("No active contracts where user with id {Id} is owner", userId);
+            return ServiceResult<IEnumerable<Contract>>.Fail("No active contracts where user is owner", ErrorType.NotFound);
         }
-        catch (Exception ex)
+        return ServiceResult<IEnumerable<Contract>>.Success(contracts);
+    }
+
+    public async Task<ServiceResult<IEnumerable<Contract>>> GetArchivedWhereUserWasOwner(string userId)
+    {
+        var contracts = await contractRepository.GetArchivedWhereUserWasOwner(userId);
+        if (!contracts.Any())
         {
-            _logger.LogError(ex, "Error getting active contracts where user with id {Id} is owner", userId);
-            return ServiceResult<IEnumerable<Contract>>.Fail("Error retrieving contracts", ErrorType.InternalError);
+            logger.LogWarning("No archived contracts where user with id {Id} was owner", userId);
+            return ServiceResult<IEnumerable<Contract>>.Fail("No archived contracts where user was owner", ErrorType.NotFound);
         }
+        return ServiceResult<IEnumerable<Contract>>.Success(contracts);
+    }
+
+    public async Task<ServiceResult<IEnumerable<Contract>>> GetArchivedWhereUsersWasBorrower(string userId)
+    {
+        var contracts = await contractRepository.GetArchivedWhereUsersWasBorrower(userId);
+        if (!contracts.Any())
+        {
+            logger.LogWarning("No archived contracts where user with id {Id} was borrower", userId);
+            return ServiceResult<IEnumerable<Contract>>.Fail("No archived contracts where user was borrower", ErrorType.NotFound);
+        }
+        return ServiceResult<IEnumerable<Contract>>.Success(contracts);
     }
 }
