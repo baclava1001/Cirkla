@@ -2,6 +2,7 @@
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using Mapping.DTOs.CircleJoinRequests;
+using Mapping.DTOs.Circles;
 using Mapping.DTOs.ContractNotifications;
 using Mapping.DTOs.Users;
 using Mapping.DTOs.Contracts;
@@ -256,5 +257,19 @@ namespace Mapping.Mappers
         }
 
         #endregion
+
+        public static async Task<Circle> MapToCircle(CircleCreateDTO circleDto)
+        {
+            var circle = new Circle
+            {
+                Name = circleDto.Name,
+                Description = circleDto.Description,
+                CreatedAt = circleDto.CreatedAt,
+                CreatedById = circleDto.CreatedById,
+                Administrators = new List<User>(),
+                Members = new List<User>()
+            };
+            return circle;
+        }
     }
 }

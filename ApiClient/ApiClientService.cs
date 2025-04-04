@@ -93,11 +93,11 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Circle>> ApiCircleGetAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Circle> ApiCirclePostAsync(Circle circle);
+        System.Threading.Tasks.Task<int> ApiCirclePostAsync(CircleCreateDTO circleDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Circle> ApiCirclePostAsync(Circle circle, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> ApiCirclePostAsync(CircleCreateDTO circleDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Circle> ApiCircleGetAsync(int id);
@@ -107,18 +107,18 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<Circle> ApiCircleGetAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Circle> ApiCirclePutAsync(int id, Circle circle);
+        System.Threading.Tasks.Task<object> ApiCirclePutAsync(int id, Circle circle);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Circle> ApiCirclePutAsync(int id, Circle circle, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<object> ApiCirclePutAsync(int id, Circle circle, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Circle> ApiCircleDeleteAsync(int id);
+        System.Threading.Tasks.Task<object> ApiCircleDeleteAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Circle> ApiCircleDeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<object> ApiCircleDeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CircleJoinRequest>> MembershipRequestsCircleAsync(int circleId);
@@ -1357,17 +1357,17 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Circle> ApiCirclePostAsync(Circle circle)
+        public virtual System.Threading.Tasks.Task<int> ApiCirclePostAsync(CircleCreateDTO circleDTO)
         {
-            return ApiCirclePostAsync(circle, System.Threading.CancellationToken.None);
+            return ApiCirclePostAsync(circleDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Circle> ApiCirclePostAsync(Circle circle, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> ApiCirclePostAsync(CircleCreateDTO circleDTO, System.Threading.CancellationToken cancellationToken)
         {
-            if (circle == null)
-                throw new System.ArgumentNullException("circle");
+            if (circleDTO == null)
+                throw new System.ArgumentNullException("circleDTO");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1375,7 +1375,7 @@ namespace Cirkla.ApiClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(circle, JsonSerializerSettings);
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(circleDTO, JsonSerializerSettings);
                     var content_ = new System.Net.Http.ByteArrayContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
@@ -1412,7 +1412,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Circle>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1580,14 +1580,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Circle> ApiCirclePutAsync(int id, Circle circle)
+        public virtual System.Threading.Tasks.Task<object> ApiCirclePutAsync(int id, Circle circle)
         {
             return ApiCirclePutAsync(id, circle, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Circle> ApiCirclePutAsync(int id, Circle circle, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> ApiCirclePutAsync(int id, Circle circle, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1639,7 +1639,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Circle>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1697,14 +1697,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Circle> ApiCircleDeleteAsync(int id)
+        public virtual System.Threading.Tasks.Task<object> ApiCircleDeleteAsync(int id)
         {
             return ApiCircleDeleteAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Circle> ApiCircleDeleteAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> ApiCircleDeleteAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1749,7 +1749,7 @@ namespace Cirkla.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Circle>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -5734,6 +5734,33 @@ namespace Cirkla.ApiClient
 
         [System.Text.Json.Serialization.JsonPropertyName("toStatus")]
         public ContractStatus ToStatus { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.3.0.0 (NJsonSchema v11.2.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CircleCreateDTO
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("name")]
+        public string? Name { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string? Description { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("isPublic")]
+        public bool? IsPublic { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("administrators")]
+        public System.Collections.Generic.ICollection<User>? Administrators { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("members")]
+        public System.Collections.Generic.ICollection<User>? Members { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("createdAt")]
+        public System.DateTime? CreatedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("createdById")]
+        public string? CreatedById { get; set; } = default!;
 
     }
 
