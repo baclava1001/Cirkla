@@ -6,33 +6,24 @@ using Microsoft.AspNetCore.Components.Authorization;
 namespace Cirkla_Client.Services
 {
     /// <summary>
-    /// This class is responsible for sending authentication requests and recieving and storing token.
+    /// This class is responsible for sending authentication requests and receiving and storing token.
     /// </summary>
-    public class AuthenticationService : IAuthenticationService
+    
+    public class AuthenticationService(IClient client,
+                                        ILocalStorageService localStorage,
+                                        IApiAuthStateProvider apiAuthStateProvider) : IAuthenticationService
     {
-        private readonly IClient _client;
-        private readonly ILocalStorageService _localStorage;
-        private readonly IApiAuthStateProvider _apiAuthStateProvider;
-
-        public AuthenticationService(IClient client, ILocalStorageService localStorage, IApiAuthStateProvider apiAuthStateProvider)
-        {
-            _client = client;
-            _localStorage = localStorage;
-            _apiAuthStateProvider = apiAuthStateProvider;
-        }
-
-
         public async Task<bool> Authenticate(UserLoginDTO user)
         {
-            var response = await _client.ApiAuthenticationLoginAsync(user);
-            await _localStorage.SetItemAsync("accessToken", response.Token);
-            await _apiAuthStateProvider.LoggedIn();
+            var response = await client.ApiAuthenticationLoginAsync(user);
+            await localStorage.SetItemAsync("accessToken", response.Token);
+            await apiAuthStateProvider.LoggedIn();
             return true;
         }
 
         public async Task Logout()
         {
-            await _apiAuthStateProvider.LoggedOut();
+            await apiAuthStateProvider.LoggedOut();
         }
     }
 }
