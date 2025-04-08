@@ -1,5 +1,31 @@
-﻿<h3>AccessGuard</h3>
+﻿@using System.Security.Claims
+@using Cirkla_Client.Providers
+@inject IApiAuthStateProvider CustomStateProvider
+@inject AuthenticationStateProvider AuthStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        @if (CurrentUserId == CompareToId)
+        {
+            @ChildContent
+        }
+    </Authorized>
+</AuthorizeView>
 
 @code {
+    [Parameter] public RenderFragment ChildContent { get; set; } // The child content to render if the condition is met
+    [Parameter] public string CompareToId { get; set; } // The ID to compare against the current user's ID, taken from the calling component
 
+    private string CurrentUserId { get; set; } // The ID of the current user, retrieved from the authentication state
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            CurrentUserId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+    }
 }

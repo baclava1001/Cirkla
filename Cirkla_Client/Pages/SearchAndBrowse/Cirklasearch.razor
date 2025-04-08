@@ -1,4 +1,5 @@
 ﻿@page "/cirkla"
+@using Cirkla_Client.Pages.Components
 @using Cirkla_Client.Pages.SearchAndBrowse.Components
 @inject IClient _client;
 
@@ -19,7 +20,9 @@
         {
             foreach (var item in AllItems)
             {
-                <BorrowItemCard Item="item"/>
+                <AccessGuard CompareToId="@item.OwnerId">
+                    <BorrowItemCard Item="item"/>
+                </AccessGuard>
             }
         }
     </div>
@@ -30,7 +33,7 @@
 
 @code {
     // TODO: Add pagination serverside & clientside
-    // TODO: Fix image height in cards
+    // TODO: Fix height in cards
 
     // TODO: Set Item Status in backend
 
