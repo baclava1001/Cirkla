@@ -28,7 +28,7 @@ namespace Cirkla_API
                     .EnableSensitiveDataLogging());
 
 
-            builder.Services.AddAuthorization();
+            //builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
