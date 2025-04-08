@@ -1,15 +1,18 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <div class="full-page-image-wrapper position-fixed top-0 start-0 mb-0 overflow-hidden" style="min-width:100%; height:100%;">
-                <img src="\Images\64634.jpg" class="full-page-image" alt="Illustration of people carrying tools and a DIY-sign" />
-                @* <img src="\Images\underconstruction.png" class="img-fluid mx-auto my-auto" style="width:250px" alt="Under construction sign" /> *@
-            </div>
-        </LayoutView>
-    </NotFound>
-</Router>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <div class="full-page-image-wrapper position-fixed top-0 start-0 mb-0 overflow-hidden" style="min-width:100%; height:100%;">
+                    <img src="\Images\64634.jpg" class="full-page-image" alt="Illustration of people carrying tools and a DIY-sign" />
+                </div>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

@@ -7,6 +7,7 @@ using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
 using Cirkla_Client.Providers;
 using MudBlazor.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Cirkla_Client
 {
@@ -21,12 +22,17 @@ namespace Cirkla_Client
             // TODO: Move service registration to separate class
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IApiAuthStateProvider, ApiAuthStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider>(sp => (AuthenticationStateProvider)sp.GetRequiredService<IApiAuthStateProvider>());
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddCascadingAuthenticationState();
+
             builder.Services.AddSingleton<ToastNotificationService>();
             builder.Services.AddSingleton<ComponentNotificationService>();
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMudServices();
-            
+            builder.Services.AddScoped<UserContext>();
+
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new Uri(ApiAddress.baseAdress)

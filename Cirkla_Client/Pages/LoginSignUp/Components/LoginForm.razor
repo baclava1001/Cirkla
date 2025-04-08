@@ -1,6 +1,6 @@
 ﻿@using Cirkla_Client.Services;
 @inject IClient _client;
-@inject IAuthenticationService authService;
+@inject IAuthenticationService _authService;
 @inject NavigationManager _navigationManager;
 
 <EditForm method="post" Model="User" OnSubmit="OnValidSubmit">
@@ -46,17 +46,18 @@
     {
         try
         {
-            var response = await authService.Authenticate(User);
+            var response = await _authService.Authenticate(User);
             if(response)
             {
+                // TODO: Add a success message and redirect to appropriate page
                 successMessage = $"You successfully logged in as {User.Email}!";
                 //_navigationManager.NavigateTo("/");
             }
         }
         catch(Exception ex)
         {
-            errorMessage = ex.Message;
-            return;
+            errorMessage = "Error, unable to log in";
+            Console.WriteLine(ex.Message);
         }
     }
 }

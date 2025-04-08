@@ -1,20 +1,16 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
-using Cirkla_API.Controllers;
 using Cirkla_API.Services.TokenGenerator;
 using Cirkla_DAL.Models;
 using Mapping.DTOs.Users;
 using Mapping.Mappers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Services.Authentication;
 
-public class CustomAuthenticationService(
-    UserManager<User> userManager,
-    ITokenService tokenService,
-    IConfiguration configuration,
-    ILogger<CustomAuthenticationService> logger) : ICustomAuthenticationService
+public class CustomAuthenticationService(UserManager<User> userManager,
+                                        ITokenService tokenService,
+                                        ILogger<CustomAuthenticationService> logger) : ICustomAuthenticationService
 {
 
     public async Task<ServiceResult<User>> Signup(UserSignupDTO userSignupDTO)
@@ -83,9 +79,10 @@ public class CustomAuthenticationService(
 
             var response = new UserAuthResponseDTO
             {
-                Email = user.Email,
                 Token = tokenResult.Payload,
-                Id = user.Id
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email
             };
 
             return ServiceResult<UserAuthResponseDTO>.Success(response);

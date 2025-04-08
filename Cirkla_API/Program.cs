@@ -77,6 +77,8 @@ namespace Cirkla_API
             // TODO: Safer CORS policy
             app.UseCors("AllowAll");
 
+
+            // TODO: Remove these and replace with antiforgery?
             app.UseAuthentication();
 
             app.UseAuthorization();
