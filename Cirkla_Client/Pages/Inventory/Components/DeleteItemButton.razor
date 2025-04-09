@@ -16,6 +16,6 @@
     {
         await Client.ApiItemDeleteAsync(Item.Id);
         ToastService.ShowSuccess($"{Item.Name} was successfully deleted");
-        NavigationManager.NavigateTo("/inventory", forceLoad:true);
+        NavigationManager.NavigateTo("/my-inventory", forceLoad:true);
     }
 }

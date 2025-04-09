@@ -31,7 +31,7 @@
         {
             await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component cancelled request successfully");
-            NavigationManager.NavigateTo("/inventory");
+            NavigationManager.NavigateTo("/my-inventory");
         }
         catch (Exception ex)
         {

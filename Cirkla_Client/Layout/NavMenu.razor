@@ -10,12 +10,12 @@
         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #ffffff;"/></span>
         <span class="d-block d-md-none"><i class="fa-solid fa-magnifying-glass fa-xl" style="color: #ffffff;"/></span>
     </a>
-    <a href="inventory" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
+    <a href="my-inventory" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
         <span class="d-none d-lg-block">Inventory</span>
         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-warehouse fa-2xl" style="color: #ffffff;"/></span>
         <span class="d-block d-md-none"><i class="fa-solid fa-warehouse fa-xl" style="color: #ffffff;"/></span>
     </a>
-    <a href="/circlesoverview" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
+    <a href="/circles" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
         <span class="d-none d-lg-block">My circles</span>
         <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-users fa-2xl" style="color: #ffffff;"/></span>
         <span class="d-block d-md-none"><i class="fa-solid fa-users fa-xl" style="color: #ffffff;"/></span>
@@ -30,7 +30,7 @@
         </div>
         </Authorized>
         <NotAuthorized>
-            <a href="login" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
+            <a href="account/login" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
                 <span class="d-none d-lg-block">Login</span>
                 <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-door-open fa-2xl" style="color: #ffffff;"/></span>
                 <span class="d-block d-md-none"><i class="fa-solid fa-door-open fa-xl" style="color: #ffffff;"/></span>
@@ -43,5 +43,5 @@
 
 
 @code {
-    // TODO: Add user name in top right corner instead of login button when logged in
+    // TODO: Make a separate component that displays logged in user name with a menu hidden underneath (My account, My circles, My items, my loans, logout)
 }

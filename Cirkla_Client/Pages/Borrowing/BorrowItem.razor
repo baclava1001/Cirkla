@@ -1,9 +1,9 @@
-﻿@page "/borrowitem/"
-@inject IClient _client;
-@inject NavigationManager _navigationManager;
+﻿@page "/items/{itemId:int}/borrowing-contract/create"
+@inject IClient Client;
+@inject NavigationManager NavigationManager;
 
-<PageTitle>Details for @Item?.Name</PageTitle>
-<h3>Details for @Item?.Name</h3>
+<PageTitle>Request to borrow @Item?.Name</PageTitle>
+<h3>Request to borrow @Item?.Name</h3>
 <hr />
 
 <div>
@@ -32,7 +32,7 @@
         </dl>
             <div class="row mb-3">
                 <div class="col-4">
-                    <label for="requestedpickupdate" class="form-label">Requested pickup date & time</label>
+                    <label for="requested-pickup-date" class="form-label">Requested pickup date & time</label>
                     <div class="col-sm-10">
                     <input type="datetime-local" id="start-time" class="form-control" min="@minDateTime" @bind="ContractDTO.StartTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.StartTime = dateTime)" required />
                     </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="row mb-3">
                 <div class="col-4">
-                <label for="requestedreturndate" class="form-label">Requested return date & time</label>
+                <label for="requested-return-date" class="form-label">Requested return date & time</label>
                 <div class="col-sm-10">
                 <input type="datetime-local" id="end-time" class="form-control" min="@minDateTime" @bind="ContractDTO.EndTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.EndTime = dateTime)" required />
                 </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <a href="/inventory" class="btn btn-secondary me-2 px-3" type="button">Back</a>
+                    <a href="/my-inventory" class="btn btn-secondary me-2 px-3" type="button">Back</a>
                     <button class="btn btn-primary me-2 px-5" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
                 </div>
             </div>
@@ -63,8 +63,8 @@
 @code {
     // TODO: Refactor and extract datepickers?
     // TODO: Add more pictures in this view
-    [SupplyParameterFromQuery]
-    public int Id { get; set; } //Item id from http-query
+    [Parameter]
+    public int ItemId { get; set; } //Item id from http-route parameter
 
     public Item? Item { get; set; } = new();
 
@@ -78,7 +78,7 @@
     {
         try
         {
-            Item = await _client.ApiItemGetAsync(Id);
+            Item = await Client.ApiItemGetAsync(ItemId);
             ContractDTO.StartTime = DateTime.Parse(minDateTime);
             ContractDTO.EndTime = DateTime.Parse(minDateTime);
         }
@@ -100,8 +100,8 @@
 
         try
         {
-            var response = await _client.ApiBorrowingContractSendRequestAsync(ContractDTO);
-            _navigationManager.NavigateTo($"/request/view?id={response}");
+            var response = await Client.ApiBorrowingContractSendRequestAsync(ContractDTO);
+            NavigationManager.NavigateTo($"/borrowing-contracts/{response}");
         }
         catch (ApiException ex)
         {

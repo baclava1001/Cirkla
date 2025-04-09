@@ -24,18 +24,18 @@
 
     private void NavigateToSummary()
     {
-        var url = $"/request/review?id={Contract.Id}";
+        var url = $"/borrowing-contracts/{Contract?.Id}";
         NavigationManager.NavigateTo(url);
     }
 
     private async Task<string> AltText()
     {
-        return $"Picture of {Contract?.Item.Name}";
+        return $"Picture of {Contract?.Item?.Name}";
     }
 
     protected override async Task OnInitializedAsync()
     {
-        switch (Contract.StatusChanges.Last().To)
+        switch (Contract?.StatusChanges?.Last().To)
         {
             case ContractStatus.Pending:
                 _cardContent = await ContractStringBuilder.RequestCardContent(Contract, _tempUserId);
