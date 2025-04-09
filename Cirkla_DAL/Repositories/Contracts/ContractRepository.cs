@@ -6,7 +6,6 @@ namespace Cirkla_DAL.Repositories.Contracts
 {
     public class ContractRepository(AppDbContext context) : IContractRepository
     {
-
         public async Task<Contract> Create(Contract contract)
         {
             await context.AddAsync(contract);

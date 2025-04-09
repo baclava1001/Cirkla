@@ -26,7 +26,7 @@
 
     private void NavigateToItem()
     {
-        var url = $"/borrowitem/?id={Item?.Id}";
+        var url = $"/items/{Item?.Id}/borrowing-contract/create";
         NavigationManager.NavigateTo(url);
     }
 

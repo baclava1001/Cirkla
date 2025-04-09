@@ -20,9 +20,7 @@
         {
             foreach (var item in AllItems)
             {
-                <AccessGuard CompareToId="@item.OwnerId">
-                    <BorrowItemCard Item="item"/>
-                </AccessGuard>
+                <BorrowItemCard Item="item"/>
             }
         }
     </div>

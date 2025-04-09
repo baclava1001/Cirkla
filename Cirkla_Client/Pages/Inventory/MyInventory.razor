@@ -1,11 +1,11 @@
-﻿@page "/inventory"
+﻿@page "/my-inventory"
 @using Cirkla_Client.Pages.Inventory.Components
 @inject IClient Client;
 
 <PageTitle>My inventory</PageTitle>
 <div class="row mb-3">
     <h3 class="col-2">My inventory</h3>
-    <a href="/publishitem" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"/></a>
+    <a href="/items/create" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"/></a>
 </div>
 <hr/>
 
@@ -13,7 +13,7 @@
 
     <MudDivider/>
     <div class="row my-5">
-        <h4>Borrowing items</h4>
+        <h4>Borrowed items</h4>
         @if (!BorrowingItems.Any())
         {
             <p>@borrowingItemsMessage</p>
@@ -29,7 +29,7 @@
 
     <MudDivider/>
     <div class="row my-5">
-        <h4>Sharing Items</h4>
+        <h4>Shared items</h4>
         @if (!SharingItems.Any())
         {
             <p>@sharingItemsMessage</p>

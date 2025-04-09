@@ -54,7 +54,7 @@
     {
         if (Circle != null)
         {
-            NavigationManager.NavigateTo($"/edit-circle/?id={Circle.Id}");
+            NavigationManager.NavigateTo($"/circles/{Circle.Id}/edit");
         }
     }
 
@@ -81,7 +81,7 @@
     {
         if (Circle != null)
         {
-            NavigationManager.NavigateTo($"/circle-administration/?id={Circle.Id}");
+            NavigationManager.NavigateTo($"/circles/{Circle.Id}/admin");
         }
     }
 

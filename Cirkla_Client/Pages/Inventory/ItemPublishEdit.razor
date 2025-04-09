@@ -1,5 +1,5 @@
-﻿@page "/publishitem"
-@page "/item/edit/"
+﻿@page "/items/create"
+@page "/items/{itemId:int}/edit/"
 @using System.Text.Json
 @using Cirkla_Client.Pages.Inventory.Components;
 @using Mapping.Mappers
@@ -83,8 +83,8 @@
 @code {
     // TODO: Make each button it's own component
     // TODO: Later make Category a separate, prepopulated table in db
-    [SupplyParameterFromQuery]
-    public int? Id { get; set; }
+    [Parameter]
+    public int? ItemId { get; set; }
 
     [SupplyParameterFromForm] public Item? Item { get; set; } = new();
 
@@ -97,7 +97,7 @@
     private string[] temporaryCategoryList = ["Transportation", "Household & tools", "Accommodation", "Personal stuff", "Electronics", "Leisure & hobby"]; 
 
     public bool IsSendingApiRequest { get; set; }
-    private bool IsEditing => !string.IsNullOrWhiteSpace(Id.ToString());
+    private bool IsEditing => !string.IsNullOrWhiteSpace(ItemId.ToString());
 
     private string TitleString { get; set; } = "";
     private string? _errorMessage;
@@ -106,9 +106,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (IsEditing && Id.HasValue)
+        if (IsEditing && ItemId.HasValue)
         {
-            Item = await Client.ApiItemGetAsync(Id.Value);
+            Item = await Client.ApiItemGetAsync(ItemId.Value);
             TitleString = $"Edit {Item.Name}";
         }
         else
@@ -181,7 +181,7 @@
         try
         {
             Item.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; // TODO: Remove this - Samed's id, hardcoded
-            await Client.ApiItemPutAsync(Id.Value, Item);
+            await Client.ApiItemPutAsync(ItemId.Value, Item);
             await Task.Delay(500);
             ToastService.ShowSuccess($"{Item.Name} was successfully edited");
         }
@@ -196,7 +196,7 @@
         finally
         {
             IsSendingApiRequest = false;
-            var url = $"/itemdetails/?id={Id}";
+            var url = $"/itemdetails/?id={ItemId}";
             NavigationManager.NavigateTo(url);
         }
     }

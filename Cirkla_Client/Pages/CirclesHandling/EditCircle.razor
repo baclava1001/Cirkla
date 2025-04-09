@@ -1,4 +1,4 @@
-﻿@page "/edit-circle/"
+﻿@page "/circles/{circleId:int}/edit"
 @using Cirkla_Client.Pages.CirclesHandling.Components;
 @inject IClient Client;
 
@@ -16,8 +16,8 @@
 }
 
 @code {
-    [SupplyParameterFromQuery]
-    public int Id { get; set; }
+    [Parameter]
+    public int CircleId { get; set; }
 
     public Circle? Circle { get; set; }
 
@@ -25,7 +25,7 @@
     {
         try
         {
-            Circle = await Client.ApiCircleGetAsync(Id);
+            Circle = await Client.ApiCircleGetAsync(CircleId);
         }
         catch (ApiException ex)
         {

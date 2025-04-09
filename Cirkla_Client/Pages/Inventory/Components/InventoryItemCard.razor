@@ -46,6 +46,7 @@
         _isAvailable = (Item?.Status == ItemStatus.Available);
     }
 
+    // TODO: Toggling doesn't work as expected
     private async Task ToggleAvailability(bool newValue)
     {
         _isAvailable = newValue; // Ensure UI updates immediately
@@ -62,13 +63,13 @@
 
     private void NavigateToItemDetails()
     {
-        var url = $"/itemdetails/?id={Item?.Id}";
+        var url = $"/items/{Item?.Id}";
         NavigationManager.NavigateTo(url);
     }
 
     private void NavigateToItemEdit()
     {
-        var url = $"/item/edit/?id={Item?.Id}";
+        var url = $"/items/{Item?.Id}/edit";
         NavigationManager.NavigateTo(url);
     }
 

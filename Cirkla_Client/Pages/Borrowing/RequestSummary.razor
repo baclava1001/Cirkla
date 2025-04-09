@@ -1,8 +1,8 @@
-﻿@page "/request/review"
+﻿@page "/borrowing-contracts/{contractId:int}"
 @using System.Runtime.CompilerServices;
 @using Cirkla_Client.Pages.Borrowing.Components;
-@inject IClient _client;
-@inject NavigationManager _navigationManager;
+@inject IClient Client;
+@inject NavigationManager NavigationManager;
 
 
 <PageTitle>Request summary</PageTitle>
@@ -53,7 +53,13 @@
             </dd>
         </dl>
         <MudGrid Justify="Justify.FlexStart">
-            <MudButton id="Back" ButtonType="ButtonType.Button" Color="Color.Dark" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FastRewind" Href="/inventory" Class="ml-5">Back</MudButton>
+            <MudButton Href="/my-inventory"
+                       id="Back"
+                       ButtonType="ButtonType.Button" 
+                       Color="Color.Dark" 
+                       Variant="Variant.Filled" 
+                       StartIcon="@Icons.Material.Filled.FastRewind" 
+                       Class="ml-5">Back</MudButton>
             @if (_canCancel)
             {
                 <CancelRequestButton Contract="Contract" />
@@ -82,8 +88,8 @@
 @code {
     // TODO: Add more detailed conditions for showing/hiding buttons and refactor to pattern matching (depending on date, logged in user, etc)
 
-    [SupplyParameterFromQuery]
-    public int Id { get; set; }
+    [Parameter]
+    public int ContractId { get; set; }
 
     private ContractResponseDTO? Contract { get; set; }
 
@@ -122,7 +128,7 @@
         Console.WriteLine("RequestSummary component is getting Contract values from API...");
         try
         {
-            Contract = await _client.ApiBorrowingContractViewRequestSummaryAsync(Id);
+            Contract = await Client.ApiBorrowingContractViewRequestSummaryAsync(ContractId);
             _requestNumber = $"#{Contract.Id}";
         }
         catch (ApiException ex)
