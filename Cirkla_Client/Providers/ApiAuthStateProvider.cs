@@ -23,7 +23,7 @@ namespace Cirkla_Client.Providers
 
             var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
 
-            if (tokenContent.ValidTo < DateTime.Now)
+            if (tokenContent.ValidTo < DateTime.UtcNow)
             {
                 return new AuthenticationState(user);
             }

@@ -27,8 +27,6 @@ namespace Cirkla_API
                 .GetConnectionString("AppConnectionString"))
                     .EnableSensitiveDataLogging());
 
-
-            //builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

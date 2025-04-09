@@ -47,10 +47,11 @@ public class TokenService(UserManager<User> userManager,
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Name, user.FullName ?? ""),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id ?? ""),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(CustomClaimTypes.UserId, user.Id ?? "")
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                    ClaimValueTypes.Integer64)
             }
                 .Union(roleClaims)
                 .Union(userClaims);
@@ -65,6 +66,7 @@ public class TokenService(UserManager<User> userManager,
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
+                notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.AddMinutes(durationMinutes),
                 signingCredentials: credentials
             );

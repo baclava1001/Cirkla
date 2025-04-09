@@ -1,4 +1,4 @@
-﻿@using System.Security.Claims
+﻿@using Cirkla_Client.Extensions
 @using Cirkla_Client.Providers
 @inject IApiAuthStateProvider CustomStateProvider
 @inject AuthenticationStateProvider AuthStateProvider
@@ -14,9 +14,9 @@
 
 @code {
     [Parameter] public RenderFragment ChildContent { get; set; } // The child content to render if the condition is met
-    [Parameter] public string CompareToId { get; set; } // The ID to compare against the current user's ID, taken from the calling component
+    [Parameter] public string? CompareToId { get; set; } // The ID to compare against the current user's ID, taken from the calling component
 
-    private string CurrentUserId { get; set; } // The ID of the current user, retrieved from the authentication state
+    private string? CurrentUserId { get; set; } // The ID of the current user, retrieved from the authentication state
 
     protected override async Task OnInitializedAsync()
     {
@@ -25,7 +25,7 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            CurrentUserId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            CurrentUserId = user.GetUserId();
         }
     }
 }
