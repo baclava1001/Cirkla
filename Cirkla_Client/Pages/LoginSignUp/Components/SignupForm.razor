@@ -4,8 +4,7 @@
 
 <EditForm method="post" Model="User" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
-    <h3>Signup</h3>
-    <hr/>
+    <h3 class="mb-5 mt-lg-0 mt-sm-5">Signup</h3>
     <fieldset disabled="@hasSubmitted">
         <div class="mb-3">
             <label for="firstname" class="form-label">First name </label>
@@ -68,7 +67,7 @@
     {
         try
         {
-            // Add a random profilepicture url
+            // Adds a random profilepicture url
             Uri.TryCreate("https://avatar.iran.liara.run/public", new UriKind(), out Uri? result);
             User.ProfilePictureURL = result;
 

@@ -5,9 +5,8 @@
 
 <EditForm method="post" Model="User" OnSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
-    <h3>Login</h3>
-    <hr />
-    <div class="=mb3">
+    <h3 class="mb-5">Login</h3>
+    <div class="mb-3">
         <label for="username" class="form-label">Email </label>
         <InputText id="username" @bind-Value="User.Email" class="form-control" />
         <ValidationMessage For="() => User.Email" class="text-danger" />
