@@ -13,6 +13,16 @@
     private string MessageContent { get; set; } = string.Empty;
     public int DismissAfter { get; set; } = 3;
     public Severity SeverityType { get; set; }
+    private bool _pendingChecked = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_pendingChecked)
+        {
+            _pendingChecked = true;
+            ToastService.TryShowPendingMessage();
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -25,12 +35,8 @@
 
     protected override void OnInitialized()
     {
-        ToastService.OnShow += (message, type, dismissAfter) => 
-        {
-            _ = ShowToast(message, type, dismissAfter); 
-        };
+        ToastService.OnShow += HandleShow;
         ToastService.OnHide += HideMessage;
-        ToastService.TryShowPendingMessage();
     }
 
     private async Task ShowToast(string message, Severity type, int dismissAfter)
@@ -46,6 +52,11 @@
         }
     }
 
+    private void HandleShow(string message, Severity type, int dismissAfter)
+    {
+        _ = ShowToast(message, type, dismissAfter);
+    }
+
     private void HideMessage()
     {
         ShowMessage = false;
@@ -54,10 +65,7 @@
 
     public void Dispose()
     {
-        ToastService.OnShow -= (message, type, dismissAfter) =>
-        {
-            _ = ShowToast(message, type, dismissAfter);
-        };
+        ToastService.OnShow -= HandleShow;
         ToastService.OnHide -= HideMessage;
     }
 }

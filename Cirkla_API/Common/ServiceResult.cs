@@ -23,6 +23,7 @@ public class ServiceResult<T>
 
     public static ServiceResult<T> Created(T payload) => new(false, default, null, payload, true);
     public static ServiceResult<T> Success(T payload) => new(false, default,null, payload, false);
+    public static ServiceResult<object> NoContent() => new(false,default,null, new object(), false);
     public static ServiceResult<T> Fail(string errorMessage, ErrorType error) => new(true, error, errorMessage, default, false);
 
 

@@ -51,7 +51,7 @@ namespace Cirkla_API.Services.Items
 
             await itemRepository.Delete(item);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 
@@ -101,7 +101,7 @@ namespace Cirkla_API.Services.Items
 
             await itemRepository.Update(item);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
     }
 }

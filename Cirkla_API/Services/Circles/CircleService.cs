@@ -89,7 +89,7 @@ namespace Cirkla_API.Services.Circles
 
             var updatedCircle = await circleRepository.Update(circle);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 
@@ -107,7 +107,7 @@ namespace Cirkla_API.Services.Circles
 
             await circleRepository.Delete(circle);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
     }
 }

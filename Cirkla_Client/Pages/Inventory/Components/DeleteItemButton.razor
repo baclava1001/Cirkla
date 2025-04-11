@@ -1,6 +1,7 @@
-﻿@inject IClient Client;
+﻿@using SnackbarService = Cirkla_Client.Services.SnackbarService
+@inject IClient Client;
 @inject NavigationManager NavigationManager;
-@inject ToastNotificationService ToastService;
+@inject SnackbarService SnackbarService;
 
 <MudButton
     OnClick="() => DeleteItem()"
@@ -14,8 +15,16 @@
 
     private async Task DeleteItem()
     {
-        await Client.ApiItemDeleteAsync(Item.Id);
-        ToastService.ShowSuccess($"{Item.Name} was successfully deleted");
-        NavigationManager.NavigateTo("/my-inventory", forceLoad:true);
+        try
+        {
+            await Client.ApiItemDeleteAsync(Item.Id);
+            SnackbarService.Success($"{Item.Name} was successfully deleted");
+            NavigationManager.NavigateTo("/my-inventory", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            SnackbarService.Error(ex.Message);
+        }
     }
 }

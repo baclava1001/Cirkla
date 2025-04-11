@@ -6,26 +6,19 @@ using System.Threading.Tasks;
 
 namespace Cirkla_DAL.Repositories.UoW
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork(AppDbContext context) : IUnitOfWork
     {
-        private readonly AppDbContext _context;
-
-        public UnitOfWork(AppDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<int> SaveChanges()
         {
-            return await _context.SaveChangesAsync();
+            return await context.SaveChangesAsync();
         }
 
         public async Task<int> SaveChangesWithTransaction()
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await using var transaction = await context.Database.BeginTransactionAsync();
             try
             {
-                int result = await _context.SaveChangesAsync();
+                int result = await context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return result;
             }

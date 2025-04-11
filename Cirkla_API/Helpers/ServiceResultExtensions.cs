@@ -10,6 +10,10 @@ public static class ServiceResultExtensions
     {
         if (result.IsCreated)
             return new CreatedResult("", result.Payload);
+
+        if (result is ServiceResult<object> && result.Payload.GetType() == typeof(object))
+            return new NoContentResult();
+
         if (!result.IsError)
             return new OkObjectResult(result.Payload);
 
