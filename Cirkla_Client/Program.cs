@@ -26,11 +26,12 @@ namespace Cirkla_Client
             builder.Services.AddAuthorizationCore();
             builder.Services.AddCascadingAuthenticationState();
 
-            builder.Services.AddSingleton<ToastNotificationService>();
+            //builder.Services.AddSingleton<ToastNotificationService>();
             builder.Services.AddSingleton<ComponentNotificationService>();
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMudServices();
+            builder.Services.AddScoped<SnackbarService>();
 
             builder.Services.AddScoped(sp => new HttpClient
             {

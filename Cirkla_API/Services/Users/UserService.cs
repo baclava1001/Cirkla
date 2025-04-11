@@ -52,7 +52,7 @@ namespace Cirkla_API.Services.Users
 
             await userRepository.Delete(user);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 
@@ -96,7 +96,7 @@ namespace Cirkla_API.Services.Users
 
             var updatedUser = await userRepository.Update(user);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 

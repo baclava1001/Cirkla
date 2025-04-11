@@ -24,7 +24,8 @@ namespace Cirkla_DAL.Models
         [Required]
         private string _zipCode;
 
-        [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid ZIP code format.")]
+        [RegularExpression(@"^\s*[A-Z0-9\-/ ]{2,20}\s*$",
+            ErrorMessage = "Enter a valid postal code (flexible test rules).")] // TODO: Stricter Regex rules
         public string ZipCode
         {
             get => _zipCode;

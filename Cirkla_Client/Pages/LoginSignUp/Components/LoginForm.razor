@@ -1,9 +1,14 @@
-﻿@using Cirkla_Client.Services;
-@inject IClient _client;
-@inject IAuthenticationService _authService;
-@inject NavigationManager _navigationManager;
+﻿@using Cirkla_Client.Extensions
+@using Cirkla_Client.Providers
+@using Cirkla_Client.Services;
+@using SnackbarService = Cirkla_Client.Services.SnackbarService
+@inject IClient Client;
+@inject IAuthenticationService AuthService;
+@inject NavigationManager NavigationManager;
+@inject IApiAuthStateProvider AuthStateProvider;
+@inject SnackbarService SnackbarService
 
-<EditForm method="post" Model="User" OnSubmit="OnValidSubmit">
+<EditForm method="post" Model="User" OnSubmit="OnValidSubmit" disabled="@_isSendingApiRequest">
     <DataAnnotationsValidator />
     <h3 class="mb-5">Login</h3>
     <div class="mb-3">
@@ -20,16 +25,6 @@
         <input class="btn btn-secondary" type="reset" value="Reset" />
         <button class="btn btn-primary" type="submit" value="Submit">Login</button>
     </div>
-    <div class="mt-3 mb-3">
-        @if (errorMessage is not null)
-        {
-            <p class="text-danger">@errorMessage</p>
-        }
-        else
-        {
-            <p class="text-success">@successMessage</p>
-        }
-    </div>
 </EditForm>
 
 
@@ -38,25 +33,28 @@
     [Parameter]
     public UserLoginDTO User { get; set; } = new();
 
-    private string? errorMessage;
-    private string? successMessage;
+    private bool _isSendingApiRequest;
 
     private async Task OnValidSubmit()
     {
+        _isSendingApiRequest = true;
         try
         {
-            var response = await _authService.Authenticate(User);
-            if(response)
+            var response = await AuthService.Authenticate(User);
+            if(!response)
             {
-                // TODO: Add a success message and redirect to appropriate page
-                successMessage = $"You successfully logged in as {User.Email}!";
-                //_navigationManager.NavigateTo("/");
+                SnackbarService.Error("Something went wrong, can't log in");
+                return;
             }
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            _isSendingApiRequest = false;
+            SnackbarService.Success($"Welcome, {user.GetFullName()}!");
+            NavigationManager.NavigateTo("/");
         }
         catch(Exception ex)
         {
-            errorMessage = "Error, unable to log in";
-            Console.WriteLine(ex.Message);
+            SnackbarService.Error("Something went wrong, can't log in");
         }
     }
 }

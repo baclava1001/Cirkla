@@ -174,7 +174,7 @@ namespace Cirkla_API.Services.CircleMembership
             request.UpdatedAt = DateTime.Now;
             await circleJoinRequestRepository.Update(request);
             await unitOfWork.SaveChangesWithTransaction();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 

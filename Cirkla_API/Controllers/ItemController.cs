@@ -8,17 +8,8 @@ namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class ItemController(IItemService itemService, ILogger<ItemController> logger) : ControllerBase
     {
-        private readonly IItemService _itemService;
-        private readonly ILogger<ItemController> _logger;
-
-        public ItemController(IItemService itemService, ILogger<ItemController> logger)
-        {
-            _itemService = itemService;
-            _logger = logger;
-        }
-
 
         // TODO: Add modelstate validation in all controller methods
 
@@ -29,7 +20,7 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(ItemCreateDTO itemDTO)
         {
-            var result = await _itemService.Create(itemDTO);
+            var result = await itemService.Create(itemDTO);
             return result.ToHttpResponse();
         }
 
@@ -41,8 +32,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllItemsForUser(string ownerId)
         {
-            _logger.LogInformation("Listing all items belonging to user with ID {ownerId}", ownerId);
-            var result = await _itemService.GetAllItemsForUser(ownerId);
+            logger.LogInformation("Listing all items belonging to user with ID {ownerId}", ownerId);
+            var result = await itemService.GetAllItemsForUser(ownerId);
             return result.ToHttpResponse();
         }
 
@@ -54,8 +45,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll()
         {
-            _logger.LogInformation("Listing all items");
-            var result = await _itemService.GetAll();
+            logger.LogInformation("Listing all items");
+            var result = await itemService.GetAll();
             return result.ToHttpResponse();
         }
 
@@ -67,34 +58,34 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
-            _logger.LogInformation("Retrieving item with ID {ItemId}", id);
-            var result = await _itemService.GetById(id);
+            logger.LogInformation("Retrieving item with ID {ItemId}", id);
+            var result = await itemService.GetById(id);
             return result.ToHttpResponse();
         }
 
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, Item item)
         {
-            _logger.LogInformation("Updating item with ID {ItemId}", id);
-            var result = await _itemService.Update(id, item);
+            logger.LogInformation("Updating item with ID {ItemId}", id);
+            var result = await itemService.Update(id, item);
             return result.ToHttpResponse();
         }
 
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.LogInformation("Deleting item with ID {ItemId}", id);
-            var result = await _itemService.Delete(id);
+            logger.LogInformation("Deleting item with ID {ItemId}", id);
+            var result = await itemService.Delete(id);
             return result.ToHttpResponse();
         }
     }

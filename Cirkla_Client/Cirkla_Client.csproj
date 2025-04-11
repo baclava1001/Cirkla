@@ -16,6 +16,10 @@
     <None Remove="Pages\Inbox\**" />
     <None Remove="Pages\SharedStuff\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\ToastNotificationService.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Content Remove="Pages\Borrowing\ReplyToRequestButtons.razor" />
   </ItemGroup>
@@ -23,6 +27,7 @@
 
   <ItemGroup>
     <Content Remove="Pages\Cirkla.razor" />
+    <Content Remove="Pages\Components\ToastNotification.razor" />
   </ItemGroup>
   <ItemGroup>
 	  <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />

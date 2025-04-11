@@ -3,9 +3,10 @@
 @using System.Text.Json
 @using Cirkla_Client.Pages.Inventory.Components;
 @using Mapping.Mappers
+@using SnackbarService = Cirkla_Client.Services.SnackbarService
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
-@inject ToastNotificationService ToastService;
+@inject SnackbarService SnackbarService;
 
 
 <PageTitle>@TitleString</PageTitle>
@@ -86,7 +87,8 @@
     [Parameter]
     public int? ItemId { get; set; }
 
-    [SupplyParameterFromForm] public Item? Item { get; set; } = new();
+    [SupplyParameterFromForm]
+    public Item? Item { get; set; } = new();
 
     [CascadingParameter]
     public ItemPicture? ItemPicture { get; set; } = new();
@@ -133,12 +135,12 @@
             try
             {
                 Item.Pictures.Add(itemPicture);
-                ToastService.ShowSuccess("Picture added successfully");
+                SnackbarService.Success("Picture added successfully");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ToastService.ShowError("Failed to add picture");
+                SnackbarService.Error("Failed to add picture");
             }
 
         }
@@ -151,7 +153,7 @@
 
         try
         {
-            Item.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed's id, hardcoded
+            Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; //Liza Minelli's id, hardcoded
             var itemCreateDTO = await Mapper.MapToItemCreateDTO(Item);
             await Client.ApiItemPostAsync(itemCreateDTO);
             await Task.Delay(500);
@@ -180,10 +182,13 @@
 
         try
         {
-            Item.OwnerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; // TODO: Remove this - Samed's id, hardcoded
+            Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Remove this - Liza Minelli's id, hardcoded
             await Client.ApiItemPutAsync(ItemId.Value, Item);
-            await Task.Delay(500);
-            ToastService.ShowSuccess($"{Item.Name} was successfully edited");
+            //await Task.Delay(500);
+            IsSendingApiRequest = false;
+            SnackbarService.Success($"{Item.Name} was successfully edited");
+            var url = $"/items/{ItemId.Value}";
+            NavigationManager.NavigateTo(url, forceLoad: true);
         }
         catch (ApiException ex)
         {
@@ -193,11 +198,11 @@
         {
             _errorMessage = ex.Message;
         }
-        finally
-        {
-            IsSendingApiRequest = false;
-            var url = $"/itemdetails/?id={ItemId}";
-            NavigationManager.NavigateTo(url);
-        }
+        // finally
+        // {
+        //     IsSendingApiRequest = false;
+        //     var url = $"/items/{ItemId.Value}";
+        //     NavigationManager.NavigateTo(url, forceLoad:true);
+        // }
     }
 }

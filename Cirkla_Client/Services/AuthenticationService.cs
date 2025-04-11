@@ -15,10 +15,17 @@ namespace Cirkla_Client.Services
     {
         public async Task<bool> Authenticate(UserLoginDTO user)
         {
-            var response = await client.ApiAuthenticationLoginAsync(user);
-            await localStorage.SetItemAsync("accessToken", response.Token);
-            await apiAuthStateProvider.LoggedIn();
-            return true;
+            try
+            {
+                var response = await client.ApiAuthenticationLoginAsync(user);
+                await localStorage.SetItemAsync("accessToken", response.Token);
+                await apiAuthStateProvider.LoggedIn();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task Logout()

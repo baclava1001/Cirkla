@@ -34,7 +34,7 @@ namespace Cirkla_API.Services.ItemPictures
 
             await itemPictureRepository.Update(itemPicture);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 
@@ -50,7 +50,7 @@ namespace Cirkla_API.Services.ItemPictures
 
             await itemPictureRepository.Delete(itemPicture);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.Success(null);
+            return ServiceResult<object>.NoContent();
         }
 
 
