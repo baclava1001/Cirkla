@@ -24,7 +24,7 @@ namespace Cirkla_Client.Services
             }
             catch (Exception ex)
             {
-                return false;
+                throw ex;
             }
         }
 
