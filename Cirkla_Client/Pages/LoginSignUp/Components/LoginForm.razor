@@ -10,26 +10,23 @@
 
 <EditForm method="post" Model="User" OnSubmit="OnValidSubmit" disabled="@_isSendingApiRequest">
     <DataAnnotationsValidator />
-    <h3 class="mb-5">Login</h3>
-    <div class="mb-3">
-        <label for="username" class="form-label">Email </label>
-        <InputText id="username" @bind-Value="User.Email" class="form-control" />
+    <h3 class="mb-3">Login</h3>
+    <div class="mb-4">
+        <InputText placeholder="E-mail" id="username" autocomplete="off" @bind-Value="User.Email" class="form-control" />
         <ValidationMessage For="() => User.Email" class="text-danger" />
     </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password </label>
-        <InputText id="password" type="password" @bind-Value="User.Password" class="form-control" />
+    <div class="mb-4">
+        <InputText placeholder="Password" id="password" type="password" autocomplete="new-password" @bind-Value="User.Password" class="form-control" />
         <ValidationMessage For="() => User.Password" class="text-danger" />
     </div>
-    <div>
-        <input class="btn btn-secondary" type="reset" value="Reset" />
-        <button class="btn btn-primary" type="submit" value="Submit">Login</button>
+    <div class="d-flex my-5">
+        <input class="btn btn-secondary flex-grow-1 me-2" type="reset" value="Reset"/>
+        <button class="btn btn-primary flex-grow-1" type="submit" value="Submit">Login</button>
     </div>
 </EditForm>
 
 
 @code {
-
     [Parameter]
     public UserLoginDTO User { get; set; } = new();
 
@@ -40,21 +37,19 @@
         _isSendingApiRequest = true;
         try
         {
-            var response = await AuthService.Authenticate(User);
-            if(!response)
-            {
-                SnackbarService.Error("Something went wrong, can't log in");
-                return;
-            }
+            await AuthService.Authenticate(User);
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
-            _isSendingApiRequest = false;
             SnackbarService.Success($"Welcome, {user.GetFullName()}!");
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/cirkla");
         }
         catch(Exception ex)
         {
             SnackbarService.Error("Something went wrong, can't log in");
+        }
+        finally
+        {
+            _isSendingApiRequest = false;
         }
     }
 }
