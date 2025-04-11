@@ -1,59 +1,52 @@
 ﻿@page "/cirkla"
 @using Cirkla_Client.Pages.Components
 @using Cirkla_Client.Pages.SearchAndBrowse.Components
-@inject IClient _client;
+@using SnackbarService = Cirkla_Client.Services.SnackbarService
+@inject IClient Client;
+@inject SnackbarService SnackbarService;
 
 <PageTitle>Cirkla</PageTitle>
 <h3>Cirkla</h3>
 <hr />
-@if (message is not null)
-{
-    <p class="text-danger">@message</p>
-}
-<div class="container">
-    <div class="row">
-        @if (!AllItems.Any())
+
+<MudGrid>
+    @if (!AllItems.Any())
+    {
+        <p>Loading items...</p>
+    }
+    else
+    {
+        foreach (var item in AllItems)
         {
-            <p>Loading items...</p>
-        }
-        else
-        {
-            foreach (var item in AllItems)
-            {
+            <MudItem xs="12" sm="6" md="3" lg="2" class="mb-4">
                 <BorrowItemCard Item="item"/>
-            }
+            </MudItem>
         }
-    </div>
-</div>
-
-
-
+    }
+</MudGrid>
 
 @code {
+    // TODO: Add searchbar
     // TODO: Add pagination serverside & clientside
-    // TODO: Fix height in cards
-
-    // TODO: Set Item Status in backend
+    // TODO: Set Item Status in backend (when accepting a borrowing contract - add status to Item aswell. The reverse after returning.)
 
     [Parameter]
-    public List<Item> AllItems { get; set; } = new();
-
-    private string? message;
+    public List<Item>? AllItems { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
         try
         {
-            var response = await _client.ApiItemAllAsync();
+            var response = await Client.ApiItemAllAsync();
             AllItems = response.ToList();
             if (AllItems is null)
             {
-                message = "No objects to load at this time";
+                SnackbarService.Error("Couldn't load items at this time");
             }
         }
         catch (Exception ex)
         {
-            message = ex.Message;
+            SnackbarService.Error("Couldn't load items at this time");
         }
     }
 }
