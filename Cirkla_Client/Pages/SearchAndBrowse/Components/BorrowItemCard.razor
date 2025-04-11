@@ -1,24 +1,22 @@
 ﻿@inject NavigationManager NavigationManager;
 
-<div class="col-12 col-sm-6 col-md-3 mb-4">
-    <MudCard Elevation="2">
-        <MudCardMedia Height="200" Image="@Item?.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" />
-        <MudCardContent>
-            <MudText Typo="Typo.h5">@Item?.Name</MudText>
-            <MudText Typo="Typo.body2">@Item?.Description</MudText>
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton @onclick="NavigateToItem" Variant="Variant.Text" Color="Color.Info">
-                More...
-            </MudButton>
-            <MudSpacer/>
-            @if (Item?.Status != ItemStatus.Available)
-            {
-                <MudIcon Icon="@Icons.Material.Filled.Block"/>
-            }
-        </MudCardActions>
-    </MudCard>
-</div>
+<MudCard Elevation="2">
+    <MudCardMedia Height="200" Image="@Item?.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" />
+    <MudCardContent>
+        <MudText Typo="Typo.h5" Class="text-truncate">@Item?.Name</MudText>
+    <MudText Typo="Typo.body2" Class="text-truncate">@Item?.Description</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton @onclick="NavigateToItem" Variant="Variant.Text" Color="Color.Info">
+            More...
+        </MudButton>
+        <MudSpacer/>
+        @if (Item?.Status != ItemStatus.Available)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Large"/>
+        }
+    </MudCardActions>
+</MudCard>
 
 @code {
     [Parameter]
