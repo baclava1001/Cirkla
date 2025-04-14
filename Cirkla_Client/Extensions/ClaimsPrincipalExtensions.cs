@@ -19,6 +19,4 @@ public static class ClaimsPrincipalExtensions
     {
         return user.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
     }
-
-    // TODO: Add more helper methods as needed!
 }

@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Blazored.LocalStorage;
+using Cirkla_Client.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Cirkla_Client.Providers
@@ -8,8 +9,9 @@ namespace Cirkla_Client.Providers
     /// <summary>
     /// This class contains logic for reading and setting authentication state.
     /// </summary>
-    public class ApiAuthStateProvider(ILocalStorageService localStorage,
-                                        JwtSecurityTokenHandler jwtSecurityTokenHandler) : AuthenticationStateProvider, IApiAuthStateProvider
+    public class ApiAuthStateProvider(
+        ILocalStorageService localStorage,
+        JwtSecurityTokenHandler jwtSecurityTokenHandler) : AuthenticationStateProvider, IApiAuthStateProvider
     {
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {

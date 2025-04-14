@@ -19,14 +19,14 @@ namespace Cirkla_Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            // TODO: Move service registration to separate class
+            // TODO: Move service registration to a separate class
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IApiAuthStateProvider, ApiAuthStateProvider>();
             builder.Services.AddScoped<AuthenticationStateProvider>(sp => (AuthenticationStateProvider)sp.GetRequiredService<IApiAuthStateProvider>());
             builder.Services.AddAuthorizationCore();
             builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped<CurrentUserService>();
 
-            //builder.Services.AddSingleton<ToastNotificationService>();
             builder.Services.AddSingleton<ComponentNotificationService>();
             builder.Services.AddSingleton<JwtSecurityTokenHandler>();
             builder.Services.AddBlazoredLocalStorage();
