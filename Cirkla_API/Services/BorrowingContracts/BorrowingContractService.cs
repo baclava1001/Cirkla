@@ -210,6 +210,16 @@ namespace Cirkla_API.Services.BorrowingContracts
                 From = contractUpdateDto.FromStatus,
                 To = contractUpdateDto.ToStatus,
             });
+
+            if (contract.StatusChanges.LastOrDefault().To is ContractStatus.Accepted)
+            {
+                contract.Item.Status = ItemStatus.Unavailable;
+            }
+
+            if (contract.StatusChanges.LastOrDefault().To is ContractStatus.Completed or ContractStatus.Cancelled)
+            {
+                contract.Item.Status = ItemStatus.Available;
+            }
         }
 
 
@@ -223,6 +233,16 @@ namespace Cirkla_API.Services.BorrowingContracts
                 From = contract.StatusChanges.LastOrDefault()?.To ?? ContractStatus.None,
                 To = toStatus
             });
+
+            if (contract.StatusChanges.LastOrDefault().To is ContractStatus.Accepted)
+            {
+                contract.Item.Status = ItemStatus.Unavailable;
+            }
+
+            if (contract.StatusChanges.LastOrDefault().To is ContractStatus.Completed or ContractStatus.Cancelled)
+            {
+                contract.Item.Status = ItemStatus.Available;
+            }
         }
 
 

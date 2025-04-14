@@ -24,7 +24,7 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            SnackbarService.Error(ex.Message);
+            SnackbarService.Error($"Couldn't delete {Item.Name}");
         }
     }
 }

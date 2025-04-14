@@ -1,0 +1,14 @@
+﻿@inject NavigationManager NavigationManager;
+
+<MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Edit"> Edit</MudButton>
+
+@code {
+    [Parameter]
+    public Item? Item { get; set; }
+
+    private void NavigateToItemEdit()
+    {
+        var url = $"/items/{Item?.Id}/edit";
+        NavigationManager.NavigateTo(url);
+    }
+}

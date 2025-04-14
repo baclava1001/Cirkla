@@ -13,18 +13,9 @@ namespace Cirkla_API.Controllers
     [ApiController]
 
     /// <summary>BorrowingContracts are the mediators of communication between a borrower and the owner of an item</summary>
-    public class BorrowingContractController : ControllerBase
+    public class BorrowingContractController(IBorrowingContractService borrowingContractService,
+                                            ILogger<BorrowingContractController> logger) : ControllerBase
     {
-        private readonly IBorrowingContractService _borrowingContractService;
-        private readonly ILogger<BorrowingContractController> _logger;
-
-        public BorrowingContractController(IBorrowingContractService borrowingContractService, ILogger<BorrowingContractController> logger)
-        {
-            _borrowingContractService = borrowingContractService;
-            _logger = logger;
-        }
-
-
         // Send request to borrow = create contract for item owner to review
         [HttpPost("SendRequest")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
@@ -33,8 +24,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SendRequest(ContractCreateDTO contractDTO)
         {
-            _logger.LogInformation("API received http-request to borrow item (creating new contract)");
-            var result = await _borrowingContractService.SendRequest(contractDTO);
+            logger.LogInformation("API received http-request to borrow item (creating new contract)");
+            var result = await borrowingContractService.SendRequest(contractDTO);
             return result.ToHttpResponse();
         }
 
@@ -46,8 +37,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ViewRequestSummary(int id)
         {
-            _logger.LogInformation("API received http-request for contract details");
-            var result = await _borrowingContractService.ViewRequestSummary(id);
+            logger.LogInformation("API received http-request for contract details");
+            var result = await borrowingContractService.ViewRequestSummary(id);
             return result.ToHttpResponse();
         }
 
@@ -59,8 +50,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RespondToRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            _logger.LogInformation("API received http-request to respond 'Accept' or 'Deny' to borrowing request");
-            var result = await _borrowingContractService.RespondToRequest(id, contractUpdateDTO);
+            logger.LogInformation("API received http-request to respond 'Accept' or 'Deny' to borrowing request");
+            var result = await borrowingContractService.RespondToRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
 
@@ -72,8 +63,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CancelRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            _logger.LogInformation("API received http-request to cancel request");
-            var result = await _borrowingContractService.CancelRequest(id, contractUpdateDTO);
+            logger.LogInformation("API received http-request to cancel request");
+            var result = await borrowingContractService.CancelRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
 
@@ -85,8 +76,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ActivateRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            _logger.LogInformation("API received http-request to activate a contract");
-            var result = await _borrowingContractService.ActivateRequest(id, contractUpdateDTO);
+            logger.LogInformation("API received http-request to activate a contract");
+            var result = await borrowingContractService.ActivateRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
 
@@ -98,8 +89,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CompleteRequest(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            _logger.LogInformation("API received http-request to complete a contract");
-            var result = await _borrowingContractService.CompleteRequest(id, contractUpdateDTO);
+            logger.LogInformation("API received http-request to complete a contract");
+            var result = await borrowingContractService.CompleteRequest(id, contractUpdateDTO);
             return result.ToHttpResponse();
         }
     }

@@ -14,7 +14,7 @@
     }
     else
     {
-        <img src="@Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Item.Name" class="img-fluid" style="max-width: 350px; height: auto;" />
+        <ImageGrid Item="Item" />
         <br />
         <br />
         <dl class="row">
@@ -31,7 +31,7 @@
             <dt class="col-sm-2">Zip code</dt>
             <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
         </dl>
-        <DeleteItemButton/>
+        <BtnDeleteItem/>
     }
 </div>
 

@@ -24,10 +24,10 @@
         </MudMenuItem>
         <MudMenu Icon="@Icons.Material.Filled.Settings">
             <MudMenuItem Label="Edit">
-                <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit"/>
+                <BtnEditItem Item="Item"/>
             </MudMenuItem>
             <MudMenuItem>
-                <DeleteItemButton Item="Item"/>
+                <BtnDeleteItem Item="Item"/>
             </MudMenuItem>
         </MudMenu>
     </MudCardActions>
@@ -53,6 +53,8 @@
     // TODO: Toggling doesn't work as expected
     private async Task ToggleAvailability(bool newValue)
     {
+        // TODO: Implement availability change in backend (when contract.accepted and contract.completed)
+        // TODO: Can only be manually marked while there is no active contract, otherwise up tp the system
         _isAvailable = newValue; // Ensure UI updates immediately
         Item.Status = newValue ? ItemStatus.Available : ItemStatus.Unavailable;
         try
@@ -68,12 +70,6 @@
     private void NavigateToItemDetails()
     {
         var url = $"/items/{Item?.Id}";
-        NavigationManager.NavigateTo(url);
-    }
-
-    private void NavigateToItemEdit()
-    {
-        var url = $"/items/{Item?.Id}/edit";
         NavigationManager.NavigateTo(url);
     }
 
