@@ -31,7 +31,7 @@ namespace Cirkla_API.Backgroundservices.AutoArchive
             var initialDelay = nextRunTime - now;
 
             _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
-            //_timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(90)); // For testing
+            // _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(90)); // TODO: Comment, for testing only
             return Task.CompletedTask;
         }
 
