@@ -1,6 +1,7 @@
 ﻿@page "/items/{itemId:int}/borrowing-contract/create"
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
+@inject CurrentUserService CurrentUser;
 
 <PageTitle>Request to borrow @Item?.Name</PageTitle>
 <h3>Request to borrow @Item?.Name</h3>
@@ -92,7 +93,7 @@
     private async Task AskToBorrow()
     {
         ContractDTO.ItemId = Item.Id;
-        ContractDTO.BorrowerId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; // Samed, hardcoded. TODO: get Id from JWT or session
+        ContractDTO.BorrowerId = await CurrentUser.GetUserId();
         ContractDTO.OwnerId = Item.OwnerId;
         ContractDTO.Created = DateTime.Now;
         ContractDTO.CurrentStatus = ContractStatus.Pending;

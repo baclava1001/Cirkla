@@ -1,0 +1,23 @@
+﻿<MudGrid>
+    @if (Item?.Pictures is not null)
+    {
+        foreach (var picture in Item.Pictures)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MudImage Src="@picture.Url" Class="img-fluid rounded" Alt="@AltText()" />
+            </MudItem>
+
+        }
+    }
+</MudGrid>
+
+@code {
+    // TODO: Add card header with X for quick deleting of pictures
+    [Parameter]
+    public Item Item { get; set; }
+
+    private string AltText()
+    {
+        return $"Picture of {Item?.Name}";
+    }
+}

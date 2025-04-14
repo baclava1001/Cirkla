@@ -7,78 +7,78 @@
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
 @inject SnackbarService SnackbarService;
+@inject CurrentUserService CurrentUser;
 
 
 <PageTitle>@TitleString</PageTitle>
 <h3>@TitleString</h3>
 <hr />
-<EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit" FormName="PublishItem">
+<EditForm method="post" Model="Item" OnValidSubmit="OnValidSubmit" FormName="PublishItem" disabled="@IsSendingApiRequest">
     <DataAnnotationsValidator />
-    <fieldset disabled="@IsSendingApiRequest">
-        <div class="container">
-            <div class="row mb-3">
-                <label for="name" class="col-sm-2 col-form-label">Name </label>
-                <div class="col-sm-10">
-                    <InputText id="name" @bind-Value="Item.Name" class="form-control" />
-                    <ValidationMessage For="() => Item.Name" class="text-danger" />
-                </div>
-            </div>
-            <CascadingValue Value="temporaryCategoryList">
-                <CascadingValue Value="Item">
-                    <CategoryDropdown />
-                </CascadingValue>
-            </CascadingValue>
-            <div class="row mb-3">
-                <label for="model" class="col-sm-2 col-form-label">Model </label>
-                <div class="col-sm-10">
-                    <InputText id="model" @bind-Value="Item.Model" class="form-control" placeholder="Maker, model and year, if applicable" />
-                    <ValidationMessage For="() => Item.Model" class="text-danger" />
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="specifications" class="col-sm-2 col-form-label">Specifications </label>
-                <div class="col-sm-10">
-                    <InputTextArea id="specifications" @bind-Value="Item.Specifications" class="form-control fs-6" rows="4" placeholder="Good to know technical details and characteristics" />
-                    <ValidationMessage For="() => Item.Specifications" class="=text-danger" />
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="description" class="col-sm-2 col-form-label">Description </label>
-                <div class="col-sm-10">
-                    <InputTextArea id="description" @bind-Value="Item.Description" class="form-control fs-6" rows="4" placeholder="General description" />
-                    <ValidationMessage For="() => Item.Description" class="text-danger" />
-                </div>
-            </div>
-            <CascadingValue Value="ItemPicture">
-                <AddItemPicture OnPictureAdded="AddPictureToList" />
-            </CascadingValue>
-            <div class="row align-content-end">
-                <div id="buttons" class="col-sm-10 ms-auto">
-                    <input class="btn btn-secondary" type="button" value="Back" />
-                    <DeleteItemButton Item="Item"/>
-                    @if (IsEditing)
-                    {
-                        <button class="btn btn-primary" type="button" @onclick="OnValidEdit">Edit</button>
-                    }
-                    else
-                    {
-                        <input class="btn btn-secondary" type="reset" value="Reset"/>
-                        <button class="btn btn-primary" type="button" @onclick="OnValidSubmit">Publish</button>
-                    }
-                </div>
+    <div class="container">
+        <div class="row mb-3">
+            <label for="name" class="col-sm-2 col-form-label">Name </label>
+            <div class="col-sm-10">
+                <InputText id="name" @bind-Value="Item.Name" class="form-control" />
+                <ValidationMessage For="() => Item.Name" class="text-danger" />
             </div>
         </div>
-    </fieldset>
+        <CascadingValue Value="temporaryCategoryList">
+            <CascadingValue Value="Item">
+                <CategoryDropdown />
+            </CascadingValue>
+        </CascadingValue>
+        <div class="row mb-3">
+            <label for="model" class="col-sm-2 col-form-label">Model </label>
+            <div class="col-sm-10">
+                <InputText id="model" @bind-Value="Item.Model" class="form-control" placeholder="Maker, model and year, if applicable" />
+                <ValidationMessage For="() => Item.Model" class="text-danger" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="specifications" class="col-sm-2 col-form-label">Specifications </label>
+            <div class="col-sm-10">
+                <InputTextArea id="specifications" @bind-Value="Item.Specifications" class="form-control fs-6" rows="4" placeholder="Good to know technical details and characteristics" />
+                <ValidationMessage For="() => Item.Specifications" class="=text-danger" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="description" class="col-sm-2 col-form-label">Description </label>
+            <div class="col-sm-10">
+                <InputTextArea id="description" @bind-Value="Item.Description" class="form-control fs-6" rows="4" placeholder="General description" />
+                <ValidationMessage For="() => Item.Description" class="text-danger" />
+            </div>
+        </div>
+        <CascadingValue Value="ItemPicture">
+            <AddItemPicture OnPictureAdded="AddPictureToList" />
+        </CascadingValue>
+        <MudGrid>
+            <MudSpacer/>
+            <MudItem>
+                <input class="btn btn-secondary" type="button" value="Back"/>
+            </MudItem>
+            <MudItem>
+                <BtnDeleteItem Item="Item"/>
+            </MudItem>
+            @if (IsEditing)
+            {
+                <MudItem>
+                    <button class="btn btn-primary" type="button" @onclick="OnValidSaveEdit">Save</button>
+                </MudItem>
+            }
+            else
+            {
+                <MudItem>
+                    <input class="btn btn-secondary" type="reset" value="Reset" />
+                </MudItem>
+                <MudItem>
+                    <button class="btn btn-primary" type="button" @onclick="OnValidSubmit">Publish</button>
+                </MudItem>
+            }
+        </MudGrid>
+    </div>
 </EditForm>
-<div class="mb-3">
-    @if (Item?.Pictures is not null)
-    {
-        foreach (ItemPicture picture in Item.Pictures)
-        {
-            <img src="@picture.Url" class="img-fluid rounded" alt="Picture of @Item.Name" />
-        }
-    }
-</div>
+<ImageGrid Item="Item"/>
 
 
 @code {
@@ -153,7 +153,7 @@
 
         try
         {
-            Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; //Liza Minelli's id, hardcoded
+            Item.OwnerId = await CurrentUser.GetUserId();
             var itemCreateDTO = await Mapper.MapToItemCreateDTO(Item);
             await Client.ApiItemPostAsync(itemCreateDTO);
             await Task.Delay(500);
@@ -176,19 +176,19 @@
     }
 
 
-    private async Task OnValidEdit()
+    private async Task OnValidSaveEdit()
     {
         IsSendingApiRequest = true;
 
         try
         {
-            Item.OwnerId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Remove this - Liza Minelli's id, hardcoded
+            Item.OwnerId = await CurrentUser.GetUserId();
             await Client.ApiItemPutAsync(ItemId.Value, Item);
             //await Task.Delay(500);
             IsSendingApiRequest = false;
             SnackbarService.Success($"{Item.Name} was successfully edited");
             var url = $"/items/{ItemId.Value}";
-            NavigationManager.NavigateTo(url, forceLoad: true);
+            NavigationManager.NavigateTo(url);
         }
         catch (ApiException ex)
         {
