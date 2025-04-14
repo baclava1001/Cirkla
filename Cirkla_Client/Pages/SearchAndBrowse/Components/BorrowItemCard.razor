@@ -7,10 +7,10 @@
     <MudText Typo="Typo.body2" Class="text-truncate">@Item?.Description</MudText>
     </MudCardContent>
     <MudCardActions>
+        <MudSpacer/>
         <MudButton @onclick="NavigateToItem" Variant="Variant.Text" Color="Color.Info">
             More...
         </MudButton>
-        <MudSpacer/>
         @if (Item?.Status != ItemStatus.Available)
         {
             <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Large"/>
@@ -28,7 +28,7 @@
         NavigationManager.NavigateTo(url);
     }
 
-    private async Task<string?> AltText()
+    private string? AltText()
     {
         return $"Picture of {Item?.Name}";
     }

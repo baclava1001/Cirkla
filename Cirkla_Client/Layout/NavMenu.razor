@@ -1,4 +1,5 @@
-﻿@using Cirkla_Client.Pages.Components;
+﻿@using Cirkla_Client.Extensions
+@using Cirkla_Client.Pages.Components;
 @using Microsoft.AspNetCore.Components.Authorization
 
 
@@ -26,7 +27,7 @@
     <AuthorizeView>
         <Authorized>
         <div class="nav-link px-sm-3 px-md-5">
-            <p>Hello, @context.User.FindFirst("name")?.Value</p>
+            <p>Hello, @context.User.GetFullName()</p>
         </div>
         </Authorized>
         <NotAuthorized>

@@ -1,11 +1,12 @@
 ﻿@page "/my-inventory"
 @using Cirkla_Client.Pages.Inventory.Components
 @inject IClient Client;
+@inject CurrentUserService CurrentUser;
 
 <PageTitle>My inventory</PageTitle>
 <div class="row mb-3">
     <h3 class="col-2">My inventory</h3>
-    <a href="/items/create" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"/></a>
+    <a href="/items/create" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"/> New item</a>
 </div>
 <hr/>
 
@@ -61,13 +62,10 @@
 </div>
 
 @code {
-    // TODO: Add pagination serverside & clientside
-
     [Parameter]
     public List<Item> MyItems { get; set; } = new();
     public List<Contract>? BorrowingItems { get; set; } = new();
     public List<Contract>? SharingItems { get; set; } = new();
-    private string _tempUserId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // TODO: Send in the actual logged in user's id. Here is use 'Liza Minelli', hardcoded.
 
     private string? borrowingItemsMessage = "Loading items...";
     private string? sharingItemsMessage = "Loading items...";
@@ -84,7 +82,7 @@
     {
         try
         {
-            var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(_tempUserId);
+            var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(await CurrentUser.GetUserId());
             return borrowingResult.ToList();
         }
         catch (ApiException ex)
@@ -101,7 +99,7 @@
     {
         try
         {
-            var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(_tempUserId);
+            var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(await CurrentUser.GetUserId());
             return sharingResult.ToList();
         }
         catch (ApiException ex)
@@ -118,7 +116,7 @@
     {
         try
         {
-            var response = await Client.ApiItemByUserIdAsync(_tempUserId);
+            var response = await Client.ApiItemByUserIdAsync(await CurrentUser.GetUserId());
             return response.ToList();
         }
         catch (ApiException ex)
