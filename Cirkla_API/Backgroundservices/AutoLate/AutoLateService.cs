@@ -29,7 +29,7 @@ public class AutoLateService : IHostedService, IDisposable
         }
         var initialDelay = nextRunTime - now;
         _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
-        // _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromSeconds(5)); // For testing
+        // _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromSeconds(5)); // TODO: Comment, for testing only
         return Task.CompletedTask;
     }
 

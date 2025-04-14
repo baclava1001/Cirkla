@@ -1,10 +1,14 @@
 ﻿@inject NavigationManager NavigationManager;
 
 <MudCard Elevation="2">
-    <MudCardMedia Height="200" Image="@Item?.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" />
+    <MudCarousel ItemsSource="Item?.Pictures" Style="height: 200px" ShowBullets="false" ShowArrows="_showArrows" EnableSwipeGesture="true" AutoCycle="false">
+        <ItemTemplate>
+            <MudCardMedia Height="200" Image="@context.Url" alt="@AltText()"/>
+        </ItemTemplate>
+    </MudCarousel>
     <MudCardContent>
         <MudText Typo="Typo.h5" Class="text-truncate">@Item?.Name</MudText>
-    <MudText Typo="Typo.body2" Class="text-truncate">@Item?.Description</MudText>
+        <MudText Typo="Typo.body2" Class="text-truncate">@Item?.Description</MudText>
     </MudCardContent>
     <MudCardActions>
         <MudSpacer/>
@@ -21,6 +25,12 @@
 @code {
     [Parameter]
     public Item? Item { get; set; }
+    private bool _showArrows;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _showArrows = Item.Pictures.Count > 1;
+    }
 
     private void NavigateToItem()
     {

@@ -1,35 +1,37 @@
 ﻿@inject IClient Client;
 @inject NavigationManager NavigationManager;
 
-<div class="col-12 col-sm-6 col-md-3 mb-4">
-    <MudCard Elevation="2">
-        <MudCardMedia Height="200" Image="@Item?.Pictures?.FirstOrDefault()?.Url" alt="@AltText()" Style="object-fit:cover; overflow:hidden"/>
-        <MudCardContent>
-            <MudText Typo="Typo.h5">@Item.Name</MudText>
-            <MudText Typo="Typo.body2">@Item?.Description</MudText>
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
-            <MudSpacer/>
-            <MudMenuItem>
-                    <MudSwitch T="bool"
-                               Value="@_isAvailable"
-                               ValueChanged="@((bool val) => ToggleAvailability(val))"
-                               Label="Available"
-                               ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-                               ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
+<MudCard Elevation="2">
+    <MudCarousel ItemsSource="Item?.Pictures" Style="height: 200px" ShowBullets="false" ShowArrows="_showArrows" EnableSwipeGesture="true" AutoCycle="false">
+        <ItemTemplate>
+            <MudCardMedia Height="200" Image="@context.Url" alt="@AltText()" />
+        </ItemTemplate>
+    </MudCarousel>
+    <MudCardContent>
+        <MudText Typo="Typo.h5" Class="text-truncate">@Item?.Name</MudText>
+        <MudText Typo="Typo.body2" Class="text-truncate">@Item?.Description</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
+        <MudSpacer/>
+        <MudMenuItem>
+            <MudSwitch T="bool"
+            Value="@_isAvailable"
+            ValueChanged="@((bool val) => ToggleAvailability(val))"
+            Label="Available"
+            ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+            ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
+        </MudMenuItem>
+        <MudMenu Icon="@Icons.Material.Filled.Settings">
+            <MudMenuItem Label="Edit">
+                <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit"/>
             </MudMenuItem>
-            <MudMenu Icon="@Icons.Material.Filled.Settings">
-                <MudMenuItem Label="Edit">
-                    <MudButton OnClick="() => NavigateToItemEdit()" Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Edit"/>
-                </MudMenuItem>
-                <MudMenuItem>
-                    <DeleteItemButton Item="Item"/>
-                </MudMenuItem>
-            </MudMenu>
-        </MudCardActions>
-    </MudCard>
-</div>
+            <MudMenuItem>
+                <DeleteItemButton Item="Item"/>
+            </MudMenuItem>
+        </MudMenu>
+    </MudCardActions>
+</MudCard>
 
 @code {
 
@@ -39,11 +41,13 @@
 
     private bool _isOpen;
     private bool _isAvailable;
+    private bool _showArrows;
 
 
     protected override async Task OnInitializedAsync()
     {
         _isAvailable = (Item?.Status == ItemStatus.Available);
+        _showArrows = Item.Pictures.Count > 1;
     }
 
     // TODO: Toggling doesn't work as expected

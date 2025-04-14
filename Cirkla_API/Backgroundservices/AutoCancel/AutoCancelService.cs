@@ -30,7 +30,7 @@ public class AutoCancelService : IHostedService, IDisposable
         }
         var initialDelay = nextRunTime - now;
         _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromHours(24));
-        // _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30)); // For testing
+        // _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30)); // TODO: Comment, for testing only
         return Task.CompletedTask;
     }
 

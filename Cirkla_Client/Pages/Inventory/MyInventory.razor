@@ -4,16 +4,19 @@
 @inject CurrentUserService CurrentUser;
 
 <PageTitle>My inventory</PageTitle>
-<div class="row mb-3">
-    <h3 class="col-2">My inventory</h3>
-    <a href="/items/create" class="btn btn-primary col-sm-1"><i class="fa-solid fa-plus"/> New item</a>
-</div>
+<MudGrid Class="mb-3 d-flex flex-sm-wrap">
+    <MudItem>
+        <h3>My inventory</h3>
+    </MudItem>
+    <MudItem>
+        <a href="/items/create" class="btn btn-primary flex-grow-1"><i class="fa-solid fa-plus"/> New item</a>
+    </MudItem>
+</MudGrid>
 <hr/>
 
-<div class="container">
 
-    <MudDivider/>
-    <div class="row my-5">
+<MudTabs Elevation="1" Rounded="true" PanelClass="pa-6">
+    <MudTabPanel Text="Borrowed items" BadgeColor="Color.Default" BadgeData="BorrowingItems?.Count">
         <h4>Borrowed items</h4>
         @if (!BorrowingItems.Any())
         {
@@ -21,15 +24,19 @@
         }
         else
         {
-            foreach (var contract in BorrowingItems)
+            <MudGrid>
+            @foreach (var contract in BorrowingItems)
             {
-                <ContractCard Contract="contract"/>
-            }
-        }
-    </div>
 
-    <MudDivider/>
-    <div class="row my-5">
+                    <MudItem xs="12" sm="6" md="3" lg="2" Class="mb-4">
+                        <ContractCard Contract="contract"/>
+                    </MudItem>
+            }
+            </MudGrid>
+        }
+    </MudTabPanel>
+
+    <MudTabPanel Text="Shared items" BadgeColor="Color.Default" BadgeData="SharingItems?.Count">
         <h4>Shared items</h4>
         @if (!SharingItems.Any())
         {
@@ -37,15 +44,18 @@
         }
         else
         {
-            foreach (var contract in SharingItems)
+            <MudGrid>
+            @foreach (var contract in SharingItems)
             {
-                <ContractCard Contract="contract"/>
+                <MudItem xs="12" sm="6" md="3" lg="2" Class="mb-4">
+                    <ContractCard Contract="contract"/>
+                </MudItem>
             }
+            </MudGrid>
         }
-    </div>
+    </MudTabPanel>
 
-    <MudDivider/>
-    <div class="row my-5">
+    <MudTabPanel Text="My items">
         <h4>My items</h4>
         @if (!MyItems.Any())
         {
@@ -53,15 +63,22 @@
         }
         else
         {
-            foreach (var item in MyItems)
+            <MudGrid>
+            @foreach (var item in MyItems)
             {
-                <InventoryItemCard Item="item"/>
+                <MudItem xs="12" sm="6" md="3" lg="2" Class="mb-4">
+                    <InventoryItemCard Item="item"/>
+                </MudItem>
             }
+            </MudGrid>
         }
-    </div>
-</div>
+    </MudTabPanel>
+</MudTabs>
+
 
 @code {
+    // TODO: Change tabs color to melt into the background
+
     [Parameter]
     public List<Item> MyItems { get; set; } = new();
     public List<Contract>? BorrowingItems { get; set; } = new();
@@ -89,7 +106,7 @@
         {
             if (ex.StatusCode == 404)
             {
-                borrowingItemsMessage = "No items to load at this time";
+                borrowingItemsMessage = "Not borrowing any items at this time";
             }
             return new List<Contract>();
         }
@@ -106,7 +123,7 @@
         {
             if (ex.StatusCode == 404)
             {
-                sharingItemsMessage = "No items to load at this time";
+                sharingItemsMessage = "Not sharing any items at this time";
             }
             return new List<Contract>();
         }
