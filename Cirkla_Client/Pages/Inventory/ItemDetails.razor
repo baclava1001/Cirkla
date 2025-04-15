@@ -31,7 +31,9 @@
             <dt class="col-sm-2">Zip code</dt>
             <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
         </dl>
-        <BtnDeleteItem/>
+        <a href="/my-inventory"><input class="btn btn-secondary" type="button" value="Back" style="min-width: 150px;" /></a>
+        <BtnDeleteItem Item="Item"/>
+        <BtnEditItem Item="Item" />
     }
 </div>
 

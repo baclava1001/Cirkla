@@ -1,9 +1,9 @@
-﻿@page "/items/create"
+﻿@attribute [Authorize]
+@page "/items/create"
 @page "/items/{itemId:int}/edit/"
 @using System.Text.Json
 @using Cirkla_Client.Pages.Inventory.Components;
 @using Mapping.Mappers
-@using SnackbarService = Cirkla_Client.Services.SnackbarService
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
 @inject SnackbarService SnackbarService;
@@ -49,41 +49,37 @@
                 <ValidationMessage For="() => Item.Description" class="text-danger" />
             </div>
         </div>
-        <CascadingValue Value="ItemPicture">
-            <AddItemPicture OnPictureAdded="AddPictureToList" />
-        </CascadingValue>
-        <MudGrid>
+        <AddItemPicture ItemPicture="ItemPicture" OnPictureAdded="AddPictureToList" />
+        <ImageGrid Item="Item" />
+        <MudGrid Spacing="3" Class="d-flex flex-column align-items-end">
             <MudSpacer/>
             <MudItem>
-                <input class="btn btn-secondary" type="button" value="Back"/>
-            </MudItem>
-            <MudItem>
-                <BtnDeleteItem Item="Item"/>
+                <a href="/my-inventory"><input class="btn btn-secondary" type="button" value="Cancel" style="min-width: 150px;" /></a>
             </MudItem>
             @if (IsEditing)
             {
                 <MudItem>
-                    <button class="btn btn-primary" type="button" @onclick="OnValidSaveEdit">Save</button>
+                    <BtnDeleteItem Item="Item"/>
+                </MudItem>
+                <MudItem>
+                    <BtnSaveEditedItem ItemId="ItemId" Item="Item" IsSendingApiRequest="IsSendingApiRequest" />
                 </MudItem>
             }
             else
             {
                 <MudItem>
-                    <input class="btn btn-secondary" type="reset" value="Reset" />
+                    <input class="btn btn-warning" type="reset" value="Reset" style="min-width: 150px;" />
                 </MudItem>
                 <MudItem>
-                    <button class="btn btn-primary" type="button" @onclick="OnValidSubmit">Publish</button>
+                    <BtnPublishItem IsSendingApiRequest="IsSendingApiRequest" OnClick="OnValidSubmit" />
                 </MudItem>
             }
         </MudGrid>
     </div>
 </EditForm>
-<ImageGrid Item="Item"/>
 
 
 @code {
-    // TODO: Make each button it's own component
-    // TODO: Later make Category a separate, prepopulated table in db
     [Parameter]
     public int? ItemId { get; set; }
 
@@ -93,8 +89,7 @@
     [CascadingParameter]
     public ItemPicture? ItemPicture { get; set; } = new();
 
-
-
+    // TODO: Later make Category a separate, prepopulated table in db
     // TODO: Remove temporary list when Category is a separate table
     private string[] temporaryCategoryList = ["Transportation", "Household & tools", "Accommodation", "Personal stuff", "Electronics", "Leisure & hobby"]; 
 
@@ -102,8 +97,6 @@
     private bool IsEditing => !string.IsNullOrWhiteSpace(ItemId.ToString());
 
     private string TitleString { get; set; } = "";
-    private string? _errorMessage;
-    private string? _successMessage;
 
 
     protected override async Task OnInitializedAsync()
@@ -120,7 +113,6 @@
     }
 
 
-    // TODO: Extract to AddItemPicture component and add picture component with delete button
     private void AddPictureToList()
     {
         if (Item?.Pictures is null)
@@ -142,7 +134,6 @@
                 Console.WriteLine(e);
                 SnackbarService.Error("Failed to add picture");
             }
-
         }
     }
 
@@ -156,53 +147,21 @@
             Item.OwnerId = await CurrentUser.GetUserId();
             var itemCreateDTO = await Mapper.MapToItemCreateDTO(Item);
             await Client.ApiItemPostAsync(itemCreateDTO);
-            await Task.Delay(500);
-            _errorMessage = null;
-            _successMessage = $"{Item.Name} published successfully";
+            SnackbarService.Success($"{Item.Name} published successfully");
+
         }
         catch (ApiException ex)
         {
-            _errorMessage = ex.Message;
+            SnackbarService.Error("Server error, unable to save item");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            _errorMessage = ex.Message;
+            SnackbarService.Error("Unexpected error, unable to save item");
         }
         finally
         {
             Item = new(); // Fresh object reference to empty the form
             IsSendingApiRequest = false;
         }
-    }
-
-
-    private async Task OnValidSaveEdit()
-    {
-        IsSendingApiRequest = true;
-
-        try
-        {
-            Item.OwnerId = await CurrentUser.GetUserId();
-            await Client.ApiItemPutAsync(ItemId.Value, Item);
-            //await Task.Delay(500);
-            IsSendingApiRequest = false;
-            SnackbarService.Success($"{Item.Name} was successfully edited");
-            var url = $"/items/{ItemId.Value}";
-            NavigationManager.NavigateTo(url);
-        }
-        catch (ApiException ex)
-        {
-            _errorMessage = ex.Message;
-        }
-        catch (Exception ex)
-        {
-            _errorMessage = ex.Message;
-        }
-        // finally
-        // {
-        //     IsSendingApiRequest = false;
-        //     var url = $"/items/{ItemId.Value}";
-        //     NavigationManager.NavigateTo(url, forceLoad:true);
-        // }
     }
 }

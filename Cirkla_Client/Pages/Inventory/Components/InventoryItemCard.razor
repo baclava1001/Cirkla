@@ -11,23 +11,26 @@
         <MudText Typo="Typo.h5" Class="text-truncate">@Item?.Name</MudText>
         <MudText Typo="Typo.body2" Class="text-truncate">@Item?.Description</MudText>
     </MudCardContent>
-    <MudCardActions>
-        <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
+    <MudCardActions Class="d-flex align-content-end flex-wrap flex-grow-1">
         <MudSpacer/>
-        <MudMenuItem>
-            <MudSwitch T="bool"
-            Value="@_isAvailable"
-            ValueChanged="@((bool val) => ToggleAvailability(val))"
-            Label="Available"
-            ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-            ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
-        </MudMenuItem>
-        <MudMenu Icon="@Icons.Material.Filled.Settings">
-            <MudMenuItem Label="Edit">
+        <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
+    </MudCardActions>
+    <MudDivider/>
+    <MudCardActions Class="d-flex align-content-end flex-wrap flex-grow-1">
+        <MudSpacer/>
+        <MudSwitch T="bool"
+        Value="@_isAvailable"
+        ValueChanged="@((bool val) => ToggleAvailability(val))"
+        Label="Available"
+        LabelPlacement="Placement.Start"
+        ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+        ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
+        <MudMenu @ref="_menuRef" Icon="@Icons.Material.Filled.Settings" Size="Size.Large" Dense="true">
+            <MudMenuItem>
                 <BtnEditItem Item="Item"/>
             </MudMenuItem>
             <MudMenuItem>
-                <BtnDeleteItem Item="Item"/>
+                <BtnDeleteItem Item="Item" />
             </MudMenuItem>
         </MudMenu>
     </MudCardActions>
@@ -39,6 +42,7 @@
     [Parameter]
     public Item? Item { get; set; }
 
+    private MudMenu _menuRef;
     private bool _isOpen;
     private bool _isAvailable;
     private bool _showArrows;

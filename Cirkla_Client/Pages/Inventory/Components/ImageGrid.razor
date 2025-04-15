@@ -1,12 +1,17 @@
-﻿<MudGrid>
+﻿@inject IClient Client;
+@inject SnackbarService SnackbarService;
+
+<MudGrid Class="my-5">
     @if (Item?.Pictures is not null)
     {
         foreach (var picture in Item.Pictures)
         {
             <MudItem xs="12" sm="6" md="4" lg="3">
-                <MudImage Src="@picture.Url" Class="img-fluid rounded" Alt="@AltText()" />
+                <MudItem>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Close" Color="Color.Default" OnClick="async () => await DeleteImage(picture.Id)"/>
+                </MudItem>
+                <MudImage Src="@picture.Url" Width="250" Class="img-fluid" Alt="@AltText()"/>
             </MudItem>
-
         }
     }
 </MudGrid>
@@ -14,10 +19,25 @@
 @code {
     // TODO: Add card header with X for quick deleting of pictures
     [Parameter]
-    public Item Item { get; set; }
+    public Item? Item { get; set; }
 
     private string AltText()
     {
         return $"Picture of {Item?.Name}";
+    }
+
+    public async Task DeleteImage(int id)
+    {
+        try
+        {
+            await Client.ApiItemPictureDeleteAsync(id);
+            await InvokeAsync(StateHasChanged);
+            SnackbarService.Success("Item image removed");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            SnackbarService.Error("Couldn't remove item image");
+        }
     }
 }

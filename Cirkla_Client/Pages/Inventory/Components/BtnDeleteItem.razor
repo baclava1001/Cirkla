@@ -1,30 +1,54 @@
-﻿@using SnackbarService = Cirkla_Client.Services.SnackbarService
-@inject IClient Client;
+﻿@inject IClient Client;
 @inject NavigationManager NavigationManager;
 @inject SnackbarService SnackbarService;
+@inject IDialogService DialogService;
 
 <MudButton
-    OnClick="() => DeleteItem()"
-    Variant="Variant.Filled"
-    Color="Color.Error"
-    StartIcon="@Icons.Material.Filled.Delete">Delete</MudButton>
+   OnClick="() => DeleteItem()"
+   Variant="Variant.Filled"
+   Color="Color.Error"
+   StartIcon="@Icons.Material.Filled.Delete"
+   Style="min-width: 150px;">Delete</MudButton>
 
 @code {
-    [Parameter]
-    public Item? Item { get; set; }
+   [Parameter]
+   public Item? Item { get; set; }
 
-    private async Task DeleteItem()
-    {
-        try
-        {
-            await Client.ApiItemDeleteAsync(Item.Id);
-            SnackbarService.Success($"{Item.Name} was successfully deleted");
-            NavigationManager.NavigateTo("/my-inventory", forceLoad: true);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            SnackbarService.Error($"Couldn't delete {Item.Name}");
-        }
-    }
+   private async Task DeleteItem()
+   {
+       try
+       {
+           var dialog = await ShowDialog();
+           if (dialog is not null)
+           {
+               var result = await dialog.Result;
+               if (!result.Canceled && result.Data is bool confirmed && confirmed)
+               {
+                   await Client.ApiItemDeleteAsync(Item.Id);
+                   SnackbarService.Success($"{Item.Name} was successfully deleted");
+                   NavigationManager.NavigateTo("/my-inventory", forceLoad: true);
+               }
+           }
+       }
+       catch (Exception ex)
+       {
+           Console.WriteLine(ex.Message);
+           SnackbarService.Error($"Couldn't delete {Item.Name}");
+       }
+   }
+
+
+   private Task<IDialogReference?> ShowDialog()
+   {
+       var parameters = new DialogParameters<ConfirmDialog>
+       {
+           { x => x.ContentText, "Do you really want to delete this item? This process cannot be undone." },
+           { x => x.ButtonText, "Delete" },
+           { x => x.Color, Color.Error }
+       };
+
+       var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+       return Task.FromResult(DialogService.Show<ConfirmDialog>("Delete", parameters, options));
+   }
 }
