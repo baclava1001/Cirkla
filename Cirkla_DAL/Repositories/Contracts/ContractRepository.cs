@@ -114,7 +114,7 @@ namespace Cirkla_DAL.Repositories.Contracts
                 .Include(c => c.StatusChanges)
                 .ThenInclude(sc => sc.ChangedBy)
                 .Where(c => c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault().To == ContractStatus.Completed ||
-                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault().To == ContractStatus.Cancelled)
+                                    c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault().To == ContractStatus.Cancelled)
                 .Where(c => c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault().ChangedAt < twoDaysAgo)
                 .ToListAsync();
         }
@@ -178,16 +178,18 @@ namespace Cirkla_DAL.Repositories.Contracts
         public async Task<IEnumerable<Contract>> GetActiveForItem(int itemId)
         {
             return await context.Contracts
+                .Where(c => c.ItemId == itemId &&
+                            (
+                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Active ||
+                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Accepted ||
+                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Late
+                            ))
                 .Include(c => c.Item)
                 .Include(c => c.Item.Pictures)
                 .Include(c => c.Owner)
                 .Include(c => c.Borrower)
                 .Include(c => c.StatusChanges)!
                 .ThenInclude(sc => sc.ChangedBy)
-                .Where(c => c.Item.Id == itemId &&
-                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Active ||
-                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Accepted ||
-                            c.StatusChanges.OrderByDescending(sc => sc.ChangedAt).FirstOrDefault()!.To == ContractStatus.Late)
                 .ToListAsync();
         }
 

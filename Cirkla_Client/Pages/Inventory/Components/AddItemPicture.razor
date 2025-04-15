@@ -4,14 +4,14 @@
         <div class="input-group">
             <InputText id="item-picture-url" @bind-Value="ItemPicture.Url" class="form-control" placeholder="Enter full url" />
             <ValidationMessage For="() => ItemPicture.Url" class="text-danger" />
-            <button class="btn btn-outline-primary" style="color:#fff; background-color:#186F65; border-color:#186F65" type="button" @onclick="@(() => AddPicture())">Add</button>
+            <button class="btn btn-outline-primary" style="color:#fff; background-color:#186F65; border-color: #186F65; min-width: 150px;" type="button" @onclick="@(() => AddPicture())">Add</button>
         </div>
     </div>
 </fieldset>
 
 
 @code {
-    [CascadingParameter]
+    [Parameter]
     public ItemPicture? ItemPicture { get; set; }
 
     [Parameter]

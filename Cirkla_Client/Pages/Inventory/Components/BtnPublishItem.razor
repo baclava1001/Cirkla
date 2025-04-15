@@ -1,0 +1,14 @@
+﻿@using Mapping.Mappers
+@inject CurrentUserService CurrentUser;
+@inject IClient Client;
+@inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
+
+<button class="btn btn-primary" type="button" @onclick="OnClick" disabled="@IsSendingApiRequest" style="min-width: 150px;">Publish</button>
+
+@code {
+    [Parameter]
+    public bool IsSendingApiRequest { get; set; }
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

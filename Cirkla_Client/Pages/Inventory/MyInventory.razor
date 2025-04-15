@@ -1,7 +1,9 @@
-﻿@page "/my-inventory"
+﻿@attribute [Authorize]
+@page "/my-inventory"
 @using Cirkla_Client.Pages.Inventory.Components
 @inject IClient Client;
 @inject CurrentUserService CurrentUser;
+
 
 <PageTitle>My inventory</PageTitle>
 <MudGrid Class="mb-3 d-flex flex-sm-wrap">

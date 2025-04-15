@@ -1,0 +1,41 @@
+﻿@inject CurrentUserService CurrentUser;
+@inject IClient Client;
+@inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
+
+<button class="btn btn-primary" type="button" @onclick="OnValidSaveEdit" style="min-width: 150px;">Save</button>
+
+@code {
+    [Parameter]
+    public int? ItemId { get; set; }
+    [Parameter]
+    public Item? Item { get; set; }
+    [Parameter]
+    public bool IsSendingApiRequest { get; set; }
+
+    private async Task OnValidSaveEdit()
+    {
+        IsSendingApiRequest = true;
+
+        try
+        {
+            Item.OwnerId = await CurrentUser.GetUserId();
+            await Client.ApiItemPutAsync(ItemId.Value, Item);
+            SnackbarService.Success($"{Item.Name} was successfully edited");
+            var url = $"/items/{ItemId.Value}";
+            NavigationManager.NavigateTo(url);
+        }
+        catch (ApiException ex)
+        {
+            SnackbarService.Error("Server error, couldn't save changes");
+        }
+        catch (Exception ex)
+        {
+            SnackbarService.Error("Unexpected error, couldn't save changes");
+        }
+        finally
+        {
+            IsSendingApiRequest = false;
+        }
+    }
+}
