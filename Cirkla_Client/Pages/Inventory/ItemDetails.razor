@@ -1,7 +1,9 @@
-﻿@page "/items/{itemId:int}"
+﻿@attribute [Authorize]
+@page "/items/{itemId:int}"
 @using Cirkla_Client.Pages.Inventory.Components;
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
 
 <PageTitle>Details for @Item?.Name</PageTitle>
 <h3>Details for @Item?.Name</h3>
@@ -14,8 +16,12 @@
     }
     else
     {
-        <ImageGrid Item="Item" />
-        <br />
+        <MudCarousel ItemsSource="@Item.Pictures" Style="height: 300px; max-width: 500px;" ShowArrows="true" ShowBullets="false" EnableSwipeGesture="true" AutoCycle="false">
+            <ItemTemplate>
+                <MudImage Style="width: 500px;" ObjectFit="ObjectFit.Contain" Src="@context.Url" Alt="@AltText()" />
+            </ItemTemplate>
+        </MudCarousel>
+
         <br />
         <dl class="row">
             <dt class="col-sm-2">Category</dt>
@@ -31,39 +37,43 @@
             <dt class="col-sm-2">Zip code</dt>
             <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
         </dl>
-        <a href="/my-inventory"><input class="btn btn-secondary" type="button" value="Back" style="min-width: 150px;" /></a>
-        <BtnDeleteItem Item="Item"/>
-        <BtnEditItem Item="Item" />
+        <MudGrid Spacing="3" Class="d-flex flex-column flex-sm-row align-content-end">
+            <MudItem>
+                <a href="/my-inventory"><input class="btn btn-secondary" type="button" value="Back" style="min-width: 150px;"/></a>
+            </MudItem>
+            <MudItem>
+                <BtnDeleteItem Item="Item"/>
+            </MudItem>
+            <MudItem>
+                <BtnEditItem Item="Item"/>
+            </MudItem>
+        </MudGrid>
     }
 </div>
 
 
 @code {
-    // TODO: Add more pictures in this view
     [Parameter]
     public int ItemId { get; set; } //Item id from http-query
 
     public Item? Item { get; set; } = new();
 
-    public ContractCreateDTO ContractDTO { get; set; } = new();
-
-    string minDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
-    string? tempMessage;
-    string? messageClass;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             Item = await Client.ApiItemGetAsync(ItemId);
-            ContractDTO.StartTime = DateTime.Parse(minDateTime);
-            ContractDTO.EndTime = DateTime.Parse(minDateTime);
         }
         catch (Exception ex)
         {
-            messageClass = "text-danger";
-            tempMessage = ex.Message.ToString();
+            SnackbarService.Error("Couldn't load item");
         }
+    }
+
+    private string AltText()
+    {
+        return $"Image of {Item?.Name}";
     }
 }
 
