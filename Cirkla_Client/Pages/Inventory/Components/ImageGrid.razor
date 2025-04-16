@@ -1,23 +1,22 @@
 ﻿@inject IClient Client;
 @inject SnackbarService SnackbarService;
 
-<MudGrid Class="my-5">
+<MudGrid Class="my-5 d-flex flex-wrap">
     @if (Item?.Pictures is not null)
     {
         foreach (var picture in Item.Pictures)
         {
             <MudItem xs="12" sm="6" md="4" lg="3">
-                <MudItem>
+                <MudItem xs="12" sm="6" md="4" lg="3">
                     <MudIconButton Icon="@Icons.Material.Outlined.Close" Color="Color.Default" OnClick="async () => await DeleteImage(picture.Id)"/>
                 </MudItem>
-                <MudImage Src="@picture.Url" Width="250" Class="img-fluid" Alt="@AltText()"/>
+                <MudImage Src="@picture.Url" Width="200" Class="img-fluid overflow-hidden" Alt="@AltText()"/>
             </MudItem>
         }
     }
 </MudGrid>
 
 @code {
-    // TODO: Add card header with X for quick deleting of pictures
     [Parameter]
     public Item? Item { get; set; }
 

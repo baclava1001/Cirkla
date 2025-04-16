@@ -50,36 +50,42 @@
             </div>
         </div>
         <AddItemPicture ItemPicture="ItemPicture" OnPictureAdded="AddPictureToList" />
-        <ImageGrid Item="Item" />
-        <MudGrid Spacing="3" Class="d-flex flex-column align-items-end">
-            <MudSpacer/>
-            <MudItem>
-                <a href="/my-inventory"><input class="btn btn-secondary" type="button" value="Cancel" style="min-width: 150px;" /></a>
+        <MudGrid Class="d-flex flex-column flex-sm-row align-items-end">
+            <MudItem xs="12" sm="8">
+                <ImageGrid Item="Item" />
             </MudItem>
-            @if (IsEditing)
-            {
-                <MudItem>
-                    <BtnDeleteItem Item="Item"/>
-                </MudItem>
-                <MudItem>
-                    <BtnSaveEditedItem ItemId="ItemId" Item="Item" IsSendingApiRequest="IsSendingApiRequest" />
-                </MudItem>
-            }
-            else
-            {
-                <MudItem>
-                    <input class="btn btn-warning" type="reset" value="Reset" style="min-width: 150px;" />
-                </MudItem>
-                <MudItem>
-                    <BtnPublishItem IsSendingApiRequest="IsSendingApiRequest" OnClick="OnValidSubmit" />
-                </MudItem>
-            }
+            <MudItem xs="12" sm="4">
+                <MudGrid Spacing="3" Class="d-flex flex-column align-items-end">
+                    <MudItem>
+                        <a href="/my-inventory"><input class="btn btn-secondary" type="button" value="Cancel" style="min-width: 150px;"/></a>
+                    </MudItem>
+                    @if (IsEditing)
+                    {
+                        <MudItem>
+                            <BtnDeleteItem Item="Item"/>
+                        </MudItem>
+                        <MudItem>
+                            <BtnSaveEditedItem ItemId="ItemId" Item="Item" IsSendingApiRequest="IsSendingApiRequest"/>
+                        </MudItem>
+                    }
+                    else
+                    {
+                        <MudItem>
+                            <input class="btn btn-warning" type="reset" value="Reset" style="min-width: 150px;"/>
+                        </MudItem>
+                        <MudItem>
+                            <BtnPublishItem IsSendingApiRequest="IsSendingApiRequest" OnClick="OnValidSubmit"/>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudItem>
         </MudGrid>
     </div>
 </EditForm>
 
 
 @code {
+    // TODO: Clean up element alignment
     [Parameter]
     public int? ItemId { get; set; }
 
