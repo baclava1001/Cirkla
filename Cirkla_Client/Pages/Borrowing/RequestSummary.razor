@@ -1,6 +1,7 @@
 ﻿@page "/borrowing-contracts/{contractId:int}"
 @using System.Runtime.CompilerServices;
 @using Cirkla_Client.Pages.Borrowing.Components;
+@using Cirkla_Client.Pages.Components
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
 
@@ -16,8 +17,7 @@
     }
     else
     {
-        <img src="@Contract?.ItemPictures?.FirstOrDefault()?.Url" alt="Picture of @Contract?.ItemName" class="img-fluid" style="width: 350px; height: auto;" />
-        <br />
+        <CarouselItemImages ItemPictures="Contract?.ItemPictures?.ToList()" AltText="@AltText()" />
         <br />
         <dl class="row">
             <dt class="col-sm-2">Cirkla member</dt>
@@ -42,7 +42,7 @@
             <dt class="col-sm-2">Status history</dt>
             <dd class="col-sm-10">
                 <ul>
-                    @foreach (var statusChange in Contract?.StatusChanges.Reverse())
+                    @foreach (var statusChange in Contract?.StatusChanges?.Reverse())
                     {
                         <li>@statusChange?.ChangedBy?.FirstName</li>
                         <li>@statusChange?.ChangedAt</li>
@@ -152,6 +152,11 @@
             _messageClass = "text-danger";
             _tempMessage = ex.Message.ToString();
         }
+    }
+
+    private string AltText()
+    {
+        return $"Image of {Contract?.ItemName}";
     }
 }
 

@@ -1,7 +1,9 @@
 ﻿@page "/items/{itemId:int}/borrowing-contract/create"
+@using Cirkla_Client.Pages.Components
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
 @inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
 
 <PageTitle>Request to borrow @Item?.Name</PageTitle>
 <h3>Request to borrow @Item?.Name</h3>
@@ -14,9 +16,8 @@
     }
     else
     {
-        <img src="@Item.Pictures?.FirstOrDefault()?.Url" alt="Picture of @Item.Name" class="img-fluid" style="max-width: 350px; height: auto;" />
-        <br />
-        <br />
+        <CarouselItemImages ItemPictures="Item?.Pictures?.ToList()" AltText="@AltText()"/>
+        <br/>
         <dl class="row">
             <dt class="col-sm-2">Category</dt>
             <dd class="col-sm-10">@Item.Category</dd>
@@ -31,7 +32,27 @@
             <dt class="col-sm-2">Zip code</dt>
             <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
         </dl>
-            <div class="row mb-3">
+
+    }
+
+    <MudStack Class="w-auto">
+        <MudDateRangePicker @ref="_picker"
+        Label="Pick dates"
+        MinDate="DateTime.Now"
+        @bind-DateRange="DateRange" 
+        AutoClose="true"
+        PickerVariant="PickerVariant.Dialog"
+        Color="Color.Tertiary"
+        Class="my-5 w-auto">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.ClearAsync())">Clear</MudButton>
+                <MudButton OnClick="@(() => _picker.CloseAsync(false))">Cancel</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => _picker.CloseAsync())">Ok</MudButton>
+            </PickerActions>
+        </MudDateRangePicker>
+    </MudStack>
+
+@*                 <div class="row mb-3">
                 <div class="col-4">
                     <label for="requested-pickup-date" class="form-label">Requested pickup date & time</label>
                     <div class="col-sm-10">
@@ -46,91 +67,78 @@
                 <input type="datetime-local" id="end-time" class="form-control" min="@minDateTime" @bind="ContractDTO.EndTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.EndTime = dateTime)" required />
                 </div>
             </div>
-            </div>
+            </div> *@
             <div class="row">
                 <div class="col-4">
                     <a href="/my-inventory" class="btn btn-secondary me-2 px-3" type="button">Back</a>
                     <button class="btn btn-primary me-2 px-5" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
                 </div>
             </div>
-    }
-    @if(!string.IsNullOrEmpty(tempMessage))
-    {
-        <p class="@messageClass mt-3">@tempMessage</p>
-    }
 </div>
 
 
 @code {
     // TODO: Refactor and extract datepickers?
-    // TODO: Add more pictures in this view
     [Parameter]
     public int ItemId { get; set; } //Item id from http-route parameter
-
     public Item? Item { get; set; } = new();
-
     public ContractCreateDTO ContractDTO { get; set; } = new();
 
-    string minDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
-    string? tempMessage;
-    string? messageClass;
+    private MudDateRangePicker? _picker;
+    private DateRange? DateRange { get; set; }
+    // string minDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             Item = await Client.ApiItemGetAsync(ItemId);
-            ContractDTO.StartTime = DateTime.Parse(minDateTime);
-            ContractDTO.EndTime = DateTime.Parse(minDateTime);
+            // ContractDTO.StartTime = DateTime.Parse(minDateTime);
+            // ContractDTO.EndTime = DateTime.Parse(minDateTime);
         }
         catch(Exception ex)
         {
-            messageClass = "text-danger";
-            tempMessage = ex.Message.ToString();
+            SnackbarService.Error("Unable to load item");
+            NavigationManager.NavigateTo("/cirkla");
         }
     }
 
+
+    //TODO: Try binding to DateRange instead of using a separate variable
     private async Task AskToBorrow()
     {
         ContractDTO.ItemId = Item.Id;
         ContractDTO.BorrowerId = await CurrentUser.GetUserId();
         ContractDTO.OwnerId = Item.OwnerId;
         ContractDTO.Created = DateTime.Now;
+        ContractDTO.StartTime = DateRange.Start.Value;
+        ContractDTO.EndTime = DateRange.End.Value;
         ContractDTO.CurrentStatus = ContractStatus.Pending;
-        // TODO: Add custom validation message if StartDate is later than EndDate
 
         try
         {
             var response = await Client.ApiBorrowingContractSendRequestAsync(ContractDTO);
+            SnackbarService.Success($"You've requested to borrow {Item.Name}");
             NavigationManager.NavigateTo($"/borrowing-contracts/{response}");
         }
         catch (ApiException ex)
         {
-            if(ex.StatusCode is >= 200 and <= 299)
-            {
-                messageClass = "text-success";
-                tempMessage = $"Your request to borrow {Item.Name} has been successfully sent to {Item.Owner.FirstName} {Item.Owner.LastName}";
-            }
-            else if(ex.StatusCode >= 400 && ex.StatusCode <= 499)
-            {
-                messageClass = "text-danger";
-                tempMessage = ex.Message.ToString();
-            }
-            else
-            {
-                messageClass = "text-danger";
-                tempMessage = ex.Message.ToString();
-            }
+            SnackbarService.Error($"Couldn't send loan request for {Item.Name}");
         }
     }
 
     // Checks if input date is before DateTime.Now and resets to Datetime.Now
-    private async Task ValidateDateTime(ChangeEventArgs e, Action<DateTime> updateAction)
+    // private async Task ValidateDateTime(ChangeEventArgs e, Action<DateTime> updateAction)
+    // {
+    //     if(string.IsNullOrWhiteSpace(e.Value.ToString()) || DateTime.Compare(DateTime.Parse(e.Value.ToString()), DateTime.Now) < 0)
+    //     {
+    //         updateAction(DateTime.Now);
+    //     }
+    // }
+
+    private string AltText()
     {
-        if(string.IsNullOrWhiteSpace(e.Value.ToString()) || DateTime.Compare(DateTime.Parse(e.Value.ToString()), DateTime.Now) < 0)
-        {
-            updateAction(DateTime.Now);
-        }
+        return $"Image of {Item?.Name}";
     }
 }
 

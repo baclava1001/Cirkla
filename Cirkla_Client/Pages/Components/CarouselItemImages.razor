@@ -1,0 +1,13 @@
+﻿<MudCarousel ItemsSource="@ItemPictures" Style="height: 300px; max-width: 500px;" ShowArrows="true" ShowBullets="false" EnableSwipeGesture="true" AutoCycle="false">
+    <ItemTemplate>
+        <MudImage Style="width: 500px;" ObjectFit="ObjectFit.Contain" Src="@context.Url" Alt="AltText" />
+    </ItemTemplate>
+</MudCarousel>
+
+@code {
+    [Parameter]
+    public List<ItemPicture> ItemPictures { get; set; }
+
+    [Parameter]
+    public string AltText { get; set; }
+}
