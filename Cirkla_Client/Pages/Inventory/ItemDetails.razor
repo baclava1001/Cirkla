@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize]
 @page "/items/{itemId:int}"
 @using Cirkla_Client.Pages.Inventory.Components;
+@using Cirkla_Client.Pages.Components
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
 @inject SnackbarService SnackbarService;
@@ -16,12 +17,7 @@
     }
     else
     {
-        <MudCarousel ItemsSource="@Item.Pictures" Style="height: 300px; max-width: 500px;" ShowArrows="true" ShowBullets="false" EnableSwipeGesture="true" AutoCycle="false">
-            <ItemTemplate>
-                <MudImage Style="width: 500px;" ObjectFit="ObjectFit.Contain" Src="@context.Url" Alt="@AltText()" />
-            </ItemTemplate>
-        </MudCarousel>
-
+        <CarouselItemImages ItemPictures="Item?.Pictures?.ToList()" AltText="@AltText()"/>
         <br />
         <dl class="row">
             <dt class="col-sm-2">Category</dt>
