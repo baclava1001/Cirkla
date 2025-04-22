@@ -133,8 +133,10 @@ public static class ContractStringBuilder
 
                 (false, true, false, true) =>
                     $"You have cancelled your request to borrow {contract.Item.Name} from {OwnerFullName(contract)}.",
+                (false, false, true, false) =>
+                    $"{contract.Item.Name} cancelled their request to borrow {contract.Item.Name}.",
                 (false, false, true, true) =>
-                    $"{BorrowerFullName(contract).Result} has cancelled their request to borrow {contract.Item.Name}.",
+                    $"You have cancelled {BorrowerFullName(contract).Result}'s request to borrow {contract.Item.Name}.",
                 (false, true, false, false) =>
                     $"{OwnerFullName(contract).Result} has cancelled your request to borrow {contract.Item.Name}.",
                 (true, _, _, _) =>

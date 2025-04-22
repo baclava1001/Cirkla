@@ -1,9 +1,11 @@
 ﻿@inject IClient Client;
 @inject NavigationManager NavigationManager;
+@inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
 
 @if (Contract is not null)
 {
-        <MudButton id="Cancel" Buttontype="ButtonType.Button" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Stop" OnClick="() => CancelRequest()" Class="ml-2">Cancel</MudButton>
+        <MudButton id="Cancel" Buttontype="ButtonType.Button" Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Stop" OnClick="() => CancelRequest()">Cancel</MudButton>
 }
 
 @code {
@@ -21,7 +23,7 @@
             Created = Contract.Created.Value,
             StartTime = Contract.StartTime.Value,
             EndTime = Contract.EndTime.Value,
-            UpdatedByUserId = Contract.OwnerId,
+            UpdatedByUserId = await CurrentUser.GetUserId(),
             UpdatedAt = DateTime.Now,
             FromStatus = Contract.StatusChanges.LastOrDefault().To,
             ToStatus = ContractStatus.Cancelled
@@ -30,11 +32,12 @@
         try
         {
             await Client.ApiBorrowingContractCancelRequestAsync(Contract.Id.Value, contractUpdateDTO);
-            Console.WriteLine("Button component cancelled request successfully");
+            SnackbarService.Success($"You've cancelled the request from {Contract.BorrowerFullName}");
             NavigationManager.NavigateTo("/my-inventory");
         }
         catch (Exception ex)
         {
+            SnackbarService.Error($"An error occured while trying to cancel borrowing request #{Contract.Id}");
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }

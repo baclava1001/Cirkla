@@ -4,6 +4,7 @@
 @using Cirkla_Client.Pages.Components
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
 
 
 <PageTitle>Request summary</PageTitle>
@@ -52,35 +53,43 @@
                 </ul>
             </dd>
         </dl>
-        <MudGrid Justify="Justify.FlexStart">
+        <MudGrid Class="d-flex flex-column flex-lg-row">
+            <MudItem>
             <MudButton Href="/my-inventory"
                        id="Back"
-                       ButtonType="ButtonType.Button" 
-                       Color="Color.Dark" 
-                       Variant="Variant.Filled" 
-                       StartIcon="@Icons.Material.Filled.FastRewind" 
-                       Class="ml-5">Back</MudButton>
+                       ButtonType="ButtonType.Button"
+                       Color="Color.Dark"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.FastRewind"
+                       Class="flex-grow-1">Back</MudButton>
+            </MudItem>
             @if (_canCancel)
             {
-                <CancelRequestButton Contract="Contract" />
+                <MudItem>
+                    <CancelRequestButton Contract="Contract"/>
+                </MudItem>
             }
+            <AccessGuard CompareToId="@Contract?.OwnerId">
             @if (_canReply)
             {
-                <ReplyToRequestButtons Contract="Contract" />
+                <MudItem>
+                    <ReplyToRequestButtons Contract="Contract"/>
+                </MudItem>
             }
+            </AccessGuard>
             @if (_canActivate)
             {
-                <ActivateRequestButton Contract="Contract" />
+                <MudItem>
+                    <ActivateRequestButton Contract="Contract"/>
+                </MudItem>
             }
             @if (_canComplete)
             {
-                <CompleteRequestButton Contract="Contract" />
+                <MudItem>
+                    <CompleteRequestButton Contract="Contract"/>
+                </MudItem>
             }
         </MudGrid>
-    }
-    @if(!string.IsNullOrEmpty(_tempMessage))
-    {
-        <p class="@_messageClass mt-3">@_tempMessage</p>
     }
 </div>
 
@@ -94,8 +103,6 @@
     private ContractResponseDTO? Contract { get; set; }
 
     private string? _requestNumber;
-    private string? _tempMessage;
-    private string? _messageClass;
     private bool _canReply;
     private bool _canActivate;
     private bool _canCancel;
@@ -109,7 +116,7 @@
         var lastStatus = changes?.LastOrDefault()?.To;
     
         _canReply = changes is not null &&
-                    !changes.Any(sc => sc.To is ContractStatus.Accepted or ContractStatus.Denied);
+                    !changes.Any(sc => sc.To is ContractStatus.Accepted or ContractStatus.Denied or ContractStatus.Cancelled);
         _canActivate = changes is not null &&
                        lastStatus is ContractStatus.Accepted &&
                        !changes.Any(sc => sc.To is ContractStatus.Completed or ContractStatus.Archived);
@@ -135,22 +142,19 @@
         {
             if (ex.StatusCode == 404)
             {
-                Console.WriteLine("Something went wrong getting Contract values from API.");
-                _messageClass = "text-danger";
-                _tempMessage = ex.Message;
+                SnackbarService.Error("Something went wrong getting Contract values from API."); 
+                Console.WriteLine(ex.Message);
             }
             else
             {
-                Console.WriteLine("Something went wrong getting Contract values from API.");
-                _messageClass = "text-danger";
-                _tempMessage = ex.Message;
+                SnackbarService.Error("Something went wrong getting Contract values from API.");
+                Console.WriteLine(ex.Message);
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Something went wrong getting Contract values from API.");
-            _messageClass = "text-danger";
-            _tempMessage = ex.Message.ToString();
+            SnackbarService.Error("Something went wrong getting Contract values from API.");
+            Console.WriteLine(ex.Message);
         }
     }
 

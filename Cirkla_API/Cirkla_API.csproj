@@ -28,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Authorization\Handlers\OwnershipHandler.cs" />
+    <Compile Remove="Authorization\Requirements\OwnershipRequirement.cs" />
     <Compile Remove="Controllers\InboxController.cs" />
     <Compile Remove="Controllers\ProfileController.cs" />
     <Compile Remove="Services\IProfileService.cs" />
@@ -64,6 +66,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Authorization\Handlers\" />
+    <Folder Include="Authorization\Requirements\" />
     <Folder Include="Services\TokenGenerator\" />
     <Folder Include="Startup\" />
   </ItemGroup>

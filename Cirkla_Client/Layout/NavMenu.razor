@@ -1,6 +1,10 @@
-﻿@using Cirkla_Client.Extensions
+﻿@using Cirkla_Client.Extensions;
 @using Cirkla_Client.Pages.Components;
-@using Microsoft.AspNetCore.Components.Authorization
+@using Cirkla_Client.Providers;
+@using Microsoft.AspNetCore.Components.Authorization;
+@inject NavigationManager NavigationManager;
+@inject IAuthenticationService AuthenticationService;
+@inject SnackbarService SnackbarService;
 
 
 <MudAppBar Fixed="true" Class="p-2" Style="background-color:#186F65">
@@ -26,17 +30,47 @@
     </a>
     <AuthorizeView>
         <Authorized>
-        <div class="nav-link px-sm-3 px-md-5">
-            <span class="d-none d-lg-block">@context.User.GetFullName()</span>
-            <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-user fa-2xl" style="color: #ffffff;"/></span>
-            <span class="d-block d-md-none"><i class="fa-solid fa-user fa-xl" style="color: #ffffff;"/></span>
-        </div>
+            <MudMenu>
+                <ActivatorContent>
+                    <div class="nav-link px-sm-3 px-md-5">
+                        <span class="d-none d-lg-block">@context.User.GetFullName()</span>
+                        <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-user fa-2xl" style="color: #ffffff;" /></span>
+                        <span class="d-block d-md-none"><i class="fa-solid fa-user fa-xl" style="color: #ffffff;" /></span>
+                    </div>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudMenuItem>
+                        <span class="d-none d-lg-block" style="color: black;">Account</span>
+                            <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-user fa-2xl" style="color: grey;"/></span>
+                            <span class="d-block d-md-none"><i class="fa-solid fa-user fa-xl" style="color: grey;"/></span>
+                    </MudMenuItem>
+                    <MudMenuItem>
+                        <a href="my-inventory" style="color: black;">
+                            <span class="d-none d-lg-block">Inventory</span>
+                            <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-warehouse fa-2xl" style="color: grey;"/></span>
+                            <span class="d-block d-md-none"><i class="fa-solid fa-warehouse fa-xl" style="color: grey;"/></span>
+                        </a>
+                    </MudMenuItem>
+                    <MudMenuItem>
+                        <a href="/circles" style="color: black;">
+                            <span class="d-none d-lg-block">My circles</span>
+                            <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-users fa-2xl" style="color: grey;"/></span>
+                            <span class="d-block d-md-none"><i class="fa-solid fa-users fa-xl" style="color: grey;"/></span>
+                        </a>
+                    </MudMenuItem>
+                    <MudMenuItem OnClick="() => Logout()">
+                        <span class="d-none d-lg-block" style="color: black">Logout</span>
+                        <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-door-closed fa-2xl" style="color: grey;"/></span>
+                        <span class="d-block d-md-none"><i class="fa-solid fa-door-closed fa-xl" style="color: grey;"/></span>
+                    </MudMenuItem>
+                </ChildContent>
+            </MudMenu>
         </Authorized>
         <NotAuthorized>
             <a href="account/login" class="nav-link px-sm-3 px-md-5" style="color: #ffffff;">
                 <span class="d-none d-lg-block">Login</span>
-                <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-door-open fa-2xl" style="color: #ffffff;"/></span>
-                <span class="d-block d-md-none"><i class="fa-solid fa-door-open fa-xl" style="color: #ffffff;"/></span>
+                <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-door-open fa-2xl" style="color: #ffffff;" /></span>
+                <span class="d-block d-md-none"><i class="fa-solid fa-door-open fa-xl" style="color: #ffffff;" /></span>
             </a>
         </NotAuthorized>
     </AuthorizeView>
@@ -47,4 +81,19 @@
 
 @code {
     // TODO: Make a separate component that displays logged in user name with a menu hidden underneath (My account, My circles, My items, my loans, logout)
+
+    private async Task Logout()
+    {
+        try
+        {
+            await AuthenticationService.Logout();
+            NavigationManager.NavigateTo("/account/login");
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., show a message to the user)
+            SnackbarService.Error("Logout failed. Please try again.");
+            Console.WriteLine($"Logout failed: {ex.Message}");
+        }
+    }
 }
