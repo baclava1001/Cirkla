@@ -1,5 +1,7 @@
-﻿@using Mapping.Mappers
+﻿@using Mapping.Mappers;
 @inject IClient Client;
+@inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
 
 <MudButton
     ButtonType="ButtonType.Button"
@@ -15,8 +17,6 @@
     [Parameter]
     public Circle? Circle { get; set; }
     public CircleJoinRequest? Request { get; set; }
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
-
 
     private async Task JoinCircle()
     {
@@ -24,8 +24,8 @@
         {
             Type = CircleJoinRequestType.JoinAsMember,
             CircleId = Circle.Id,
-            TargetUserId = _tempUserId,
-            FromUserId = _tempUserId,
+            TargetUserId = await CurrentUser.GetUserId(),
+            FromUserId = await CurrentUser.GetUserId(),
             Status = CircleRequestStatus.Pending,
             RequestDate = DateTime.Now,
             ExpiresAt = DateTime.Now + TimeSpan.FromDays(7)
@@ -33,14 +33,12 @@
         try
         {
             await Client.MembershipRequestsPostAsync(request);
-        }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex);
+            SnackbarService.Success("Membership request sent");
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine(ex.Message);
+            SnackbarService.Error("Couldn't send membership request");
         }
     }
 }

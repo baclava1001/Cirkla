@@ -1,10 +1,11 @@
-﻿@page "/circles"
+﻿@attribute [Authorize]
+@page "/circles"
 @using Cirkla_Client.Pages.CirclesHandling.Components;
 @inject IClient Client;
 
 <PageTitle>Circles overview</PageTitle>
 
-<MudGrid>
+<MudGrid Class="mb-5">
     <MudItem>
         <h3>Circles overview</h3>
     </MudItem>
@@ -15,7 +16,6 @@
             Color="Color.Tertiary"
             Variant="Variant.Filled"
             StartIcon="@Icons.Material.Filled.Add"
-            Class="ma-6"
             Href="/circles/create">New Circle</MudButton>
     </MudItem>
     <MudItem>
@@ -25,13 +25,12 @@
             Color="Color.Tertiary"
             Variant="Variant.Filled"
             StartIcon="@Icons.Material.Filled.Search"
-            Class="ma-6"
             Href="">Find circle</MudButton>
     </MudItem>
 </MudGrid>
 
 
-<MudGrid>
+<MudGrid Class="d-flex flex-row">
     @if (Circles is null || Circles.Any() is false)
     {
         <MudItem>

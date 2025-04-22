@@ -1,4 +1,5 @@
-﻿using Cirkla_API.Common.Constants;
+﻿using System.Text.Json.Nodes;
+using Cirkla_API.Common.Constants;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cirkla_API.Common;
@@ -25,6 +26,4 @@ public class ServiceResult<T>
     public static ServiceResult<T> Success(T payload) => new(false, default,null, payload, false);
     public static ServiceResult<object> NoContent() => new(false,default,null, new object(), false);
     public static ServiceResult<T> Fail(string errorMessage, ErrorType error) => new(true, error, errorMessage, default, false);
-
-
 }
