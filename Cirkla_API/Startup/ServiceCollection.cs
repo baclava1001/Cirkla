@@ -27,9 +27,9 @@ using Cirkla_DAL.Repositories.UoW;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Mapping.Validators.Contracts;
-using Cirkla_API.Authorization.Handlers;
+//using Cirkla_API.Authorization.Handlers;
 using Microsoft.AspNetCore.Authorization;
-using Cirkla_API.Authorization.Requirements;
+//using Cirkla_API.Authorization.Requirements;
 
 namespace Cirkla_API.Startup;
 
@@ -80,14 +80,14 @@ public static class ServiceCollectionExtensions
             options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         });
 
+        // TODO: Remove this later, and their usings?
+        //services.AddAuthorization(options =>
+        //{
+        //    options.AddPolicy("IsOwner", policy =>
+        //        policy.Requirements.Add(new OwnershipRequirement()));
+        //});
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("IsOwner", policy =>
-                policy.Requirements.Add(new OwnershipRequirement()));
-        });
-
-        services.AddScoped<IAuthorizationHandler, OwnershipHandler>();
+        //services.AddScoped<IAuthorizationHandler, OwnershipHandler>();
 
 
         // TODO: Safer CORS policy

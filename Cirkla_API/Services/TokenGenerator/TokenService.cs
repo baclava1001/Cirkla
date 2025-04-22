@@ -79,5 +79,4 @@ public class TokenService(UserManager<User> userManager,
             return ServiceResult<string>.Fail("Authentication error", ErrorType.InternalError);
         }
     }
-
 }

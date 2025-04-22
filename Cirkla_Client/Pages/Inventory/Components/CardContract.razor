@@ -9,7 +9,6 @@
     </MudCarousel>
     <MudCardContent>
         <MudText Typo="Typo.h5" Class="text-truncate">@Contract?.Item?.Name</MudText>
-        <MudText Typo="Typo.body2">from @Contract?.Owner?.FullName</MudText>
         <MudText Typo="Typo.body2" Class="text-truncate">@_cardContent</MudText>
         <MudText Typo="Typo.body2" Class="text-truncate">Last update: @Contract?.StatusChanges?.Last().ChangedAt.ToShortDateString()</MudText>
     </MudCardContent>
