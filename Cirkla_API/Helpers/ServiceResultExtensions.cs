@@ -1,6 +1,7 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 
 namespace Cirkla_API.Helpers;
 
@@ -11,7 +12,7 @@ public static class ServiceResultExtensions
         if (result.IsCreated)
             return new CreatedResult("", result.Payload);
 
-        if (result is ServiceResult<object> && result.Payload.GetType() == typeof(object))
+        if (result is ServiceResult<object> && result.Payload is null)
             return new NoContentResult();
 
         if (!result.IsError)

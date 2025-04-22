@@ -1,6 +1,8 @@
 ﻿@using System.Text.Json
 @using Mapping.Mappers
 @inject IClient Client;
+@inject SnackbarService SnackbarService;
+@inject CurrentUserService CurrentUser;
 
 <MudButton
 ButtonType="ButtonType.Button"
@@ -15,12 +17,8 @@ Class="ml-auto">Accept</MudButton>
     [Parameter]
     public Circle? Circle { get; set; }
 
-    [Parameter] // Will be populated if coming from Admin view (CircleRequestList component)
+    [Parameter]
     public CircleJoinRequest? Request { get; set; }
-
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; // Kalle Kanin
-    private string _tempAcceptingId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; // Liza Minelli
-    //private string _tempAcceptingId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed
 
     private async Task AcceptJoinRequest()
     {
@@ -28,29 +26,32 @@ Class="ml-auto">Accept</MudButton>
         {
             if (Request is null)
             {
-                var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
+                // Fetch all requests belonging to the logged in user
+                var userRequests = await Client.MembershipRequestsUserAsync(await CurrentUser.GetUserId());
+                // Single out the request to join this particular Circle
                 Request = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
             }
 
             if (Request?.Status is not CircleRequestStatus.Pending)
             {
                 Console.WriteLine("Request not valid.");
-                // TODO: Show message
+                SnackbarService.Error("Request not valid");
                 return;
             }
 
 
-            Request.UpdatedByUserId = _tempAcceptingId;
+            Request.UpdatedByUserId = await CurrentUser.GetUserId();
             var requestUpdateDTO = await Mapper.MapToCircleRequestUpdateDTO(Request);
             await Client.MembershipRequestsAcceptAsync(requestUpdateDTO.Id, requestUpdateDTO);
         }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex);
-        }
         catch (Exception ex)
         {
+            SnackbarService.Error("Couldn't accept join request");
             Console.WriteLine(ex);
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

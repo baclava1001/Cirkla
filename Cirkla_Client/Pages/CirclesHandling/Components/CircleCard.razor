@@ -1,20 +1,23 @@
 ﻿@using System.Text.Json
-@using System.Text.Json.Serialization
-@inject IClient Client
-@inject NavigationManager NavigationManager
+@using System.Text.Json.Serialization;
+@using Cirkla_Client.Pages.Components;
+@inject IClient Client;
+@inject NavigationManager NavigationManager;
+@inject CurrentUserService CurrentUser;
 
 <MudCard>
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h6">@Circle?.Name</MudText>
         </CardHeaderContent>
-        @* TODO: Show CardHeaderActions only to admins *@
         <CardHeaderActions>
-            <MudMenu Icon="@Icons.Material.Filled.Settings">
-                <MudMenuItem Label="Members" Icon="@Icons.Material.Filled.People" OnClick="() => EditMemberList()"/>
-                <MudMenuItem Label="Edit" Icon="@Icons.Material.Filled.Edit" OnClick="() => EditCircle()"/>
-                <MudMenuItem Label="Delete" Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteCircle()" />
-            </MudMenu>
+            <AccessGuard CompareToId="@CompareToId">
+                <MudMenu Icon="@Icons.Material.Filled.Settings">
+                    <MudMenuItem Label="Members" Icon="@Icons.Material.Filled.People" OnClick="() => EditMemberList()"/>
+                    <MudMenuItem Label="Edit" Icon="@Icons.Material.Filled.Edit" OnClick="() => EditCircle()"/>
+                    <MudMenuItem Label="Delete" Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteCircle()"/>
+                </MudMenu>
+            </AccessGuard>
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
@@ -22,33 +25,112 @@
         <MudText Typo="Typo.caption"><MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.Person"/> @_userMembershipStatus</MudText>
     </MudCardContent>
     <MudCardActions>
-        <MudButton Variant="Variant.Filled"
-        Color="Color.Default"
-        StartIcon="@Icons.Material.Filled.DoorSliding"
-        Size="Size.Small">Browse</MudButton>
-        <BtnCircleJoin Circle="Circle"/>
-        <BtnCircleInvite Circle="Circle"/>
-        <BtnCircleRequestRevoke Circle="Circle" />
-        <BtnCircleRequestReject Circle="@Circle" />
-        <BtnCircleRequestAccept Circle="@Circle" />
+        <MudGrid Class="d-flex flex-wrap">
+            <MudItem>
+                <MudButton Variant="Variant.Filled"
+                Color="Color.Default"
+                StartIcon="@Icons.Material.Filled.DoorSliding"
+                Size="Size.Small">Browse</MudButton>
+            </MudItem>
+            <MudItem>
+                @if (_canJoin)
+                {
+                    <BtnCircleJoin Circle="Circle" />
+                }
+            </MudItem>
+            <MudItem>
+                @if (_canInvite)
+                {
+                    <BtnCircleInvite Circle="Circle"/>
+                }
+            </MudItem>
+            <MudItem>
+                @if (_canRevoke)
+                {
+                    <BtnCircleRequestRevoke Circle="Circle" />
+                }
+            </MudItem>
+            <MudItem>
+                @if (_canReject)
+                {
+                    <BtnCircleRequestReject Circle="@Circle"/>
+                }
+            </MudItem>
+            <MudItem>
+                @if (_canAccept)
+                {
+                    <BtnCircleRequestAccept Circle="@Circle" Request="_joinRequest"/>
+                }
+            </MudItem>
+        </MudGrid>
     </MudCardActions>
 </MudCard>
 
 @code {
+
+    // TODO: Refactor this component to use a service for the authorization logic
+
     [Parameter]
     public Circle? Circle { get; set; }
 
     [Parameter]
     public EventCallback OnCircleDeleted { get; set; }
 
+    public string CompareToId { get; set; } = string.Empty;
+    private CircleJoinRequest? _joinRequest;
+    private string _currentUserId = "";
     private string _userMembershipStatus = "";
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
+    private GroupPermissionService permission = new();
+
+    private bool _canJoin;
+    private bool _canInvite;
+    private bool _canRevoke;
+    private bool _canReject;
+    private bool _canAccept;
 
 
     protected override async Task OnInitializedAsync()
     {
+        _currentUserId = await CurrentUser.GetUserId();
+
+        _canJoin = permission.CanJoin(await IsAdmin(), await IsMember(), await IsJoinRequestPending());
+        _canInvite = permission.CanInvite(await IsAdmin(), await IsMember());
+        _canRevoke = permission.CanRevoke(await IsAdmin(), await IsJoinRequestSender(), await IsJoinRequestTarget(), await IsJoinRequestPending());
+        _canReject = permission.CanReject(await IsAdmin(), await IsJoinRequestTarget(), await IsJoinRequestPending());
+        _canAccept = permission.CanAccept(await IsAdmin(), await IsJoinRequestTarget(), await IsJoinRequestPending());
+
+        try
+        {
+            ICollection<CircleJoinRequest>? userJoinRequests = await Client.MembershipRequestsUserAsync(await CurrentUser.GetUserId());
+            _joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode is 404)
+            {
+                _joinRequest = new CircleJoinRequest();
+            }
+            Console.WriteLine(ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        CompareToId = await GetIdToCompare();
         _userMembershipStatus = await UserMembershipStatus();
     }
+
+
+    private async Task<string> GetIdToCompare()
+    {
+        if (await IsAdmin())
+        {
+            return _currentUserId;
+        }
+        return string.Empty;
+    }
+
 
     private async Task EditCircle()
     {
@@ -90,29 +172,27 @@
     {
         try
         {
-            ICollection<CircleJoinRequest>? userJoinRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
-            var joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
-            if (joinRequest is null)
+            if (_joinRequest is null)
             {
                 return "Not a member";
             }
 
-            if (Circle != null && Circle.Administrators.Any(a => a.Id == _tempUserId))
+            if (await IsAdmin())
             {
                 return "You are an administrator";
             }
 
-            if (Circle.Members != null && Circle.Members.Any(m => m.Id == _tempUserId))
+            if (await IsMember())
             {
                 return "You are a member";
             }
 
-            if (joinRequest?.Type == CircleJoinRequestType.JoinAsMember)
+            if (_joinRequest?.Type == CircleJoinRequestType.JoinAsMember)
             {
                 return "Waiting for membership";
             }
 
-            if (joinRequest?.Type == CircleJoinRequestType.JoinAsAdmin)
+            if (_joinRequest?.Type == CircleJoinRequestType.JoinAsAdmin)
             {
                 return "Waiting for admin status";
             }
@@ -120,7 +200,53 @@
         catch (Exception ex)
         {
             Console.WriteLine("No join requests found");
+            return "Not a member";
         }
         return "Error : Unknown membership status";
+    }
+
+
+    private async Task<bool> IsAdmin()
+    {
+        return Circle is not null && Circle.Administrators is not null && Circle.Administrators.Any(a => a.Id == _currentUserId);
+    }
+
+    private async Task<bool> IsMember()
+    {
+        return Circle is not null && Circle.Members is not null && Circle.Members.Any(m => m.Id == _currentUserId);
+    }
+
+    private async Task<bool> IsJoinRequestPending()
+    {
+        return _joinRequest is not null && _joinRequest.Status is CircleRequestStatus.Pending;
+    }
+
+    private async Task<bool> IsJoinRequestSender()
+    {
+        return _joinRequest is not null && _joinRequest.FromUserId == _currentUserId;
+    }
+
+    private async Task<bool> IsJoinRequestTarget()
+    {
+        return _joinRequest is not null && _joinRequest.TargetUserId == _currentUserId;
+    }
+
+
+    public class GroupPermissionService
+    {
+        public bool CanJoin(bool isAdmin, bool isMember, bool hasPendingRequest)
+            => !isAdmin && !isMember && !hasPendingRequest;
+
+        public bool CanInvite(bool isAdmin, bool isMember)
+            => isAdmin || isMember;
+
+        public bool CanRevoke(bool isAdmin, bool isAuthor, bool isTarget, bool isPendingJoinRequest)
+            => isPendingJoinRequest && (isAdmin || isAuthor || isTarget);
+
+        public bool CanReject(bool isAdmin, bool isTarget, bool isPendingJoinRequest)
+            => isPendingJoinRequest && (isAdmin || isTarget);
+
+        public bool CanAccept(bool isAdmin, bool isTarget, bool isPendingJoinRequest)
+            => isPendingJoinRequest && (isAdmin || isTarget);
     }
 }
