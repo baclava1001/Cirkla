@@ -18,6 +18,10 @@ Class="ml-auto">Make admin</MudButton>
     public Circle? Circle { get; set; }
     [Parameter]
     public User Member { get; set; }
+    // Event callback to trigger rerender of parent component
+    [Parameter]
+    public EventCallback OnAdminAdded { get; set; }  
+
 
     private async Task MakeAdmin()
     {
@@ -36,6 +40,7 @@ Class="ml-auto">Make admin</MudButton>
             };
             await Client.MembershipRequestsUserMakeAdminAsync(request.TargetUserId, request);
             SnackbarService.Success($"{Member.FullName} is now an admin for {Circle.Name}");
+            await OnAdminAdded.InvokeAsync();
         }
         catch (ApiException ex)
         {
