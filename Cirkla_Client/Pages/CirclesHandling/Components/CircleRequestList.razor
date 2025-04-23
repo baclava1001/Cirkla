@@ -36,6 +36,8 @@
     public Circle? Circle { get; set; }
     public IEnumerable<CircleJoinRequest?>? PendingCircleRequests { get; set; }
 
+
+
     protected override async Task OnInitializedAsync()
     {
         var requestsForCircle = await Client.MembershipRequestsCircleAsync(CircleId);

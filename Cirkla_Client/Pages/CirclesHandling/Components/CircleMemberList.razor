@@ -1,4 +1,6 @@
-﻿<MudTable Items="Circle?.Members" FixedHeader="true" Height="500" Hover="true" SortLabel="Sort by">
+﻿@inject IClient Client;
+
+<MudTable Items="Circle?.Members" FixedHeader="true" Height="500" Hover="true" SortLabel="Sort by">
     <ToolBarContent>
         <MudText Typo="Typo.h6">@Circle?.Name member list</MudText>
     </ToolBarContent>
@@ -17,20 +19,32 @@
         <MudTd DataLabel="Shared items">@context.Items?.Count</MudTd>
         <MudTd DataLabel="Role">@MemberOrAdmin(@context)</MudTd>
         <MudTd DataLabel="Actions">
-            <BtnMakeAdmin Circle="Circle" Member="context"/>
-            <BtnRemoveAdmin Circle="Circle" Member="context" />
+            @if (!Circle.Administrators.Any(a => a.Id == context.Id))
+            {
+                <BtnMakeAdmin Circle="Circle" Member="context" OnAdminAdded="() => RefreshList()"/>
+            }
+            else
+            {
+                <BtnRemoveAdmin Circle="Circle" Member="context" OnAdminRemoved="() => RefreshList()"/>   
+            }
         </MudTd>
     </RowTemplate>
 </MudTable>
 
 @code {
-    // TODO: Add sorting and filtering to the table, see MudBlazor documentation
-    // TODO: Add some more styling to the table, see MudBlazor documentation
-    [Parameter]
+    // TODO: Add sorting and filtering to the table, see MudBlazor documentation  
+    // TODO: Add some more styling to the table, see MudBlazor documentation  
+    [Parameter]  
     public Circle? Circle { get; set; } = new();
 
-    private string MemberOrAdmin(User user)
+    private string MemberOrAdmin(User user)  
+    {  
+        return Circle?.Administrators?.FirstOrDefault(a => a.Id == user.Id) != null ? "Admin" : "Member";  
+    }
+
+    private async Task RefreshList()
     {
-        return Circle?.Administrators?.FirstOrDefault(a => a.Id == user.Id) != null ? "Admin" : "Member";
+        Circle = await Client.ApiCircleGetAsync(Circle.Id);
+        await InvokeAsync(StateHasChanged);
     }
 }

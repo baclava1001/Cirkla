@@ -18,6 +18,9 @@ Class="ml-auto">Remove admin</MudButton>
     public Circle? Circle { get; set; }
     [Parameter]
     public User Member { get; set; }
+    // Event callback to trigger rerender of parent component
+    [Parameter]
+    public EventCallback OnAdminRemoved { get; set; }  
 
     private async Task RemoveAdmin()
     {
@@ -36,8 +39,7 @@ Class="ml-auto">Remove admin</MudButton>
             };
             await Client.MembershipRequestsUserRemoveAdminAsync(request.TargetUserId, request);
             SnackbarService.Success($"{Member.FullName} is no longer an admin for {Circle.Name}");
-            // TODO: trigger rerendering of parent component
-            await InvokeAsync(StateHasChanged);
+            await OnAdminRemoved.InvokeAsync();
         }
         catch (Exception ex)
         {
