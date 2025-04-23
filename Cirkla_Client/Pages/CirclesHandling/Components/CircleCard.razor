@@ -68,7 +68,7 @@
 
 @code {
 
-    // TODO: Refactor this component to use a service for the authorization logic
+    // TODO: Refactor this component and extract authorization logic
 
     [Parameter]
     public Circle? Circle { get; set; }
@@ -93,16 +93,10 @@
     {
         _currentUserId = await CurrentUser.GetUserId();
 
-        _canJoin = permission.CanJoin(await IsAdmin(), await IsMember(), await IsJoinRequestPending());
-        _canInvite = permission.CanInvite(await IsAdmin(), await IsMember());
-        _canRevoke = permission.CanRevoke(await IsAdmin(), await IsJoinRequestSender(), await IsJoinRequestTarget(), await IsJoinRequestPending());
-        _canReject = permission.CanReject(await IsAdmin(), await IsJoinRequestTarget(), await IsJoinRequestPending());
-        _canAccept = permission.CanAccept(await IsAdmin(), await IsJoinRequestTarget(), await IsJoinRequestPending());
-
         try
         {
-            ICollection<CircleJoinRequest>? userJoinRequests = await Client.MembershipRequestsUserAsync(await CurrentUser.GetUserId());
-            _joinRequest = userJoinRequests.FirstOrDefault(jr => jr.Circle?.Id == Circle?.Id);
+            ICollection<CircleJoinRequest>? userJoinRequests = await Client.MembershipRequestsUserCircleAsync(await CurrentUser.GetUserId(), Circle.Id);
+            _joinRequest = userJoinRequests.LastOrDefault() ?? new CircleJoinRequest();
         }
         catch (ApiException ex)
         {
@@ -116,6 +110,12 @@
         {
             Console.WriteLine(ex.Message);
         }
+
+        _canJoin = permission.CanJoin(await IsAdmin(), await IsMember(), await IsJoinRequestPending());
+        _canInvite = permission.CanInvite(await IsAdmin(), await IsMember());
+        _canRevoke = permission.CanRevoke(await IsAdmin(), await IsJoinRequestSender(), await IsJoinRequestTarget(), await IsJoinRequestPending());
+        _canReject = permission.CanReject(await IsAdmin(), await IsJoinRequestTarget(), await IsJoinRequestPending());
+        _canAccept = permission.CanAccept(await IsAdmin(), await IsJoinRequestTarget(), await IsJoinRequestPending());
 
         CompareToId = await GetIdToCompare();
         _userMembershipStatus = await UserMembershipStatus();

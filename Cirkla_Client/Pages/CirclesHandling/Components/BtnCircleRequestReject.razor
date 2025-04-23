@@ -1,14 +1,16 @@
 ﻿@using Mapping.Mappers
 @inject IClient Client;
+@inject SnackbarService SnackbarService;
+@inject CurrentUserService CurrentUser;
 
 <MudButton
-    ButtonType="ButtonType.Button"
-    OnClick="() => RejectJoinRequest()"
-    Color="Color.Error"
-    Variant="Variant.Filled"
-    StartIcon="@Icons.Material.Filled.Delete"
-    Size="Size.Small"
-    Class="ml-auto">Reject</MudButton>
+ButtonType="ButtonType.Button"
+OnClick="() => RejectJoinRequest()"
+Color="Color.Error"
+Variant="Variant.Filled"
+StartIcon="@Icons.Material.Filled.Delete"
+Size="Size.Small"
+Class="ml-auto">Reject</MudButton>
 
 @code {
     [Parameter]
@@ -17,29 +19,24 @@
     [Parameter] // Will be populated if coming from Admin view (CircleRequestList component)
     public CircleJoinRequest? Request { get; set; }
 
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; // Kalle Kanin
-    // private string _tempRejectingId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed
-    private string _tempRejectingId = "b2162ceb-793d-4e32-8029-ca56472dd93a"; //Liza M
-
     private async Task RejectJoinRequest()
     {
         try
         {
             if (Request is null)
             {
-                var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
-                Request = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
+                var userRequests = await Client.MembershipRequestsUserCircleAsync(await CurrentUser.GetUserId(), Circle.Id);
+                Request = userRequests.LastOrDefault();
             }
 
             if (Request?.Status is not CircleRequestStatus.Pending)
             {
-                Console.WriteLine("Request not valid.");
-                // TODO: Show message
+                Console.WriteLine("Request status not valid.");
+                SnackbarService.Error("Request not valid");
                 return;
             }
 
-
-            Request.UpdatedByUserId = _tempRejectingId;
+            Request.UpdatedByUserId = await CurrentUser.GetUserId();
             var requestUpdateDTO = await Mapper.MapToCircleRequestUpdateDTO(Request);
             await Client.MembershipRequestsRejectAsync(requestUpdateDTO.Id, requestUpdateDTO);
         }
@@ -50,6 +47,7 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            SnackbarService.Error("Couldn't reject join request");
         }
     }
 }

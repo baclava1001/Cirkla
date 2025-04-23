@@ -1,4 +1,6 @@
 ﻿@inject IClient Client;
+@inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
 
 <MudDialog>
     <DialogContent>
@@ -8,7 +10,7 @@
             {
                 foreach (var user in AppUsers)
                 {
-                    <MudRadio Value="@user" Label="@UserFullName(user)" UncheckedColor="Color.Default" Color="Color.Tertiary"/>
+                    <MudRadio Value="@user" Label="@user.FullName" UncheckedColor="Color.Default" Color="Color.Tertiary"/>
                     <MudDivider />
                 }
             }
@@ -22,16 +24,14 @@
 
 @code {
     [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    private IMudDialogInstance? MudDialog { get; set; }
     [Parameter]
     public Circle? Circle { get; set; }
 
     private IEnumerable<User>? AppUsers;
     public User? SelectedUser { get; set; }
 
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; // Kalle Kanin
-
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         var users = await Client.ApiUserGetAsync();
         AppUsers = users.OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
@@ -39,22 +39,25 @@
 
     private async Task Invite()
     {
+        if (SelectedUser is null)
+        {
+            Cancel();
+        }
         var joinRequest = new CircleJoinRequestCreateDTO
         {
             CircleId = Circle.Id,
             Type = CircleJoinRequestType.JoinAsMember,
             TargetUserId = SelectedUser.Id,
-            FromUserId = _tempUserId,
+            FromUserId = await CurrentUser.GetUserId(),
             Status = CircleRequestStatus.Pending,
             RequestDate = DateTime.Now,
             ExpiresAt = DateTime.Now.AddDays(7),
 
         };
         await Client.MembershipRequestsPostAsync(joinRequest);
-        // TODO: InviteDialog.Close();
+        SnackbarService.Success($"Sent invitation to {SelectedUser.FullName}");
+        MudDialog.Close();
     }
 
     private void Cancel() => MudDialog.Cancel();
-
-    private string UserFullName(User user) => $"{user.FirstName} {@user.LastName}";
 }

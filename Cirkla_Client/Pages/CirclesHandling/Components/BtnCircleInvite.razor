@@ -3,18 +3,17 @@
 @inject IClient Client;
 
 <MudButton ButtonType="ButtonType.Button"
-           OnClick="@(() => OpenDialogAsync(_fullScreen))"
-           Color="Color.Info"
-           Variant="Variant.Filled"
-           StartIcon="@Icons.Material.Filled.PersonAdd"
-           Size="Size.Small"
-           Class="ml-auto">Invite</MudButton>
+OnClick="@(() => OpenDialogAsync(_fullScreen))"
+Color="Color.Info"
+Variant="Variant.Filled"
+StartIcon="@Icons.Material.Filled.PersonAdd"
+Size="Size.Small"
+Class="ml-auto">Invite</MudButton>
 
 @code {
+    // This button only opens the InviteDialog with the current Circle as a parameter
     [Parameter]
     public Circle? Circle { get; set; }
-    public CircleJoinRequest? Request { get; set; }
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4";
     private readonly DialogOptions _fullScreen = new() { FullScreen = true, CloseButton = true };
 
     private Task OpenDialogAsync(DialogOptions options)

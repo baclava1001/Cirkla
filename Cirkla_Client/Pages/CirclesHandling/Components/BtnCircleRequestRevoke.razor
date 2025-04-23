@@ -1,5 +1,7 @@
 ﻿@using Mapping.Mappers
 @inject IClient Client;
+@inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
 
 <MudButton
 ButtonType="ButtonType.Button"
@@ -17,26 +19,24 @@ Class="ml-auto">Revoke</MudButton>
     [Parameter] // Will be populated if coming from Admin view (CircleRequestList component)
     public CircleJoinRequest? Request { get; set; }
 
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; //Kalle Kanin, same as in JoinButton
-
     private async Task RevokeJoinRequest()
     {
         try
         {
             if (Request is null)
             {
-                var userRequests = await Client.MembershipRequestsUserAsync(_tempUserId);
+                var userRequests = await Client.MembershipRequestsUserCircleAsync(await CurrentUser.GetUserId(), Circle.Id);
                 Request = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
             }
 
             if (Request.Status is not CircleRequestStatus.Pending)
             {
-                Console.WriteLine("Request not valid.");
-                // TODO: Show message
+                Console.WriteLine("Request status not valid.");
+                SnackbarService.Error("Request not valid");
                 return;
             }
 
-            Request.UpdatedByUserId = _tempUserId;
+            Request.UpdatedByUserId = await CurrentUser.GetUserId();
             var requestUpdateDTO = await Mapper.MapToCircleRequestUpdateDTO(Request);
             await Client.MembershipRequestsRevokeAsync(requestUpdateDTO.Id, requestUpdateDTO);
         }
@@ -47,6 +47,7 @@ Class="ml-auto">Revoke</MudButton>
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            SnackbarService.Error("Couldn't revoke the request");
         }
     }
 }

@@ -26,10 +26,8 @@ Class="ml-auto">Accept</MudButton>
         {
             if (Request is null)
             {
-                // Fetch all requests belonging to the logged in user
-                var userRequests = await Client.MembershipRequestsUserAsync(await CurrentUser.GetUserId());
-                // Single out the request to join this particular Circle
-                Request = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
+                var userCircleRequests = await Client.MembershipRequestsUserCircleAsync(await CurrentUser.GetUserId(), Circle.Id);
+                Request = userCircleRequests.LastOrDefault();
             }
 
             if (Request?.Status is not CircleRequestStatus.Pending)

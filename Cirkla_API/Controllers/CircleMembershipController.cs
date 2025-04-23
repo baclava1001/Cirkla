@@ -44,6 +44,19 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
+
+        [HttpGet("/membership-requests/user/{userId}/circle/{circleId}")]
+        [ProducesResponseType(typeof(IEnumerable<CircleJoinRequest>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllRequestsForUser(string userId, int circleId)
+        {
+            var result = await _circleMembershipService.GetAllRequestsForUserAndCircle(userId, circleId);
+            return result.ToHttpResponse();
+        }
+
+
         [HttpGet("/membership-requests/{id}")]
         [ProducesResponseType(typeof(CircleJoinRequest), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

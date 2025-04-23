@@ -17,8 +17,8 @@
         <MudTd DataLabel="Shared items">@context.Items?.Count</MudTd>
         <MudTd DataLabel="Role">@MemberOrAdmin(@context)</MudTd>
         <MudTd DataLabel="Actions">
-            <BtnMakeAdmin Circle="Circle"/>
-            <BtnRemoveAdmin Circle="Circle" />
+            <BtnMakeAdmin Circle="Circle" Member="context"/>
+            <BtnRemoveAdmin Circle="Circle" Member="context" />
         </MudTd>
     </RowTemplate>
 </MudTable>
