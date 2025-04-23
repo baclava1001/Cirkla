@@ -10,19 +10,6 @@
             <MudTextField Label="Name" @bind-Value="Circle.Name" Required="true" />
             <MudTextField Label="Description" @bind-Value="Circle.Description" Required="true" />
             <MudCheckBox Label="Make public" @bind-Value="Circle.IsPublic" Required="false" />
-                <MudButton ButtonType="ButtonType.Submit"
-                           OnClick="SaveEdited"
-                           Color="Color.Tertiary"
-                           Variant="Variant.Filled"
-                           StartIcon="@Icons.Material.Filled.Save"
-                           Class="ml-auto">Save</MudButton>
-
-                <MudButton ButtonType="ButtonType.Submit"
-                           OnClick="SubmitForm"
-                           Color="Color.Tertiary"
-                           Variant="Variant.Filled"
-                           StartIcon="@Icons.Material.Filled.Create"
-                           Class="ml-auto">Submit</MudButton>
         </EditForm>
     </MudItem>
 </MudGrid>
@@ -30,70 +17,4 @@
 @code {
     [Parameter]
     public Circle? Circle { get; set; }
-
-    private async Task SubmitForm()
-    {
-        if (Circle is null)
-        {
-            SnackbarService.Error("Couldn't save circle");
-            return;
-        }
-
-        var circleDTO = new CircleCreateDTO
-        {
-            Name = Circle.Name,
-            Description = Circle.Description,
-            IsPublic = Circle.IsPublic,
-            CreatedAt = DateTime.Now,
-            CreatedById = await CurrentUser.GetUserId(),
-            Administrators = new List<User> { Circle.CreatedBy },
-            Members = new List<User> { Circle.CreatedBy }
-        };
-
-        try
-        {
-            await Client.ApiCirclePostAsync(circleDTO);
-            SnackbarService.Success($"Created circle '{Circle.Name}'");
-            NavigationManager.NavigateTo("/circles");
-        }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            SnackbarService.Error("Couldn't create circle");
-        }
-    }
-
-
-    private async Task SaveEdited()
-    {
-        if (Circle is null)
-        {
-            SnackbarService.Error("Couldn't save edited circle");
-            return;
-        }
-
-        Circle.UpdatedAt = DateTime.Now;
-        Circle.UpdatedById = await CurrentUser.GetUserId();
-        Circle.UpdatedBy = await Client.ApiUserGetAsync(await CurrentUser.GetUserId());
-
-        try
-        {
-            await Client.ApiCirclePutAsync(Circle.Id, Circle);
-            SnackbarService.Success($"Successfully edited circle '{Circle.Name}'");
-            NavigationManager.NavigateTo("/circles");
-        }
-        catch (ApiException ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            SnackbarService.Error("Couldn't edit circle");
-        }
-    }
 }

@@ -1,6 +1,9 @@
 ﻿@page "/circles/{circleId:int}/edit"
 @using Cirkla_Client.Pages.CirclesHandling.Components;
 @inject IClient Client;
+@inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
+@inject NavigationManager NavigationManager;
 
 <PageTitle>Edit circle</PageTitle>
 
@@ -13,12 +16,19 @@
 @if (Circle is not null)
 {
     <CircleForm Circle="Circle" />
+    <MudButton ButtonType="ButtonType.Submit"
+               OnClick="SaveEdited"
+               Color="Color.Tertiary"
+               Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Save"
+               Class="ml-auto">Save</MudButton>
 }
 
 @code {
     [Parameter]
     public int CircleId { get; set; }
 
+    [SupplyParameterFromForm]
     public Circle? Circle { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -30,12 +40,43 @@
         catch (ApiException ex)
         {
             Console.WriteLine($"An API related error occured: {ex}");
+            SnackbarService.Error("Couldn't load circle for editing");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"An unexpected error occured: {ex}");
+            SnackbarService.Error("Couldn't load circle for editing");
         }
     }
 
+
+    private async Task SaveEdited()
+    {
+        if (Circle is null)
+        {
+            SnackbarService.Error("Couldn't save edited circle");
+            return;
+        }
+
+        Circle.UpdatedAt = DateTime.Now;
+        Circle.UpdatedById = await CurrentUser.GetUserId();
+        Circle.UpdatedBy = await Client.ApiUserGetAsync(await CurrentUser.GetUserId());
+
+        try
+        {
+            await Client.ApiCirclePutAsync(Circle.Id, Circle);
+            SnackbarService.Success($"Successfully edited circle '{Circle.Name}'");
+            NavigationManager.NavigateTo("/circles");
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            SnackbarService.Error("Couldn't edit circle");
+        }
+    }
 }
 

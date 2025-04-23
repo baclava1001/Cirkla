@@ -1,5 +1,9 @@
 ﻿@page "/circles/create"
 @using Cirkla_Client.Pages.CirclesHandling.Components;
+@inject IClient Client;
+@inject CurrentUserService CurrentUser;
+@inject SnackbarService SnackbarService;
+@inject NavigationManager NavigationManager;
 
 <PageTitle>Create circle</PageTitle>
 
@@ -9,8 +13,51 @@
     </MudItem>
 </MudGrid>
 
-<CircleForm Circle="new Circle()"/>
+<CircleForm Circle="Circle"/>
+<MudButton ButtonType="ButtonType.Submit"
+           OnClick="SubmitForm"
+           Color="Color.Tertiary"
+           Variant="Variant.Filled"
+           StartIcon="@Icons.Material.Filled.Create"
+           Class="ml-auto">Submit</MudButton>
 
 @code {
+    [SupplyParameterFromForm]
+    public Circle Circle { get; set; } = new();
 
+    private async Task SubmitForm()
+    {
+        if (Circle is null)
+        {
+            SnackbarService.Error("Couldn't save circle");
+            return;
+        }
+
+        var circleDTO = new CircleCreateDTO
+            {
+                Name = Circle.Name,
+                Description = Circle.Description,
+                IsPublic = Circle.IsPublic,
+                CreatedAt = DateTime.Now,
+                CreatedById = await CurrentUser.GetUserId(),
+                Administrators = new List<User> { Circle.CreatedBy },
+                Members = new List<User> { Circle.CreatedBy }
+            };
+
+        try
+        {
+            await Client.ApiCirclePostAsync(circleDTO);
+            SnackbarService.Success($"Created circle '{Circle.Name}'");
+            NavigationManager.NavigateTo("/circles");
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            SnackbarService.Error("Couldn't create circle");
+        }
+    }
 }
