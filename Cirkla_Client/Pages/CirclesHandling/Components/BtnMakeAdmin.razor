@@ -1,6 +1,8 @@
 ﻿@using System.Text.Json
 @using Mapping.Mappers
 @inject IClient Client;
+@inject SnackbarService SnackbarService;
+@inject CurrentUserService CurrentUser;
 
 <MudButton
 ButtonType="ButtonType.Button"
@@ -14,23 +16,35 @@ Class="ml-auto">Make admin</MudButton>
 @code {
     [Parameter]
     public Circle? Circle { get; set; }
-
-    private string _tempUserId = "6ce14244-d9f8-417e-b05f-df87f2c044e4"; // Kalle Kanin
-    private string _tempAdminId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //Samed
+    [Parameter]
+    public User Member { get; set; }
 
     private async Task MakeAdmin()
     {
-        var request = new CircleJoinRequestCreateDTO
+        try
         {
-            Type = CircleJoinRequestType.JoinAsAdmin,
-            CircleId = Circle.Id,
-            TargetUserId = _tempUserId,
-            FromUserId = _tempAdminId,
-            Status = CircleRequestStatus.Accepted,
-            RequestDate = DateTime.Now,
-            ExpiresAt = DateTime.Now + TimeSpan.FromDays(7),
-            UpdatedByUserId = _tempAdminId
-        };
-        await Client.MembershipRequestsUserMakeAdminAsync(request.TargetUserId, request);
+            var request = new CircleJoinRequestCreateDTO
+            {
+                Type = CircleJoinRequestType.JoinAsAdmin,
+                CircleId = Circle.Id,
+                TargetUserId = Member.Id,
+                FromUserId = await CurrentUser.GetUserId(),
+                Status = CircleRequestStatus.Accepted,
+                RequestDate = DateTime.Now,
+                ExpiresAt = DateTime.Now + TimeSpan.FromDays(7),
+                UpdatedByUserId = await CurrentUser.GetUserId()
+            };
+            await Client.MembershipRequestsUserMakeAdminAsync(request.TargetUserId, request);
+            SnackbarService.Success($"{Member.FullName} is now an admin for {Circle.Name}");
+        }
+        catch (ApiException ex)
+        {
+            SnackbarService.Error($"Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            SnackbarService.Error($"Error: {ex.Message}");
+        }
+
     }
 }

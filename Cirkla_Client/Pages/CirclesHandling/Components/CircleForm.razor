@@ -1,5 +1,7 @@
-﻿@inject IClient Client
-@inject NavigationManager NavigationManager
+﻿@inject IClient Client;
+@inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
+@inject CurrentUserService CurrentUser;
 
 <MudGrid>
     <MudItem xs="12" sm="7">
@@ -28,14 +30,13 @@
 @code {
     [Parameter]
     public Circle? Circle { get; set; }
-    private string _tempUserId = "54b5627b-1f8e-4634-8bb0-206fecc840f3"; //TODO: Samed's id, hardcoded. Remove later.
-
 
     private async Task SubmitForm()
     {
         if (Circle is null)
         {
-            return; // TODO: Add error handling
+            SnackbarService.Error("Couldn't save circle");
+            return;
         }
 
         var circleDTO = new CircleCreateDTO
@@ -44,7 +45,7 @@
             Description = Circle.Description,
             IsPublic = Circle.IsPublic,
             CreatedAt = DateTime.Now,
-            CreatedById = _tempUserId,
+            CreatedById = await CurrentUser.GetUserId(),
             Administrators = new List<User> { Circle.CreatedBy },
             Members = new List<User> { Circle.CreatedBy }
         };
@@ -52,6 +53,8 @@
         try
         {
             await Client.ApiCirclePostAsync(circleDTO);
+            SnackbarService.Success($"Created circle '{Circle.Name}'");
+            NavigationManager.NavigateTo("/circles");
         }
         catch (ApiException ex)
         {
@@ -60,8 +63,8 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            SnackbarService.Error("Couldn't create circle");
         }
-        NavigationManager.NavigateTo("/circles");
     }
 
 
@@ -69,16 +72,19 @@
     {
         if (Circle is null)
         {
-            return; // TODO: Add error handling
+            SnackbarService.Error("Couldn't save edited circle");
+            return;
         }
 
         Circle.UpdatedAt = DateTime.Now;
-        Circle.UpdatedById = _tempUserId;
-        Circle.UpdatedBy = await Client.ApiUserGetAsync(_tempUserId);
+        Circle.UpdatedById = await CurrentUser.GetUserId();
+        Circle.UpdatedBy = await Client.ApiUserGetAsync(await CurrentUser.GetUserId());
 
         try
         {
             await Client.ApiCirclePutAsync(Circle.Id, Circle);
+            SnackbarService.Success($"Successfully edited circle '{Circle.Name}'");
+            NavigationManager.NavigateTo("/circles");
         }
         catch (ApiException ex)
         {
@@ -87,7 +93,7 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            SnackbarService.Error("Couldn't edit circle");
         }
-        NavigationManager.NavigateTo("/circles");
     }
 }

@@ -28,6 +28,7 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
     public async Task<IEnumerable<CircleJoinRequest?>> GetAllByCircleId(int circleId)
     {
         return await context.CircleJoinRequests
+            .Where(cr => cr.Circle.Id == circleId)
             .Include(cr => cr.Circle)
             .ThenInclude(c => c.Administrators)
             .Include(cr => cr.Circle)
@@ -36,13 +37,13 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .ThenInclude(pm => pm.Items)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
-            .Where(cr => cr.Circle.Id == circleId)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<CircleJoinRequest?>> GetAllByTargetUserId(string userId)
     {
         return await context.CircleJoinRequests
+            .Where(cr => cr.TargetUser.Id == userId)
             .Include(cr => cr.Circle)
             .ThenInclude(c => c.Administrators)
             .Include(cr => cr.Circle)
@@ -51,7 +52,6 @@ public class CircleJoinRequestRepository(AppDbContext context) : ICircleJoinRequ
             .ThenInclude(pm => pm.Items)
             .Include(cr => cr.FromUser)
             .Include(cr => cr.UpdatedByUser)
-            .Where(cr => cr.TargetUser.Id == userId)
             .ToListAsync();
     }
 

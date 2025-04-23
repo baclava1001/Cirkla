@@ -2,6 +2,7 @@
 @page "/circles"
 @using Cirkla_Client.Pages.CirclesHandling.Components;
 @inject IClient Client;
+@inject SnackbarService SnackbarService;
 
 <PageTitle>Circles overview</PageTitle>
 
@@ -74,12 +75,9 @@
             var result = await Client.ApiCircleGetAsync();
             Circles = result.ToList();
         }
-        catch (ApiException ex)
-        {
-            Console.WriteLine($"Something went wrong: {ex.Message}");
-        }
         catch (Exception ex)
         {
+            SnackbarService.Error("Couldn't load any circles.");
             Console.WriteLine($"Something went wrong: {ex.Message}");
         }
     }
