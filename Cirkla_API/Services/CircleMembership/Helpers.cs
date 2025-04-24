@@ -164,7 +164,7 @@ namespace Cirkla_API.Services.CircleMembership
         }
 
 
-        private async Task<ServiceResult<object>> UpdateRequest(CircleJoinRequest request, CircleRequestStatus status)
+        private async Task<ServiceResult<CircleJoinRequest>> UpdateRequest(CircleJoinRequest request, CircleRequestStatus status)
         {
             if (status is CircleRequestStatus.Accepted)
             {
@@ -174,7 +174,7 @@ namespace Cirkla_API.Services.CircleMembership
             request.UpdatedAt = DateTime.Now;
             await circleJoinRequestRepository.Update(request);
             await unitOfWork.SaveChangesWithTransaction();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<CircleJoinRequest>.Success(request);
         }
 
 

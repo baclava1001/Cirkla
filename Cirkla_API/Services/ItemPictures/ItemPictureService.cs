@@ -1,4 +1,5 @@
-﻿using Cirkla_API.Common;
+﻿using Azure.Core;
+using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.ItemPictures;
@@ -24,33 +25,33 @@ namespace Cirkla_API.Services.ItemPictures
         }
 
 
-        public async Task<ServiceResult<object>> Update(int id, ItemPicture itemPicture)
+        public async Task<ServiceResult<ItemPicture>> Update(int id, ItemPicture itemPicture)
         {
             if (itemPicture is null || id != itemPicture.Id)
             {
                 logger.LogWarning("Attempted updating an item picture with null value or ID mismatch");
-                return ServiceResult<object>.Fail("Item picture is not valid", ErrorType.ValidationError);
+                return ServiceResult<ItemPicture>.Fail("Item picture is not valid", ErrorType.ValidationError);
             }
 
             await itemPictureRepository.Update(itemPicture);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<ItemPicture>.Success(itemPicture);
         }
 
 
-        public async Task<ServiceResult<object>> DeleteItemPicture(int id)
+        public async Task<ServiceResult<ItemPicture>> DeleteItemPicture(int id)
         {
             var itemPicture = await itemPictureRepository.GetById(id);
 
             if (itemPicture is null)
             {
                 logger.LogWarning("Attempted to delete a non-existent item picture with ID {ItemId}", id);
-                return ServiceResult<object>.Fail("Item picture not found", ErrorType.NotFound);
+                return ServiceResult<ItemPicture>.Fail("Item picture not found", ErrorType.NotFound);
             }
 
             await itemPictureRepository.Delete(itemPicture);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<ItemPicture>.Success(itemPicture);
         }
 
 

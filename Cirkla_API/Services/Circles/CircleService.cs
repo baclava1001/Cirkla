@@ -1,4 +1,5 @@
-﻿using Cirkla_API.Common;
+﻿using Azure.Core;
+using Cirkla_API.Common;
 using Cirkla_API.Common.Constants;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.CircleJoinRequests;
@@ -72,7 +73,7 @@ namespace Cirkla_API.Services.Circles
         }
 
 
-        public async Task<ServiceResult<object>> Update(int id, Circle circle)
+        public async Task<ServiceResult<Circle>> Update(int id, Circle circle)
         {
             if (circle is null)
             {
@@ -83,31 +84,31 @@ namespace Cirkla_API.Services.Circles
             if (id != circle.Id)
             {
                 logger.LogWarning("Circle ID {CircleId} does not match the ID in the request body", id);
-                return ServiceResult<object>.Fail("Incorrect id", ErrorType.ValidationError);
+                return ServiceResult<Circle>.Fail("Incorrect id", ErrorType.ValidationError);
             }
 
 
             var updatedCircle = await circleRepository.Update(circle);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<Circle>.Success(updatedCircle);
         }
 
 
         // TODO: DB-relation to circle requests stops this from working
-        public async Task<ServiceResult<object>> Delete(int id)
+        public async Task<ServiceResult<Circle>> Delete(int id)
         {
             Circle circle = await circleRepository.GetById(id);
             if (circle is null)
             {
                 logger.LogWarning("Attempted to delete a non-existent circle with ID {CircleId}", id);
-                return ServiceResult<object>.Fail("Circle not found", ErrorType.NotFound);
+                return ServiceResult<Circle>.Fail("Circle not found", ErrorType.NotFound);
             }
 
             // TODO: Fetch all related circle join requests and delete them
 
             await circleRepository.Delete(circle);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<Circle>.Success(circle);
         }
     }
 }

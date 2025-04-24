@@ -33,25 +33,25 @@ namespace Cirkla_API.Services.Items
         }
 
 
-        public async Task<ServiceResult<object>> Delete(int id)
+        public async Task<ServiceResult<Item>> Delete(int id)
         {
             var item = await itemRepository.Get(id);
             if (item is null)
             {
                 logger.LogWarning("Attempted to delete a non-existent item with ID {ItemId}", id);
-                return ServiceResult<object>.Fail("Item not found", ErrorType.NotFound);
+                return ServiceResult<Item>.Fail("Item not found", ErrorType.NotFound);
             }
 
             var activeContracts = await contractRepository.GetActiveForItem(id);
             if (activeContracts.Any())
             {
                 logger.LogWarning("Attempted to delete item with ID {ItemId} which still has active contracts", id);
-                return ServiceResult<object>.Fail("Item with active contracts cannot be deleted", ErrorType.ValidationError);
+                return ServiceResult<Item>.Fail("Item with active contracts cannot be deleted", ErrorType.ValidationError);
             }
 
             await itemRepository.Delete(item);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<Item>.Success(item);
         }
 
 
@@ -91,17 +91,17 @@ namespace Cirkla_API.Services.Items
         }
 
 
-        public async Task<ServiceResult<object>> Update(int id, Item item)
+        public async Task<ServiceResult<Item>> Update(int id, Item item)
         {
             if (id != item.Id)
             {
                 logger.LogWarning("Item ID mismatch");
-                return ServiceResult<object>.Fail("Incorrect id", ErrorType.ValidationError);
+                return ServiceResult<Item>.Fail("Incorrect id", ErrorType.ValidationError);
             }
 
             await itemRepository.Update(item);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<Item>.Success(item);
         }
     }
 }

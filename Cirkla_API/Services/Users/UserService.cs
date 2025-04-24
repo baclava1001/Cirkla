@@ -28,31 +28,31 @@ namespace Cirkla_API.Services.Users
         }
 
 
-        public async Task<ServiceResult<object>> Delete(string id)
+        public async Task<ServiceResult<User>> Delete(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 logger.LogWarning("ID value is null or empty");
-                return ServiceResult<object>.Fail("Invalid ID", ErrorType.ValidationError);
+                return ServiceResult<User>.Fail("Invalid ID", ErrorType.ValidationError);
             }
 
             if (!await CanDelete(id))
             {
-                logger.LogWarning("Attempted to delete user with ID {UserId} who has active borrowings or sharings",
+                logger.LogWarning("Attempted to delete user with ID {UserId} who has active loans",
                     id);
-                return ServiceResult<object>.Fail("Unable to delete users with active", ErrorType.ValidationError);
+                return ServiceResult<User>.Fail("Unable to delete users with active", ErrorType.ValidationError);
             }
 
             var user = await userRepository.Get(id);
             if (user is null)
             {
                 logger.LogWarning("Attempted to delete a non-existent user with ID {UserId}", id);
-                return ServiceResult<object>.Fail("User not found", ErrorType.NotFound);
+                return ServiceResult<User>.Fail("User not found", ErrorType.NotFound);
             }
 
             await userRepository.Delete(user);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<User>.Success(user);
         }
 
 
@@ -86,17 +86,17 @@ namespace Cirkla_API.Services.Users
             return ServiceResult<IEnumerable<User>>.Success(users);
         }
 
-        public async Task<ServiceResult<object>> Update(string id, User user)
+        public async Task<ServiceResult<User>> Update(string id, User user)
         {
             if (string.IsNullOrEmpty(id) || user.Id != id)
             {
                 logger.LogWarning("User with ID {UserId} not found", id);
-                return ServiceResult<object>.Fail("User not found", ErrorType.ValidationError);
+                return ServiceResult<User>.Fail("User not found", ErrorType.ValidationError);
             }
 
             var updatedUser = await userRepository.Update(user);
             await unitOfWork.SaveChanges();
-            return ServiceResult<object>.NoContent();
+            return ServiceResult<User>.Success(updatedUser);
         }
 
 
