@@ -1,4 +1,5 @@
 ﻿using Cirkla_DAL.Models.Enums;
+using Cirkla_DAL.Repositories.Contracts;
 using FluentValidation;
 using Mapping.DTOs.Contracts;
 
@@ -6,8 +7,12 @@ namespace Mapping.Validators.Contracts;
 
 public class ContractCreateValidator : AbstractValidator<ContractCreateDTO>
 {
-    public ContractCreateValidator()
+    private readonly IContractRepository _contractRepository;
+
+    public ContractCreateValidator(IContractRepository contractRepository)
     {
+        _contractRepository = contractRepository;
+
         RuleFor(contract => contract)
             .NotNull()
             .WithMessage("Attempted creating a new borrowing contract with null value");
@@ -35,5 +40,15 @@ public class ContractCreateValidator : AbstractValidator<ContractCreateDTO>
         RuleFor(contract => contract.CurrentStatus)
             .Must(status => status == ContractStatus.Pending)
             .WithMessage("New contracts must have 'Pending' status");
+
+        RuleFor(contract => contract)
+            .MustAsync(async (contract, cancellation) =>
+            {
+                var existingContracts = await _contractRepository.GetActiveForItem(contract.ItemId);
+
+                return !existingContracts.Any(existing =>
+                    existing.StartTime < contract.EndTime && contract.StartTime < existing.EndTime);
+            })
+            .WithMessage("The contract's date range overlaps with an existing contract.");
     }
 }

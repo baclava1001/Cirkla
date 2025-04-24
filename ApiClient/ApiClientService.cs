@@ -44,46 +44,53 @@ namespace Cirkla.ApiClient
         System.Threading.Tasks.Task<UserAuthResponseDTO> ApiAuthenticationLoginAsync(UserLoginDTO userLoginDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO);
+        System.Threading.Tasks.Task<int> ApiBorrowingContractRequestSendAsync(ContractCreateDTO contractDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> ApiBorrowingContractRequestSendAsync(ContractCreateDTO contractDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestSummaryAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContractResponseDTO>> ApiBorrowingContractRequestAllAsync(int itemId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContractResponseDTO>> ApiBorrowingContractRequestAllAsync(int itemId, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestRespondAsync(int id, ContractUpdateDTO contractUpdateDTO);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestRespondAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCancelAsync(int id, ContractUpdateDTO contractUpdateDTO);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCancelAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestActivateAsync(int id, ContractUpdateDTO contractUpdateDTO);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestActivateAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCompleteAsync(int id, ContractUpdateDTO contractUpdateDTO);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCompleteAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Circle>> ApiCircleGetAsync();
@@ -567,14 +574,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<int> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO)
+        public virtual System.Threading.Tasks.Task<int> ApiBorrowingContractRequestSendAsync(ContractCreateDTO contractDTO)
         {
-            return ApiBorrowingContractSendRequestAsync(contractDTO, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractRequestSendAsync(contractDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<int> ApiBorrowingContractSendRequestAsync(ContractCreateDTO contractDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> ApiBorrowingContractRequestSendAsync(ContractCreateDTO contractDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (contractDTO == null)
                 throw new System.ArgumentNullException("contractDTO");
@@ -594,8 +601,8 @@ namespace Cirkla.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/BorrowingContract/SendRequest"
-                    urlBuilder_.Append("api/BorrowingContract/SendRequest");
+                    // Operation Path: "api/BorrowingContract/request/send"
+                    urlBuilder_.Append("api/BorrowingContract/request/send");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -680,14 +687,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestSummaryAsync(int id)
         {
-            return ApiBorrowingContractViewRequestSummaryAsync(id, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractRequestSummaryAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractViewRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestSummaryAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -703,9 +710,10 @@ namespace Cirkla.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/BorrowingContract/ViewRequestSummary{id}"
-                    urlBuilder_.Append("api/BorrowingContract/ViewRequestSummary");
+                    // Operation Path: "api/BorrowingContract/request/{id}/summary"
+                    urlBuilder_.Append("api/BorrowingContract/request/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/summary");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -790,14 +798,125 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContractResponseDTO>> ApiBorrowingContractRequestAllAsync(int itemId)
         {
-            return ApiBorrowingContractRespondToRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractRequestAllAsync(itemId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRespondToRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContractResponseDTO>> ApiBorrowingContractRequestAllAsync(int itemId, System.Threading.CancellationToken cancellationToken)
+        {
+            if (itemId == null)
+                throw new System.ArgumentNullException("itemId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "api/BorrowingContract/request/{itemId}/all"
+                    urlBuilder_.Append("api/BorrowingContract/request/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(itemId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/all");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ContractResponseDTO>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestRespondAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        {
+            return ApiBorrowingContractRequestRespondAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestRespondAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -820,9 +939,10 @@ namespace Cirkla.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/BorrowingContract/RespondToRequest{id}"
-                    urlBuilder_.Append("api/BorrowingContract/RespondToRequest");
+                    // Operation Path: "api/BorrowingContract/request/{id}/respond"
+                    urlBuilder_.Append("api/BorrowingContract/request/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/respond");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -907,14 +1027,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCancelAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            return ApiBorrowingContractCancelRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractRequestCancelAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCancelRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCancelAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -937,9 +1057,10 @@ namespace Cirkla.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/BorrowingContract/CancelRequest{id}"
-                    urlBuilder_.Append("api/BorrowingContract/CancelRequest");
+                    // Operation Path: "api/BorrowingContract/request/{id}/cancel"
+                    urlBuilder_.Append("api/BorrowingContract/request/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/cancel");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1024,14 +1145,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestActivateAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            return ApiBorrowingContractActivateRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractRequestActivateAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractActivateRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestActivateAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1054,9 +1175,10 @@ namespace Cirkla.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/BorrowingContract/ActivateRequest{id}"
-                    urlBuilder_.Append("api/BorrowingContract/ActivateRequest");
+                    // Operation Path: "api/BorrowingContract/request/{id}/activate"
+                    urlBuilder_.Append("api/BorrowingContract/request/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/activate");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1141,14 +1263,14 @@ namespace Cirkla.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO)
+        public virtual System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCompleteAsync(int id, ContractUpdateDTO contractUpdateDTO)
         {
-            return ApiBorrowingContractCompleteRequestAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
+            return ApiBorrowingContractRequestCompleteAsync(id, contractUpdateDTO, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractCompleteRequestAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContractResponseDTO> ApiBorrowingContractRequestCompleteAsync(int id, ContractUpdateDTO contractUpdateDTO, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1171,9 +1293,10 @@ namespace Cirkla.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/BorrowingContract/CompleteRequest{id}"
-                    urlBuilder_.Append("api/BorrowingContract/CompleteRequest");
+                    // Operation Path: "api/BorrowingContract/request/{id}/complete"
+                    urlBuilder_.Append("api/BorrowingContract/request/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/complete");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

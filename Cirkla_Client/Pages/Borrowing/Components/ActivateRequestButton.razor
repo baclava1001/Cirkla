@@ -29,7 +29,7 @@
 
         try
         {
-            await Client.ApiBorrowingContractActivateRequestAsync(Contract.Id.Value, contractUpdateDTO);
+            await Client.ApiBorrowingContractRequestActivateAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component activated request successfully");
             NavigationManager.NavigateTo("/my-inventory");
         }
