@@ -9,73 +9,61 @@
 <h3>Request to borrow @Item?.Name</h3>
 <hr />
 
-    @if(Item is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <CarouselItemImages ItemPictures="Item?.Pictures?.ToList()" AltText="@AltText()"/>
-        <br/>
-        <dl class="row">
-            <dt class="col-sm-2">Category</dt>
-            <dd class="col-sm-10">@Item.Category</dd>
-            <dt class="col-sm-2">Model</dt>
-            <dd class="col-sm-10">@Item.Model</dd>
-            <dt class="col-sm-2">Specifications</dt>
-            <dd class="col-sm-10">@Item.Specifications</dd>
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@Item.Description</dd>
-            <dt class="col-sm-2">Owner</dt>
-            <dd class="col-sm-10">@Item.Owner?.FirstName @Item.Owner?.LastName</dd>
-            <dt class="col-sm-2">Zip code</dt>
-            <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
-        </dl>
+@if(Item is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @* Image Carousel *@
+    <CarouselItemImages ItemPictures="Item?.Pictures?.ToList()" AltText="@AltText()"/>
+    <br/>
+    <dl class="row">
+        <dt class="col-sm-2">Category</dt>
+        <dd class="col-sm-10">@Item.Category</dd>
+        <dt class="col-sm-2">Model</dt>
+        <dd class="col-sm-10">@Item.Model</dd>
+        <dt class="col-sm-2">Specifications</dt>
+        <dd class="col-sm-10">@Item.Specifications</dd>
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@Item.Description</dd>
+        <dt class="col-sm-2">Owner</dt>
+        <dd class="col-sm-10">@Item.Owner?.FirstName @Item.Owner?.LastName</dd>
+        <dt class="col-sm-2">Zip code</dt>
+        <dd class="col-sm-10">@Item.Owner?.ZipCode</dd>
+    </dl>
 
-    }
+}
 
-    <MudStack Style="max-width: 500px">
-        <MudDateRangePicker @ref="_picker"
-                            Label="Pick dates"
-                            MinDate="DateTime.Now"
-                            @bind-DateRange="DateRange" 
-                            AutoClose="true"
-                            PickerVariant="PickerVariant.Dialog"
-                            Color="Color.Tertiary"
-                            Class="w-auto">
-            <PickerActions>
-                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.ClearAsync())">Clear</MudButton>
-                <MudButton OnClick="@(() => _picker.CloseAsync(false))">Cancel</MudButton>
-                <MudButton Color="Color.Primary" OnClick="@(() => _picker.CloseAsync())">Ok</MudButton>
-            </PickerActions>
-        </MudDateRangePicker>
-        <MudGrid Class="d-flex flex-column flex-lg-row">
-            <MudSpacer/>
-            <MudItem>
-                <a href="/my-inventory" class="btn btn-secondary me-2 px-3" type="button">Back</a>
-            </MudItem>
-            <MudItem>
-                <button class="btn btn-primary me-2 px-5" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
-            </MudItem>
-        </MudGrid>
-    </MudStack>
+@* DateRangePicker from MudBlazor *@
+<MudStack Style="max-width: 500px">
+    <MudDateRangePicker @ref="_picker"
+    Label="Pick dates"
+    MinDate="DateTime.Now"
+    IsDateDisabledFunc="IsDisabledDate"
+    @bind-DateRange="DateRange" 
+    AutoClose="true"
+    PickerVariant="PickerVariant.Dialog"
+    Color="Color.Tertiary"
+    Class="w-auto">
+        <PickerActions>
+            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.ClearAsync())">Clear</MudButton>
+            <MudButton OnClick="@(() => _picker.CloseAsync(false))">Cancel</MudButton>
+            <MudButton Color="Color.Primary" OnClick="@(() => _picker.CloseAsync())">Ok</MudButton>
+        </PickerActions>
+    </MudDateRangePicker>
 
-@*                 <div class="row mb-3">
-                <div class="col-4">
-                    <label for="requested-pickup-date" class="form-label">Requested pickup date & time</label>
-                    <div class="col-sm-10">
-                    <input type="datetime-local" id="start-time" class="form-control" min="@minDateTime" @bind="ContractDTO.StartTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.StartTime = dateTime)" required />
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-4">
-                <label for="requested-return-date" class="form-label">Requested return date & time</label>
-                <div class="col-sm-10">
-                <input type="datetime-local" id="end-time" class="form-control" min="@minDateTime" @bind="ContractDTO.EndTime" @oninput="e => ValidateDateTime(e, dateTime => ContractDTO.EndTime = dateTime)" required />
-                </div>
-            </div>
-            </div> *@
+    @* Buttons *@
+    <MudGrid Class="d-flex flex-column flex-lg-row">
+        <MudSpacer/>
+        <MudItem>
+            <a href="/my-inventory" class="btn btn-secondary me-2 px-3" type="button">Back</a>
+        </MudItem>
+        <MudItem>
+            <button class="btn btn-primary me-2 px-5" type="button" @onclick="(() => AskToBorrow())">Cirkla!</button>
+        </MudItem>
+    </MudGrid>
+</MudStack>
 
 
 @code {
@@ -86,21 +74,33 @@
     public ContractCreateDTO ContractDTO { get; set; } = new();
 
     private MudDateRangePicker? _picker;
-    private DateRange? DateRange { get; set; }
-    // string minDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+    private DateRange? DateRange { get; set; } = new();
+    private ICollection<ContractResponseDTO> _activeContractsForItem;
+    private List<(DateTime? Start, DateTime? End)> _unavailableDateRanges = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             Item = await Client.ApiItemGetAsync(ItemId);
-            // ContractDTO.StartTime = DateTime.Parse(minDateTime);
-            // ContractDTO.EndTime = DateTime.Parse(minDateTime);
         }
         catch(Exception ex)
         {
             SnackbarService.Error("Unable to load item");
             NavigationManager.NavigateTo("/cirkla");
+        }
+
+        try
+        {
+            _activeContractsForItem = await Client.ApiBorrowingContractRequestAllAsync(ItemId);
+            foreach (var contract in _activeContractsForItem)
+            {
+                _unavailableDateRanges.Add(new(contract.StartTime, contract.EndTime));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while disabling busy dates: {ex.Message}");
         }
     }
 
@@ -117,7 +117,7 @@
 
         try
         {
-            var response = await Client.ApiBorrowingContractSendRequestAsync(ContractDTO);
+            var response = await Client.ApiBorrowingContractRequestSendAsync(ContractDTO);
             SnackbarService.Success($"You've requested to borrow {Item.Name}");
             NavigationManager.NavigateTo($"/borrowing-contracts/{response}");
         }
@@ -127,14 +127,11 @@
         }
     }
 
-    // Checks if input date is before DateTime.Now and resets to Datetime.Now
-    // private async Task ValidateDateTime(ChangeEventArgs e, Action<DateTime> updateAction)
-    // {
-    //     if(string.IsNullOrWhiteSpace(e.Value.ToString()) || DateTime.Compare(DateTime.Parse(e.Value.ToString()), DateTime.Now) < 0)
-    //     {
-    //         updateAction(DateTime.Now);
-    //     }
-    // }
+
+    private bool IsDisabledDate(DateTime date)
+    {
+        return _unavailableDateRanges.Any(r => date >= r.Start && date <= r.End);
+    }
 
     private string AltText()
     {

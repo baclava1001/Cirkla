@@ -24,6 +24,9 @@ namespace Cirkla_API.Services.BorrowingContracts
         ILogger<BorrowingContractService> logger) : IBorrowingContractService
     
     {
+
+        #region Creating
+
         // Sends a request to borrow an item, by creating a new contract.
         public async Task<ServiceResult<int>> SendRequest(ContractCreateDTO contractDTO)
         {
@@ -51,10 +54,13 @@ namespace Cirkla_API.Services.BorrowingContracts
             contract = await contractRepository.GetById(contract.Id);
             _ = contractNotificationService
                 .CreateNotification(contract); // Pushes notification down to db and a DTO up to clients
-            
+
             return ServiceResult<int>.Created(contract.Id);
         }
 
+        #endregion
+
+        #region Getting
 
         public async Task<ServiceResult<ContractResponseDTO>> ViewRequestSummary(int id)
         {
@@ -68,6 +74,27 @@ namespace Cirkla_API.Services.BorrowingContracts
             return ServiceResult<ContractResponseDTO>.Success(contractResponse);
         }
 
+        public async Task<ServiceResult<IEnumerable<ContractResponseDTO>>> GetActiveForItem(int itemId)
+        {
+            var contracts = await contractRepository.GetActiveForItem(itemId);
+            if (contracts is null)
+            {
+                logger.LogWarning("No active borrowing contracts found for item with id {Id}", itemId);
+                return ServiceResult<IEnumerable<ContractResponseDTO>>.Fail("No borrowing contracts found", ErrorType.NotFound);
+            }
+
+            var contractResponses = new List<ContractResponseDTO>();
+            foreach (var contract in contracts)
+            {
+                var contactDTO = await Mapper.MapToContractResponseDTO(contract);
+                contractResponses.Add(contactDTO);
+            }
+            return ServiceResult<IEnumerable<ContractResponseDTO>>.Success(contractResponses);
+        }
+
+        #endregion
+
+        #region Updating
 
         // Updates a borrowing contract to respond to a request.
         public async Task<ServiceResult<ContractResponseDTO>> RespondToRequest(int id, ContractUpdateDTO contractUpdateDto)
@@ -185,6 +212,7 @@ namespace Cirkla_API.Services.BorrowingContracts
             return ServiceResult<ContractResponseDTO>.Success(contractResponse);
         }
 
+        #endregion
 
         #region Helpers
 

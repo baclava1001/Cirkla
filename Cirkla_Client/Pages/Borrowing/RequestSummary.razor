@@ -135,7 +135,7 @@
         Console.WriteLine("RequestSummary component is getting Contract values from API...");
         try
         {
-            Contract = await Client.ApiBorrowingContractViewRequestSummaryAsync(ContractId);
+            Contract = await Client.ApiBorrowingContractRequestSummaryAsync(ContractId);
             _requestNumber = $"#{Contract.Id}";
         }
         catch (ApiException ex)

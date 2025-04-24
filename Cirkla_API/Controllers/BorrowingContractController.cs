@@ -17,7 +17,7 @@ namespace Cirkla_API.Controllers
                                             ILogger<BorrowingContractController> logger) : ControllerBase
     {
         // Send request to borrow = create contract for item owner to review
-        [HttpPost("SendRequest")]
+        [HttpPost("request/send")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -30,7 +30,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpGet("ViewRequestSummary{id}")]
+        [HttpGet("request/{id}/summary")]
         [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -42,8 +42,20 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
+        [HttpGet("request/{itemId}/all")]
+        [ProducesResponseType(typeof(IEnumerable<ContractResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllRequests(int itemId)
+        {
+            logger.LogInformation("API received http-request for all requests for an item");
+            var result = await borrowingContractService.GetActiveForItem(itemId);
+            return result.ToHttpResponse();
+        }
 
-        [HttpPut("RespondToRequest{id}")]
+
+        [HttpPut("request/{id}/respond")]
         [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -56,7 +68,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpPut("CancelRequest{id}")]
+        [HttpPut("request/{id}/cancel")]
         [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -69,7 +81,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpPut("ActivateRequest{id}")]
+        [HttpPut("request/{id}/activate")]
         [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -82,7 +94,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpPut("CompleteRequest{id}")]
+        [HttpPut("request/{id}/complete")]
         [ProducesResponseType(typeof(ContractResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

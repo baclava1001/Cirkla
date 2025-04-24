@@ -41,7 +41,7 @@
             {
                 contractUpdateDTO.ToStatus = ContractStatus.Accepted;
             }
-            await Client.ApiBorrowingContractRespondToRequestAsync(Contract.Id.Value, contractUpdateDTO);
+            await Client.ApiBorrowingContractRequestRespondAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component responded to borrower request successfully");
             NavigationManager.NavigateTo("/my-inventory");
         }
