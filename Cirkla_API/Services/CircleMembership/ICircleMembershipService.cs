@@ -12,9 +12,9 @@ public interface ICircleMembershipService
         int circleId);
     Task<ServiceResult<CircleJoinRequest>> GetRequestById(int id);
     Task<ServiceResult<int>> SendJoinRequest(CircleJoinRequestCreateDTO circleRequestDTO);
-    Task<ServiceResult<object>> RevokeRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
-    Task<ServiceResult<object>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
-    Task<ServiceResult<object>> AcceptRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleJoinRequest>> RevokeRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleJoinRequest>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
+    Task<ServiceResult<CircleJoinRequest>> AcceptRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO);
     Task<ServiceResult<int>> MakeAdmin(CircleJoinRequestCreateDTO adminRequestDTO);
     Task<ServiceResult<int>> RemoveAdmin(CircleJoinRequestCreateDTO adminRequestDTO);
 }

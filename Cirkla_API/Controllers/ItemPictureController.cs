@@ -7,18 +7,9 @@ namespace Cirkla_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemPictureController : ControllerBase
+    public class ItemPictureController(IItemPictureService itemPictureService,
+                                        ILogger<ItemPictureController> logger) : ControllerBase
     {
-        private readonly IItemPictureService _itemPictureService;
-        private readonly ILogger<ItemPictureController> _logger;
-
-        public ItemPictureController(IItemPictureService itemPictureService, ILogger<ItemPictureController> logger)
-        {
-            _itemPictureService = itemPictureService;
-            _logger = logger;
-        }
-
-
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -26,8 +17,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(ItemPicture itemPicture)
         {
-            _logger.LogInformation("Creating new item picture");
-            var result = await _itemPictureService.Create(itemPicture);
+            logger.LogInformation("Creating new item picture");
+            var result = await itemPictureService.Create(itemPicture);
             return result.ToHttpResponse();
         }
 
@@ -39,8 +30,8 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllPicturesForItem(int itemId)
         {
-            _logger.LogInformation("Getting all item pictures for item with ID {ItemId}", itemId);
-            var result = await _itemPictureService.GetAllPicturesForItem(itemId);
+            logger.LogInformation("Getting all item pictures for item with ID {ItemId}", itemId);
+            var result = await itemPictureService.GetAllPicturesForItem(itemId);
             return result.ToHttpResponse();
         }
 
@@ -52,32 +43,32 @@ namespace Cirkla_API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(int id)
         {
-            _logger.LogInformation("Getting item picture with ID {Id}", id);
-            var result = await _itemPictureService.GetById(id);
+            logger.LogInformation("Getting item picture with ID {Id}", id);
+            var result = await itemPictureService.GetById(id);
             return result.ToHttpResponse();
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, ItemPicture itemPicture)
         {
-            _logger.LogInformation("Updating item picture with ID {Id}", id);
-            var result = await _itemPictureService.Update(id, itemPicture);
+            logger.LogInformation("Updating item picture with ID {Id}", id);
+            var result = await itemPictureService.Update(id, itemPicture);
             return result.ToHttpResponse();
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.LogInformation("Deleting item picture with ID {Id}", id);
-            var result = await _itemPictureService.DeleteItemPicture(id);
+            logger.LogInformation("Deleting item picture with ID {Id}", id);
+            var result = await itemPictureService.DeleteItemPicture(id);
             return result.ToHttpResponse();
         }
     }

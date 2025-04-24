@@ -8,7 +8,7 @@ namespace Cirkla_API.Services.Users
         Task<ServiceResult<string>> Create(User user);
         Task<ServiceResult<IEnumerable<User>>> GetAll();
         Task<ServiceResult<User>> GetById(string id);
-        Task<ServiceResult<object>> Delete(string id);
-        Task<ServiceResult<object>> Update(string id, User user);
+        Task<ServiceResult<User>> Delete(string id);
+        Task<ServiceResult<User>> Update(string id, User user);
     }
 }

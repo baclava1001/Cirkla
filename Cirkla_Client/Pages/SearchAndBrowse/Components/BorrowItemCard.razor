@@ -17,7 +17,9 @@
         </MudButton>
         @if (Item?.Status != ItemStatus.Available)
         {
-            <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Large"/>
+            <MudTooltip Text="Item not available at the moment">
+                <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Medium"/>
+            </MudTooltip>
         }
     </MudCardActions>
 </MudCard>

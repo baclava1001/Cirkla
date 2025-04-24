@@ -132,12 +132,12 @@ public partial class CircleMembershipService(
 
     #region Updating
 
-    public async Task<ServiceResult<object>> RevokeRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
+    public async Task<ServiceResult<CircleJoinRequest>> RevokeRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
     {
         var validationResult = await circleJoinRequestUpdateValidator.ValidateAsync(circleRequestDTO);
         if (!validationResult.IsValid)
         {
-            return LogAndReturnValidationError<object>(validationResult.Errors);
+            return LogAndReturnValidationError<CircleJoinRequest>(validationResult.Errors);
         }
 
         var existingRequest = await circleJoinRequestRepository.GetById(id);
@@ -148,19 +148,19 @@ public partial class CircleMembershipService(
             existingRequest.CircleId != circleRequestDTO.CircleId)
         {
             logger.LogError("Invalid request update with ID {Id}", id);
-            return ServiceResult<object>.Fail("Invalid request", ErrorType.ValidationError);
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
         }
 
         return await UpdateRequest(existingRequest, CircleRequestStatus.Revoked);
     }
 
 
-    public async Task<ServiceResult<object>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
+    public async Task<ServiceResult<CircleJoinRequest>> RejectRequest(int id, CircleJoinRequestUpdateDTO circleRequestDTO)
     {
         var validationResult = await circleJoinRequestUpdateValidator.ValidateAsync(circleRequestDTO);
         if (!validationResult.IsValid)
         {
-            return LogAndReturnValidationError<object>(validationResult.Errors);
+            return LogAndReturnValidationError<CircleJoinRequest>(validationResult.Errors);
         }
 
         var existingRequest = await circleJoinRequestRepository.GetById(id);
@@ -171,7 +171,7 @@ public partial class CircleMembershipService(
             existingRequest.CircleId != circleRequestDTO.CircleId)
         {
             logger.LogError("Invalid request update with ID {Id}", id);
-            return ServiceResult<object>.Fail("Invalid request", ErrorType.ValidationError);
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
         }
 
         return await UpdateRequest(existingRequest, CircleRequestStatus.Rejected);
@@ -181,13 +181,13 @@ public partial class CircleMembershipService(
     // TODO: Expired, unanswered requests will be handled by a background service
 
 
-    public async Task<ServiceResult<object>> AcceptRequest(int id,
+    public async Task<ServiceResult<CircleJoinRequest>> AcceptRequest(int id,
         CircleJoinRequestUpdateDTO circleRequestDTO)
     {
         var validationResult = await circleJoinRequestUpdateValidator.ValidateAsync(circleRequestDTO);
         if (!validationResult.IsValid)
         {
-            return LogAndReturnValidationError<object>(validationResult.Errors);
+            return LogAndReturnValidationError<CircleJoinRequest>(validationResult.Errors);
         }
 
         var existingRequest = await circleJoinRequestRepository.GetById(id);
@@ -198,7 +198,7 @@ public partial class CircleMembershipService(
             existingRequest.CircleId != circleRequestDTO.CircleId)
         {
             logger.LogError("Invalid request update with ID {Id}", id);
-            return ServiceResult<object>.Fail("Invalid request", ErrorType.ValidationError);
+            return ServiceResult<CircleJoinRequest>.Fail("Invalid request", ErrorType.ValidationError);
         }
 
         return await UpdateRequest(existingRequest, CircleRequestStatus.Accepted);
