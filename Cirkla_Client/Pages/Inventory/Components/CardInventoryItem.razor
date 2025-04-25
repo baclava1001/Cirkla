@@ -1,5 +1,6 @@
 ﻿@inject IClient Client;
 @inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
 
 <MudCard Elevation="2">
     <MudCarousel ItemsSource="Item?.Pictures" Style="height: 200px" ShowBullets="false" ShowArrows="_showArrows" EnableSwipeGesture="true" AutoCycle="false">
@@ -16,23 +17,31 @@
         <MudButton @onclick="NavigateToItemDetails" Variant="Variant.Text" Color="Color.Tertiary">More...</MudButton>
     </MudCardActions>
     <MudDivider/>
-    <MudCardActions Class="d-flex align-content-end flex-wrap flex-grow-1">
+    <MudCardActions>
         <MudSpacer/>
-        <MudSwitch T="bool"
-        Value="@_isAvailable"
-        ValueChanged="@((bool val) => ToggleAvailability(val))"
-        Label="Available"
-        LabelPlacement="Placement.Start"
-        ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
-        ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"/>
-        <MudMenu @ref="_menuRef" Icon="@Icons.Material.Filled.Settings" Size="Size.Large" Dense="true">
-            <MudMenuItem>
-                <BtnEditItem Item="Item"/>
-            </MudMenuItem>
-            <MudMenuItem>
-                <BtnDeleteItem Item="Item" />
-            </MudMenuItem>
-        </MudMenu>
+        <MudStack AlignItems="AlignItems.End" Class="gap-0">
+            <MudItem>
+                @* <MudTooltip Text="Set availability"> *@
+                <MudSwitch T="bool"
+                Value="@_isAvailable"
+                ValueChanged="@((bool val) => ToggleAvailability(val))"
+                ThumbIcon="@(_isAvailable ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                ThumbIconColor="@(_isAvailable ? Color.Success : Color.Error)"
+                Label="Availability"
+                LabelPlacement="Placement.Left"/>
+                @* </MudTooltip> *@
+            </MudItem>
+            <MudItem>
+                <MudMenu @ref="_menuRef" Icon="@Icons.Material.Filled.Settings" Size="Size.Medium" Dense="true">
+                    <MudMenuItem>
+                        <BtnEditItem Item="Item"/>
+                    </MudMenuItem>
+                    <MudMenuItem>
+                        <BtnDeleteItem Item="Item" OnItemDeleted="NotifyItemDeleted" />
+                    </MudMenuItem>
+                </MudMenu>
+            </MudItem>
+        </MudStack>
     </MudCardActions>
 </MudCard>
 
@@ -41,6 +50,8 @@
     // TODO: Add overlay over card when item is unavailable
     [Parameter]
     public Item? Item { get; set; }
+    [Parameter]
+    public EventCallback<Item> OnItemDeleted { get; set; }
 
     private MudMenu _menuRef;
     private bool _isOpen;
@@ -57,8 +68,14 @@
     // TODO: Toggling doesn't work as expected
     private async Task ToggleAvailability(bool newValue)
     {
-        // TODO: Implement availability change in backend (when contract.accepted and contract.completed)
-        // TODO: Can only be manually marked while there is no active contract, otherwise up tp the system
+        // TODO: Implement availability change in backend (when contract.accepted, contract.late and contract.completed)
+        // Can only be manually marked while there is no active contract, otherwise up tp the system
+        if (await HasActiveLoans(Item))
+        {
+            SnackbarService.Warning("Unable to inactivate items with active contracts");
+            return;
+        }
+
         _isAvailable = newValue; // Ensure UI updates immediately
         Item.Status = newValue ? ItemStatus.Available : ItemStatus.Unavailable;
         try
@@ -77,8 +94,22 @@
         NavigationManager.NavigateTo(url);
     }
 
+    private async Task<bool> HasActiveLoans(Item item)
+    {
+        var activeLoans = await Client.ApiBorrowingContractRequestAllAsync(item.Id);
+        return activeLoans.Any();
+    }
+
     private string AltText()
     {
         return $"Picture of {Item?.Name}";
+    }
+
+    private async Task NotifyItemDeleted()
+    {
+        if (OnItemDeleted.HasDelegate)
+        {
+            await OnItemDeleted.InvokeAsync(Item);
+        }
     }
 }

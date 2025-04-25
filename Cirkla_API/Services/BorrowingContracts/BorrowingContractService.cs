@@ -40,12 +40,12 @@ namespace Cirkla_API.Services.BorrowingContracts
 
             var contract = await Mapper.MapToContract(contractDTO);
 
-            // TODO: Fine tune this validation method to check if the item is already borrowed - at an overlapping timeframe
-            if (await IsAlreadyBorrowed(contract.ItemId))
-            {
-                logger.LogWarning("Item with ID {ItemId} is already borrowed", contract.ItemId);
-                return ServiceResult<int>.Fail("Item is already borrowed", ErrorType.ValidationError);
-            }
+            //// Delete? Added a better fluent validation to check if the item is already borrowed - at an overlapping timeframe
+            //if (await IsAlreadyBorrowed(contract.ItemId))
+            //{
+            //    logger.LogWarning("Item with ID {ItemId} is already borrowed", contract.ItemId);
+            //    return ServiceResult<int>.Fail("Item is already borrowed", ErrorType.ValidationError);
+            //}
 
             await UpdateContractStatus(contract, ContractStatus.Pending, contract.BorrowerId);
             await contractRepository.Create(contract);
