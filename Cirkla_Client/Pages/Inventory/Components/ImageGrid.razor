@@ -8,7 +8,7 @@
         {
             <MudItem xs="12" sm="6" md="4" lg="3">
                 <MudItem xs="12" sm="6" md="4" lg="3">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Close" Color="Color.Default" OnClick="async () => await DeleteImage(picture.Id)"/>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Close" Color="Color.Default" OnClick="async () => await DeleteImage(picture)"/>
                 </MudItem>
                 <MudImage Src="@picture.Url" Width="200" Class="img-fluid overflow-hidden" Alt="@AltText()"/>
             </MudItem>
@@ -20,23 +20,52 @@
     [Parameter]
     public Item? Item { get; set; }
 
-    private string AltText()
+    public async Task DeleteImage(ItemPicture picture)
     {
-        return $"Picture of {Item?.Name}";
+        if (!IsPersisted(picture))
+        {
+            await RemoveImageFromMemory(picture);
+        }
+        else
+        {
+            await RemoveImageFromDb(picture);
+        }
+        await InvokeAsync(StateHasChanged);
+        SnackbarService.Success("Item image removed");
     }
 
-    public async Task DeleteImage(int id)
+
+
+    public async Task RemoveImageFromMemory(ItemPicture picture)
+    {
+        Item.Pictures.Remove(picture);
+    }
+
+
+    public async Task RemoveImageFromDb(ItemPicture picture)
     {
         try
         {
-            await Client.ApiItemPictureDeleteAsync(id);
-            await InvokeAsync(StateHasChanged);
-            SnackbarService.Success("Item image removed");
+            await Client.ApiItemPictureDeleteAsync(picture.Id);
+            var updatedPictures = await Client.ItemsPicturesAsync(Item.Id);
+            Item.Pictures = updatedPictures;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             SnackbarService.Error("Couldn't remove item image");
         }
+    }
+
+
+    private bool IsPersisted(ItemPicture picture)
+    {
+        return picture.Id > 0; // Picture is persisted if it has an ID greater than 0
+    }
+
+
+    private string AltText()
+    {
+        return $"Picture of {Item?.Name}";
     }
 }

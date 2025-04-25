@@ -10,7 +10,7 @@ namespace Cirkla_API.Controllers
     public class ItemPictureController(IItemPictureService itemPictureService,
                                         ILogger<ItemPictureController> logger) : ControllerBase
     {
-        [HttpPost]
+        [HttpPost("/items/create")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -23,7 +23,7 @@ namespace Cirkla_API.Controllers
         }
 
         // Gets all images belonging to a specific item
-        [HttpGet]
+        [HttpGet("/items/{itemId}/pictures/")]
         [ProducesResponseType(typeof(IEnumerable<ItemPicture>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -36,7 +36,7 @@ namespace Cirkla_API.Controllers
         }
 
         // Gets a specific image
-        [HttpGet("{id}")]
+        [HttpGet("/pictures/{id}")]
         [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
