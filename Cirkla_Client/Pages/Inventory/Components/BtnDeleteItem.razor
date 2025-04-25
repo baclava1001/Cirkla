@@ -25,8 +25,8 @@
                if (!result.Canceled && result.Data is bool confirmed && confirmed)
                {
                    await Client.ApiItemDeleteAsync(Item.Id);
-                   SnackbarService.Success($"{Item.Name} was successfully deleted");
                    NavigationManager.NavigateTo("/my-inventory", forceLoad: true);
+                   SnackbarService.Success($"{Item.Name} was successfully deleted");
                }
            }
        }
