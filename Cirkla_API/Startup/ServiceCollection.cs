@@ -26,10 +26,8 @@ using Cirkla_DAL.Repositories.ContractNotifications;
 using Cirkla_DAL.Repositories.UoW;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Mapping.Validators.Contracts;
-//using Cirkla_API.Authorization.Handlers;
+using Cirkla.Shared.Validators.Contracts;
 using Microsoft.AspNetCore.Authorization;
-//using Cirkla_API.Authorization.Requirements;
 
 namespace Cirkla_API.Startup;
 

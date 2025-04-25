@@ -1,5 +1,5 @@
 ﻿using Cirkla_API.Common;
-using Mapping.DTOs.Contracts;
+using Cirkla.Shared.DTOs.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Cirkla_DAL.Models;
 

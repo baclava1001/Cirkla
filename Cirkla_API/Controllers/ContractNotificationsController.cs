@@ -1,6 +1,6 @@
 using Cirkla_API.Helpers;
 using Cirkla_API.Services.ContractNotifications;
-using Mapping.DTOs.ContractNotifications;
+using Cirkla.Shared.DTOs.ContractNotifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Controllers

@@ -1,8 +1,7 @@
-﻿using Cirkla_DAL.Models.Enums;
+﻿using Cirkla.Shared.DTOs.CircleJoinRequests;
 using FluentValidation;
-using Mapping.DTOs.CircleJoinRequests;
 
-namespace Mapping.Validators.CircleJoinRequests
+namespace Cirkla.Shared.Validators.CircleJoinRequests
 {
     public class CircleJoinRequestUpdateValidator : AbstractValidator<CircleJoinRequestUpdateDTO>
     {

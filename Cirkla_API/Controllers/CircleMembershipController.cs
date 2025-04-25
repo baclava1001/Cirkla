@@ -1,7 +1,7 @@
 ﻿using Cirkla_API.Helpers;
 using Cirkla_API.Services.CircleMembership;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.CircleJoinRequests;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

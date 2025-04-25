@@ -1,9 +1,10 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Cirkla_DAL.Models.Enums;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
 using FluentValidation;
-using Mapping.DTOs.CircleJoinRequests;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
 
-namespace Mapping.Validators.CircleJoinRequests;
+namespace Cirkla.Shared.Validators.CircleJoinRequests;
 
 public class CircleJoinRequestCreateValidator : AbstractValidator<CircleJoinRequestCreateDTO>
 {

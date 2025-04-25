@@ -1,6 +1,6 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.Circles;
+using Cirkla.Shared.DTOs.Circles;
 
 namespace Cirkla_API.Services.Circles;
 

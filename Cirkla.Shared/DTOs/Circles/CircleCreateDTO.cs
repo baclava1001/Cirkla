@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Cirkla_DAL.Models;
 
-namespace Mapping.DTOs.Circles;
+namespace Cirkla.Shared.DTOs.Circles;
 
 public class CircleCreateDTO
 {

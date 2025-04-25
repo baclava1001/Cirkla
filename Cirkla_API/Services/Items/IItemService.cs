@@ -1,6 +1,6 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.Items;
+using Cirkla.Shared.DTOs.Items;
 
 namespace Cirkla_API.Services.Items
 {

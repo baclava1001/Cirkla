@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Mapping.DTOs.Circles;
+using Cirkla.Shared.DTOs.Circles;
 
-namespace Mapping.Validators.Circles;
+namespace Cirkla.Shared.Validators.Circles;
 
 public class CircleCreateValidator : AbstractValidator<CircleCreateDTO>
 {

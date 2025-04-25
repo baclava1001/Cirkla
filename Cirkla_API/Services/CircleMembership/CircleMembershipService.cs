@@ -7,10 +7,10 @@ using Cirkla_DAL.Repositories.CircleJoinRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
+using Cirkla.Shared.Mappers;
 using FluentValidation;
-using Mapping.DTOs.CircleJoinRequests;
-using Mapping.Mappers;
-using Mapping.Validators.CircleJoinRequests;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
+using Cirkla.Shared.Validators.CircleJoinRequests;
 
 namespace Cirkla_API.Services.CircleMembership;
 

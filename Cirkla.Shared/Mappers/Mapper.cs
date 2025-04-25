@@ -1,16 +1,13 @@
-﻿using System.Net.NetworkInformation;
-using Cirkla_DAL.Models;
-using Cirkla_DAL.Models.Enums;
-using Mapping.DTOs.CircleJoinRequests;
-using Mapping.DTOs.Circles;
-using Mapping.DTOs.ContractNotifications;
-using Mapping.DTOs.Users;
-using Mapping.DTOs.Contracts;
-using Mapping.DTOs.Items;
-using ApiClient = Cirkla.ApiClient;
+﻿using Cirkla_DAL.Models;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
+using Cirkla.Shared.DTOs.Circles;
+using Cirkla.Shared.DTOs.ContractNotifications;
+using Cirkla.Shared.DTOs.Contracts;
+using Cirkla.Shared.DTOs.Items;
+using Cirkla.Shared.DTOs.Users;
 
 
-namespace Mapping.Mappers
+namespace Cirkla.Shared.Mappers
 {
     // TODO: Make separate mappers for each Model
     // TODO: Turn into a service with interface instead?

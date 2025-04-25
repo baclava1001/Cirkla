@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Cirkla_DAL.Models;
 
-namespace Mapping.DTOs.Items;
+namespace Cirkla.Shared.DTOs.Items;
 
 public class ItemCreateDTO
 {

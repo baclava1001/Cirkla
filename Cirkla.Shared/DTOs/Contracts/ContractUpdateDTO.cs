@@ -2,7 +2,7 @@
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 
-namespace Mapping.DTOs.Contracts
+namespace Cirkla.Shared.DTOs.Contracts
 {
     public class ContractUpdateDTO
     {

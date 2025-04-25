@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
-    <ProjectReference Include="..\Mapping\Mapping.csproj" />
+    <ProjectReference Include="..\Cirkla.Shared\Cirkla.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

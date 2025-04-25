@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Mapping.DTOs.Contracts;
+using Cirkla.Shared.DTOs.Contracts;
 using NuGet.Protocol;
 using Azure;
 using Cirkla_API.Helpers;

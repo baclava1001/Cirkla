@@ -7,9 +7,9 @@ using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
+using Cirkla.Shared.Mappers;
 using FluentValidation;
-using Mapping.DTOs.Contracts;
-using Mapping.Mappers;
+using Cirkla.Shared.DTOs.Contracts;
 
 namespace Cirkla_API.Services.BorrowingContracts
 {

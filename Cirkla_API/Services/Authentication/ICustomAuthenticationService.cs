@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Mapping.DTOs.Users;
+using Cirkla.Shared.DTOs.Users;
 using Cirkla_API.Common;
 using Cirkla_DAL.Models;
 
