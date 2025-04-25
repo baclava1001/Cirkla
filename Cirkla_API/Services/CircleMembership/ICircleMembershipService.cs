@@ -1,6 +1,6 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.CircleJoinRequests;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
 
 namespace Cirkla_API.Services.CircleMembership;
 

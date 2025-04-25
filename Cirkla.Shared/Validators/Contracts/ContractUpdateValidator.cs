@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cirkla_DAL.Models.Enums;
-using Mapping.DTOs.Contracts;
+using Cirkla.Shared.DTOs.Contracts;
 
-namespace Mapping.Validators.Contracts
+namespace Cirkla.Shared.Validators.Contracts
 {
     public class ContractUpdateValidator : AbstractValidator<ContractUpdateDTO>
     {

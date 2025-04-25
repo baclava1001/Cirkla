@@ -3,7 +3,7 @@ using Cirkla_API.Common;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 using FluentValidation.Results;
-using Mapping.DTOs.CircleJoinRequests;
+using Cirkla.Shared.DTOs.CircleJoinRequests;
 
 namespace Cirkla_API.Services.CircleMembership
 {

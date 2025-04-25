@@ -3,7 +3,7 @@
 @page "/items/{itemId:int}/edit/"
 @using System.Text.Json
 @using Cirkla_Client.Pages.Inventory.Components;
-@using Mapping.Mappers
+@using Cirkla.Shared.Mappers
 @inject IClient Client;
 @inject NavigationManager NavigationManager;
 @inject SnackbarService SnackbarService;
@@ -25,7 +25,7 @@
         </div>
         <CascadingValue Value="temporaryCategoryList">
             <CascadingValue Value="Item">
-                <CategoryDropdown />
+                <DropdownCategory />
             </CascadingValue>
         </CascadingValue>
         <div class="row mb-3">

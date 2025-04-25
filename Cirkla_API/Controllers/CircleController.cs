@@ -4,7 +4,7 @@ using Cirkla_API.Services.Circles;
 using Cirkla_API.Services.Users;
 using Cirkla_DAL;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.Circles;
+using Cirkla.Shared.DTOs.Circles;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Cirkla_DAL.Models.Enums;
 
-namespace Mapping.DTOs.Contracts
+namespace Cirkla.Shared.DTOs.Contracts
 {
     /// <summary>
     /// Hides away complex objects and takes only their Id:s

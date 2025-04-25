@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Models.Enums;
 
-namespace Mapping.DTOs.CircleJoinRequests
+namespace Cirkla.Shared.DTOs.CircleJoinRequests
 {
     public class CircleJoinRequestCreateDTO
     {

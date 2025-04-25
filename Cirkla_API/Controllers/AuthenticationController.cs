@@ -7,15 +7,14 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Cirkla_API.Helpers;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.Users;
-using Mapping.Mappers;
+using Cirkla.Shared.DTOs.Users;
 using Cirkla_API.Common.Constants;
 using Cirkla_API.Services.Authentication;
 using Cirkla_API.Services.TokenGenerator;
 
 namespace Cirkla_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     [ApiController]
     public class AuthenticationController(ILogger<AuthenticationController> logger,
                                             ICustomAuthenticationService customAuthenticationService) : ControllerBase

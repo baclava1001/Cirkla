@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Cirkla_DAL.Models;
 
-namespace Mapping.DTOs.ContractNotifications;
+namespace Cirkla.Shared.DTOs.ContractNotifications;
 
 public class ContractNotificationForViews
 {

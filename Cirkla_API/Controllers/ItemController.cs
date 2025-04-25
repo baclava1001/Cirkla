@@ -1,7 +1,7 @@
 ﻿using Cirkla_API.Helpers;
 using Cirkla_API.Services.Items;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.Items;
+using Cirkla.Shared.DTOs.Items;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cirkla_API.Controllers

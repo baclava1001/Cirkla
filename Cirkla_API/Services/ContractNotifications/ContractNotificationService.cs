@@ -4,8 +4,8 @@ using Cirkla_API.Hubs.ContractUpdate;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.ContractNotifications;
 using Cirkla_DAL.Repositories.UoW;
-using Mapping.DTOs.ContractNotifications;
-using Mapping.Mappers;
+using Cirkla.Shared.Mappers;
+using Cirkla.Shared.DTOs.ContractNotifications;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +24,7 @@ public class ContractNotificationService(
     {
         var notification = new ContractNotification
         {
-            NotificationMessage = $"{contract.StatusChanges.LastOrDefault().ChangedBy.FullName} has replied {contract.StatusChanges.Last().To} {contract.Item.Name}",
+            NotificationMessage = $"{contract.StatusChanges.LastOrDefault().ChangedBy.FullName} has replied {contract.StatusChanges.Last().To} about {contract.Item.Name}",
             Contract = contract,
             CreatedAt = DateTime.Now,
             HasBeenRead = false

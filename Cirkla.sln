@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla_Client", "Cirkla_Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiClient", "ApiClient\ApiClient.csproj", "{81691887-3FEE-4326-8C9C-9741187E56B6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapping", "Mapping\Mapping.csproj", "{36B2356C-0254-4863-9FCC-9CCBD5E79C02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.Shared", "Cirkla.Shared\Cirkla.Shared.csproj", "{36B2356C-0254-4863-9FCC-9CCBD5E79C02}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.CirklaApi", "CirklaApi.Test\Test.CirklaApi.csproj", "{845BBA1A-CB90-4E46-8484-5D84972854F9}"
 EndProject

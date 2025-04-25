@@ -1,6 +1,6 @@
 ﻿using Cirkla_API.Common;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.ContractNotifications;
+using Cirkla.Shared.DTOs.ContractNotifications;
 
 namespace Cirkla_API.Services.ContractNotifications;
 

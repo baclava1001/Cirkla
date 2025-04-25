@@ -1,6 +1,6 @@
 ﻿using Cirkla.ApiClient;
 
-namespace Cirkla_Client.Services;
+namespace Cirkla.Shared.Services;
 
 public static class ContractStringBuilder
 {

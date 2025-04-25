@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Cirkla_DAL.Models;
 
-namespace Mapping.DTOs.Contracts
+namespace Cirkla.Shared.DTOs.Contracts
 {
     public class ContractResponseDTO
     {

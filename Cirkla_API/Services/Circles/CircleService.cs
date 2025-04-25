@@ -6,9 +6,9 @@ using Cirkla_DAL.Repositories.CircleJoinRequests;
 using Cirkla_DAL.Repositories.Circles;
 using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
-using Mapping.DTOs.Circles;
-using Mapping.Mappers;
-using Mapping.Validators.Circles;
+using Cirkla.Shared.Mappers;
+using Cirkla.Shared.DTOs.Circles;
+using Cirkla.Shared.Validators.Circles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Circles

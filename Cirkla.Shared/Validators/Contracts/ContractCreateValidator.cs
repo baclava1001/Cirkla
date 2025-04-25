@@ -1,9 +1,9 @@
 ﻿using Cirkla_DAL.Models.Enums;
 using Cirkla_DAL.Repositories.Contracts;
 using FluentValidation;
-using Mapping.DTOs.Contracts;
+using Cirkla.Shared.DTOs.Contracts;
 
-namespace Mapping.Validators.Contracts;
+namespace Cirkla.Shared.Validators.Contracts;
 
 public class ContractCreateValidator : AbstractValidator<ContractCreateDTO>
 {

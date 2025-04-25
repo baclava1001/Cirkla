@@ -62,7 +62,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cirkla_DAL\Cirkla_DAL.csproj" />
-    <ProjectReference Include="..\Mapping\Mapping.csproj" />
+    <ProjectReference Include="..\Cirkla.Shared\Cirkla.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,8 +5,8 @@ using Cirkla_DAL.Repositories.Contracts;
 using Cirkla_DAL.Repositories.Items;
 using Cirkla_DAL.Repositories.UoW;
 using Cirkla_DAL.Repositories.Users;
-using Mapping.DTOs.Items;
-using Mapping.Mappers;
+using Cirkla.Shared.Mappers;
+using Cirkla.Shared.DTOs.Items;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cirkla_API.Services.Items

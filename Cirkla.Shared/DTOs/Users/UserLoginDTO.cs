@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Mapping.DTOs.Users
+namespace Cirkla.Shared.DTOs.Users
 {
     public class UserLoginDTO
     {

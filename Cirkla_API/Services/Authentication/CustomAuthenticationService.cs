@@ -2,8 +2,8 @@
 using Cirkla_API.Common.Constants;
 using Cirkla_API.Services.TokenGenerator;
 using Cirkla_DAL.Models;
-using Mapping.DTOs.Users;
-using Mapping.Mappers;
+using Cirkla.Shared.Mappers;
+using Cirkla.Shared.DTOs.Users;
 using Microsoft.AspNetCore.Identity;
 
 namespace Cirkla_API.Services.Authentication;

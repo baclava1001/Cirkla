@@ -1,4 +1,4 @@
-﻿namespace Mapping.DTOs.Users;
+﻿namespace Cirkla.Shared.DTOs.Users;
     public class UserAuthResponseDTO
     {
         public string Id { get; set; }
