@@ -24,7 +24,7 @@ public class ContractNotificationService(
     {
         var notification = new ContractNotification
         {
-            NotificationMessage = $"Test message for #{contract.Id}: {contract.Owner.FirstName} has replied {contract.StatusChanges.Last().To} at {contract.StatusChanges.Last().ChangedAt}",
+            NotificationMessage = $"{contract.StatusChanges.LastOrDefault().ChangedBy.FullName} has replied {contract.StatusChanges.Last().To} {contract.Item.Name}",
             Contract = contract,
             CreatedAt = DateTime.Now,
             HasBeenRead = false

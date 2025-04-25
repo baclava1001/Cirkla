@@ -1,5 +1,7 @@
 ﻿@inject IClient Client;
 @inject NavigationManager NavigationManager;
+@inject SnackbarService SnackbarService;
+@inject CurrentUserService CurrentUser;
 
 @if (Contract is not null)
 {
@@ -21,7 +23,7 @@
             Created = Contract.Created.Value,
             StartTime = Contract.StartTime.Value,
             EndTime = Contract.EndTime.Value,
-            UpdatedByUserId = Contract.OwnerId,
+            UpdatedByUserId = await CurrentUser.GetUserId(),
             UpdatedAt = DateTime.Now,
             FromStatus = Contract.StatusChanges.LastOrDefault().To,
             ToStatus = ContractStatus.Active
@@ -31,6 +33,7 @@
         {
             await Client.ApiBorrowingContractRequestActivateAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component activated request successfully");
+            SnackbarService.Success("Loan has been marked 'Active'");
             NavigationManager.NavigateTo("/my-inventory");
         }
         catch (Exception ex)
