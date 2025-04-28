@@ -20,7 +20,7 @@ jobs:
           submodules: true
           lfs: false
       - name: Override appsettings for Production
-        run: cp ./Cirkla_Client/wwwroot/appsettings.production.json ./Cirkla_Client/wwwroot/appsettings.json
+        run: cp ./Cirkla_Client/wwwroot/appsettings.Production.json ./Cirkla_Client/wwwroot/appsettings.json
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
