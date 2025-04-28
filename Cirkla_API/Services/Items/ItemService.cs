@@ -93,6 +93,8 @@ namespace Cirkla_API.Services.Items
 
         public async Task<ServiceResult<Item>> Update(int id, Item item)
         {
+            // TODO: Add validation for availability - not possible to toggle "available" if there are active contracts and vice versa
+
             if (id != item.Id)
             {
                 logger.LogWarning("Item ID mismatch");
