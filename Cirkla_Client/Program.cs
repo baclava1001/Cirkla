@@ -35,7 +35,7 @@ namespace Cirkla_Client
 
             builder.Services.AddScoped(sp => new HttpClient
             {
-                BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? Environment.GetEnvironmentVariable("ApiBaseUrl"))
+                BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"])
             });
 
             builder.Services.AddScoped<IClient, Client>(sp =>
