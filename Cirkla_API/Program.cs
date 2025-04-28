@@ -52,16 +52,19 @@ namespace Cirkla_API
 
 
             // Configure dbContext to apply migrations on startup
-            try
+            if (app.Environment.IsProduction())
             {
-                using var scope = app.Services.CreateScope();
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                dbContext.Database.Migrate();
-            }
-            catch (Exception ex)
-            {
-                ILogger<Program> _logger = app.Services.GetRequiredService<ILogger<Program>>();
-                _logger.LogError($"An error occurred while migrating the database: {ex.Message}");
+                try
+                {
+                    using var scope = app.Services.CreateScope();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    dbContext.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    ILogger<Program> _logger = app.Services.GetRequiredService<ILogger<Program>>();
+                    _logger.LogError($"An error occurred while migrating the database: {ex.Message}");
+                }
             }
 
 
