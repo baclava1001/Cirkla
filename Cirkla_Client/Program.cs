@@ -38,6 +38,12 @@ namespace Cirkla_Client
                 BaseAddress = new Uri(ApiAddress.baseAdress)
             });
 
+            if (builder.HostEnvironment.IsProduction())
+            {
+                builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("api-cirkla-dev-gzgmbzghdtgjc4em.swedencentral-01.azurewebsites.net") });
+            }
+
+
             builder.Services.AddScoped<IClient, Client>(sp =>
             {
                 var httpClient = sp.GetRequiredService<HttpClient>();

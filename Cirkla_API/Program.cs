@@ -17,9 +17,9 @@ namespace Cirkla_API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Logging.AddConsole();
-            
-            // Create services to the container
-            builder.Services.RegisterAll(); // Extension method in Startup/ServiceCollection.cs
+
+            // Create services to the container (Extension method in Startup/ServiceCollection.cs)
+            builder.Services.RegisterAll();
 
             // Services that need configuring
             builder.Services.AddDbContext<AppDbContext>
@@ -50,11 +50,18 @@ namespace Cirkla_API
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+
+            // Configure dbContext to apply migrations on startup
+            try
             {
-                app.UseOpenApi();
-                app.UseSwaggerUi();
+                using var scope = app.Services.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+                ILogger<Program> _logger = app.Services.GetRequiredService<ILogger<Program>>();
+                _logger.LogError($"An error occurred while migrating the database: {ex.Message}");
             }
 
 
@@ -70,22 +77,7 @@ namespace Cirkla_API
             }
 
 
-            app.UseHttpsRedirection();
-
-            // TODO: Safer CORS policy
-            app.UseCors("AllowAll");
-
-
-            // TODO: Remove these and replace with antiforgery?
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.MapHub<ContractUpdateHub>("contractNotifications");
-
-            // Seed roles on startup
+            // Seed roles on startup. Admin role is meant for administering the whole application.
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -99,6 +91,28 @@ namespace Cirkla_API
                     }
                 }
             }
+            
+
+            // Configure Swagger for API documentation
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseOpenApi();
+                app.UseSwaggerUi();
+            }
+
+
+            app.UseHttpsRedirection();
+
+            // TODO: Safer CORS policy
+            app.UseCors("AllowAll");
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.MapHub<ContractUpdateHub>("contractNotifications");
 
             app.Run();
         }
