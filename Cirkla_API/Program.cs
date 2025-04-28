@@ -56,6 +56,7 @@ namespace Cirkla_API
             {
                 try
                 {
+                    Console.WriteLine("Production environment detected. Applying migration to Azure DB.");
                     using var scope = app.Services.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                     dbContext.Database.Migrate();
