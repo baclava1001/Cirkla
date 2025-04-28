@@ -35,14 +35,8 @@ namespace Cirkla_Client
 
             builder.Services.AddScoped(sp => new HttpClient
             {
-                BaseAddress = new Uri(ApiAddress.baseAdress)
+                BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? Environment.GetEnvironmentVariable("ApiBaseUrl"))
             });
-
-            if (builder.HostEnvironment.IsProduction())
-            {
-                builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("api-cirkla-dev-gzgmbzghdtgjc4em.swedencentral-01.azurewebsites.net") });
-            }
-
 
             builder.Services.AddScoped<IClient, Client>(sp =>
             {
