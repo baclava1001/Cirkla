@@ -24,10 +24,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build ./Cirkla_API/Cirkla_API.csproj --configuration Release
+        run: dotnet build --configuration Release
 
-      - name: dotnet publish API project
-        run: dotnet publish ./Cirkla_API/Cirkla_API.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      - name: dotnet publish
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -54,9 +54,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6E74C4B5B09F4918B69535E88862F4F8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_270425F904B44C02B32C13E7024B4627 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_06224E4F07D44218BB8CB7565897D54B }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C7C7B9B61CB44F719EE705ECAC0C4DCF }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B78F6097D25F4CFDBF89183C6E7F1573 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7B97A082FD9F41A4B83CE2D25329826D }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
