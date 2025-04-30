@@ -50,6 +50,7 @@ namespace Cirkla_API
 
             var app = builder.Build();
 
+            app.MapGet("/health", () => Results.Ok("API is running!"));
 
             // Configure dbContext to apply migrations on startup
             if (app.Environment.IsProduction())
@@ -60,11 +61,11 @@ namespace Cirkla_API
                     using var scope = app.Services.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                     dbContext.Database.Migrate();
+                    Console.WriteLine("Migration successful.");
                 }
                 catch (Exception ex)
                 {
-                    ILogger<Program> _logger = app.Services.GetRequiredService<ILogger<Program>>();
-                    _logger.LogError($"An error occurred while migrating the database: {ex.Message}");
+                    Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
                 }
             }
 
