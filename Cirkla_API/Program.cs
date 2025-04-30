@@ -18,7 +18,7 @@ namespace Cirkla_API
 
             builder.Logging.AddConsole();
 
-            // Create services to the container (Extension method in Startup/ServiceCollection.cs)
+            // Add services to the container (Extension method in Startup/ServiceCollection.cs)
             builder.Services.RegisterAll();
 
             // Services that need configuring
@@ -60,7 +60,7 @@ namespace Cirkla_API
                     Console.WriteLine("Production environment detected. Applying migration to Azure DB.");
                     using var scope = app.Services.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    //dbContext.Database.Migrate();
+                    dbContext.Database.Migrate();
                     Console.WriteLine("Migration successful.");
                 }
                 catch (Exception ex)
