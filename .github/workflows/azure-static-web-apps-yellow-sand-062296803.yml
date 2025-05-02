@@ -20,7 +20,7 @@ jobs:
           submodules: true
           lfs: false
       - name: Replace API base URL
-        run: sed -i 's|__API_BASE_URL__|https://api-cirkla-dev-gzgmbzghdtgjc4em.swedencentral-01.azurewebsites.net/|' src/app/appsettings.Production.json
+        run: sed -i 's|__API_BASE_URL__|https://api-cirkla-dev-gzgmbzghdtgjc4em.swedencentral-01.azurewebsites.net/|' src/app/appsettings.json
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
