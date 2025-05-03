@@ -22,6 +22,8 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Replace API base URL
+        run: sed -i 's|_API_BASE_URL_|https://api-cirkla-dev-gzgmbzghdtgjc4em.swedencentral-01.azurewebsites.net/|' Cirkla_Client/wwwroot/appsettings.json
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token
