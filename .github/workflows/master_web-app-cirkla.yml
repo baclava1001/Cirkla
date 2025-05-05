@@ -26,6 +26,9 @@ jobs:
       - name: Build Blazor project only
         run: dotnet build ./Cirkla_Client/Cirkla_Client.csproj --configuration Release
 
+      - name: Replace API base URL
+        run: sed -i 's|_API_BASE_URL_|https://api-cirkla-dev-gzgmbzghdtgjc4em.swedencentral-01.azurewebsites.net/|' Cirkla_Client/wwwroot/appsettings.json
+        
       - name: dotnet publish Blazor project only
         run: dotnet publish ./Cirkla_Client/Cirkla_Client.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
