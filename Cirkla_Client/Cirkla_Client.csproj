@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>4c31a73a-d3e3-4d5f-b0cb-2edc1da06b0c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,6 +47,10 @@
     <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
     <ProjectReference Include="..\Cirkla.Shared\Cirkla.Shared.csproj" />
   </ItemGroup>
+
+	<Target Name="ReplaceAppSettingsForLocalDev" AfterTargets="Build">
+		<Copy SourceFiles="wwwroot/appsettings.Development.json" DestinationFiles="wwwroot/appsettings.json" OverwriteReadOnlyFiles="true" />
+	</Target>
 
   <ItemGroup>
     <Folder Include="Extensions\" />

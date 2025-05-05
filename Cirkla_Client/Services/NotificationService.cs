@@ -15,9 +15,12 @@ namespace Cirkla_Client.Services
         public NotificationService(IServiceProvider serviceProvider)
         {
             Console.WriteLine("Frontend service connecting to SignalR hub");
-            
+
+            // Get the base URL from the configuration
+            var apiBaseUrl = serviceProvider.GetRequiredService<IConfiguration>().GetValue<string>("ApiBaseUrl");
+
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{ApiAddress.baseAdress}" + "contractNotifications")
+                .WithUrl($"{apiBaseUrl}contractNotifications")
                 .WithAutomaticReconnect()
                 .AddJsonProtocol(options =>
                 {
