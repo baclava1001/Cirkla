@@ -48,11 +48,12 @@
     <ProjectReference Include="..\Cirkla.Shared\Cirkla.Shared.csproj" />
   </ItemGroup>
 
-	<Target Name="ReplaceAppSettingsForLocalDev" AfterTargets="Build">
+	<Target Name="ReplaceAppSettingsForLocalDev" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
 		<Copy SourceFiles="wwwroot/appsettings.Development.json" DestinationFiles="wwwroot/appsettings.json" OverwriteReadOnlyFiles="true" />
 	</Target>
 
-  <ItemGroup>
+
+	<ItemGroup>
     <Folder Include="Extensions\" />
   </ItemGroup>
 
