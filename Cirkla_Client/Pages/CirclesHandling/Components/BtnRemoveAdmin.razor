@@ -36,7 +36,7 @@ Class="ml-auto">Remove admin</MudButton>
                 ExpiresAt = DateTime.Now + TimeSpan.FromDays(7),
                 UpdatedByUserId = await CurrentUser.GetUserId()
             };
-            await Client.MembershipRequestsUserRemoveAdminAsync(request.TargetUserId, request);
+            await Client.RemoveAdminAsync(request.TargetUserId, request);
             SnackbarService.Success($"{Member.FullName} is no longer an admin for {Circle.Name}");
             await OnAdminRemoved.InvokeAsync();
         }

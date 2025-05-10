@@ -46,8 +46,8 @@
     {
         try
         {
-            await Client.ApiItemPictureDeleteAsync(picture.Id);
-            var updatedPictures = await Client.ItemsPicturesAsync(Item.Id);
+            await Client.DeleteItemPictureAsync(picture.Id);
+            var updatedPictures = await Client.GetAllPicturesForItemAsync(Item.Id);
             Item.Pictures = updatedPictures;
         }
         catch (Exception ex)

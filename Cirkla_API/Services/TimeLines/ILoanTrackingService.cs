@@ -3,7 +3,7 @@ using Cirkla_DAL.Models;
 
 namespace Cirkla_API.Services.TimeLines;
 
-public interface ITimeLineService
+public interface ILoanTrackingService
 {
     Task<ServiceResult<IEnumerable<Contract>>> GetActiveWhereUserIsBorrower(string userId);
     Task<ServiceResult<IEnumerable<Contract>>> GetActiveWhereUserIsOwner(string userId);

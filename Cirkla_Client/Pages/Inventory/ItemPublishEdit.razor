@@ -109,7 +109,7 @@
     {
         if (IsEditing && ItemId.HasValue)
         {
-            Item = await Client.ApiItemGetAsync(ItemId.Value);
+            Item = await Client.GetItemByIdAsync(ItemId.Value);
             TitleString = $"Edit {Item.Name}";
         }
         else
@@ -152,7 +152,7 @@
         {
             Item.OwnerId = await CurrentUser.GetUserId();
             var itemCreateDTO = await Mapper.MapToItemCreateDTO(Item);
-            await Client.ApiItemPostAsync(itemCreateDTO);
+            await Client.CreateItemAsync(itemCreateDTO);
             SnackbarService.Success($"{Item.Name} published successfully");
 
         }

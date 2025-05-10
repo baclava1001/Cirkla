@@ -2,6 +2,7 @@
 using Cirkla_API.Services.ItemPictures;
 using Cirkla_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace Cirkla_API.Controllers
 {
@@ -10,7 +11,8 @@ namespace Cirkla_API.Controllers
     public class ItemPictureController(IItemPictureService itemPictureService,
                                         ILogger<ItemPictureController> logger) : ControllerBase
     {
-        [HttpPost("/items/create")]
+        [HttpPost("itempictures")]
+        [OpenApiOperation("CreateItemPicture")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -23,7 +25,8 @@ namespace Cirkla_API.Controllers
         }
 
         // Gets all images belonging to a specific item
-        [HttpGet("/items/{itemId}/pictures/")]
+        [HttpGet("/items/{itemId}/itempictures/")]
+        [OpenApiOperation("GetAllPicturesForItem")]
         [ProducesResponseType(typeof(IEnumerable<ItemPicture>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -36,7 +39,8 @@ namespace Cirkla_API.Controllers
         }
 
         // Gets a specific image
-        [HttpGet("/pictures/{id}")]
+        [HttpGet("/itempictures/{id}")]
+        [OpenApiOperation("GetItemPictureById")]
         [ProducesResponseType(typeof(ItemPicture), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -49,6 +53,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("{id}")]
+        [OpenApiOperation("UpdateItemPicture")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -61,6 +66,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [OpenApiOperation("DeleteItemPicture")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

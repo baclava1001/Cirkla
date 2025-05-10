@@ -6,8 +6,8 @@ using Cirkla_DAL.Repositories.Users;
 
 namespace Cirkla_API.Services.TimeLines;
 
-public class TimeLineService(IContractRepository contractRepository,
-                            ILogger<TimeLineService> logger) : ITimeLineService
+public class LoanTrackingService(IContractRepository contractRepository,
+                            ILogger<LoanTrackingService> logger) : ILoanTrackingService
 {
     public async Task<ServiceResult<IEnumerable<Contract>>> GetActiveWhereUserIsBorrower(string userId)
     {

@@ -37,7 +37,7 @@ Class="ml-auto">Make admin</MudButton>
                 ExpiresAt = DateTime.Now + TimeSpan.FromDays(7),
                 UpdatedByUserId = await CurrentUser.GetUserId()
             };
-            await Client.MembershipRequestsUserMakeAdminAsync(request.TargetUserId, request);
+            await Client.MakeAdminAsync(request.TargetUserId, request);
             SnackbarService.Success($"{Member.FullName} is now an admin for {Circle.Name}");
             await OnAdminAdded.InvokeAsync();
         }

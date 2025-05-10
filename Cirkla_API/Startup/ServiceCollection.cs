@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemPictureService, ItemPictureService>();
 
         services.AddScoped<IContractRepository, ContractRepository>();
-        services.AddScoped<ITimeLineService, TimeLineService>();
+        services.AddScoped<ILoanTrackingService, LoanTrackingService>();
         services.AddScoped<IBorrowingContractService, BorrowingContractService>();
 
         services.AddScoped<IContractNotificationRepository, ContractNotificationRepository>();

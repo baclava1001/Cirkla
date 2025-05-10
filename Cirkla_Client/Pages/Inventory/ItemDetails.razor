@@ -59,7 +59,7 @@
     {
         try
         {
-            Item = await Client.ApiItemGetAsync(ItemId);
+            Item = await Client.GetItemByIdAsync(ItemId);
         }
         catch (Exception ex)
         {

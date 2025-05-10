@@ -72,7 +72,12 @@
     {
         try
         {
-            var result = await Client.ApiCircleGetAsync();
+            var result = await Client.GetAllCirclesAsync();
+            if (result is null)
+            {
+                Console.WriteLine("No circles were retrieved.");
+                return;
+            }
             Circles = result.ToList();
         }
         catch (Exception ex)

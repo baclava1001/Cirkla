@@ -82,7 +82,7 @@ else
     {
         try
         {
-            Item = await Client.ApiItemGetAsync(ItemId);
+            Item = await Client.GetItemByIdAsync(ItemId);
         }
         catch(Exception ex)
         {
@@ -92,7 +92,7 @@ else
 
         try
         {
-            _activeContractsForItem = await Client.ApiBorrowingContractRequestAllAsync(ItemId);
+            _activeContractsForItem = await Client.GetAllBorrowingRequestsForItemAsync(ItemId);
             foreach (var contract in _activeContractsForItem)
             {
                 _unavailableDateRanges.Add(new(contract.StartTime, contract.EndTime));
@@ -117,7 +117,7 @@ else
 
         try
         {
-            var response = await Client.ApiBorrowingContractRequestSendAsync(ContractDTO);
+            var response = await Client.SendBorrowingRequestAsync(ContractDTO);
             SnackbarService.Success($"You've requested to borrow {Item.Name}");
             NavigationManager.NavigateTo($"/borrowing-contracts/{response}");
         }

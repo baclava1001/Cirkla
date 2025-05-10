@@ -17,7 +17,7 @@ namespace Cirkla_Client.Services
         {
             try
             {
-                var response = await client.ApiAuthenticationLoginAsync(user);
+                var response = await client.LoginAsync(user);
                 await localStorage.SetItemAsync("accessToken", response.Token);
                 await apiAuthStateProvider.LoggedIn();
                 return true;

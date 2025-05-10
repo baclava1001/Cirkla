@@ -80,7 +80,7 @@
         Item.Status = newValue ? ItemStatus.Available : ItemStatus.Unavailable;
         try
         {
-            await Client.ApiItemPutAsync(Item.Id, Item);
+            await Client.UpdateItemAsync(Item.Id, Item);
         }
         catch (Exception ex)
         {
@@ -96,7 +96,7 @@
 
     private async Task<bool> HasActiveLoans(Item item)
     {
-        var activeLoans = await Client.ApiBorrowingContractRequestAllAsync(item.Id);
+        var activeLoans = await Client.GetAllBorrowingRequestsForItemAsync(item.Id);
         return activeLoans.Any();
     }
 
