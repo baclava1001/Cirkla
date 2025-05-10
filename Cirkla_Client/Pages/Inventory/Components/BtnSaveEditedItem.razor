@@ -20,7 +20,7 @@
         try
         {
             Item.OwnerId = await CurrentUser.GetUserId();
-            await Client.ApiItemPutAsync(ItemId.Value, Item);
+            await Client.UpdateItemAsync(ItemId.Value, Item);
             SnackbarService.Success($"{Item.Name} was successfully edited");
             var url = $"/items/{ItemId.Value}";
             NavigationManager.NavigateTo(url);

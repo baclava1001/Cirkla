@@ -7,6 +7,7 @@ using Cirkla_DAL.Models;
 using Cirkla.Shared.DTOs.Circles;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NSwag.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,8 +19,8 @@ namespace Cirkla_API.Controllers
                                     IUserService userService,
                                     ILogger<CircleController> logger) : ControllerBase
     {
-        // GET: api/<CircleController>
-        [HttpGet]
+        [HttpGet("circles")]
+        [OpenApiOperation("GetAllCircles")]
         [ProducesResponseType(typeof(IEnumerable<Circle>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -31,8 +32,9 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        // GET api/<CircleController>/5
-        [HttpGet("{id}")]
+
+        [HttpGet("circles/{id}")]
+        [OpenApiOperation("GetCircleById")]
         [ProducesResponseType(typeof(Circle), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -44,8 +46,9 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        // POST api/<CircleController>
-        [HttpPost]
+
+        [HttpPost("circles")]
+        [OpenApiOperation("CreateCircle")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -56,8 +59,9 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        // PUT api/<CircleController>/5
-        [HttpPut("{id}")]
+
+        [HttpPut("circles/{id}")]
+        [OpenApiOperation("UpdateCircle")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -69,8 +73,9 @@ namespace Cirkla_API.Controllers
             return result.ToHttpResponse();
         }
 
-        // DELETE api/<CircleController>/5
-        [HttpDelete("{id}")]
+
+        [HttpDelete("circles/{id}")]
+        [OpenApiOperation("DeleteCircle")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

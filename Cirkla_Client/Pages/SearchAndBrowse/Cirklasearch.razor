@@ -33,7 +33,7 @@
     {
         try
         {
-            var response = await Client.ApiItemAllAsync();
+            var response = await Client.Item_GetAllAsync();
             AllItems = response.ToList();
             if (AllItems is null)
             {

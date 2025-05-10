@@ -40,7 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var requestsForCircle = await Client.MembershipRequestsCircleAsync(CircleId);
+        var requestsForCircle = await Client.GetAllJoinRequestsForCircleAsync(CircleId);
         PendingCircleRequests = requestsForCircle.Where(r => r.Status == CircleRequestStatus.Pending);
     }
 

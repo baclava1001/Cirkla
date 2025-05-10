@@ -11,6 +11,7 @@ using Cirkla.Shared.DTOs.Users;
 using Cirkla_API.Common.Constants;
 using Cirkla_API.Services.Authentication;
 using Cirkla_API.Services.TokenGenerator;
+using NSwag.Annotations;
 
 namespace Cirkla_API.Controllers
 {
@@ -21,6 +22,7 @@ namespace Cirkla_API.Controllers
     {
         [HttpPost]
         [Route("Signup")]
+        [OpenApiOperation("Signup")]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Signup(UserSignupDTO userSignupDTO)
@@ -33,6 +35,7 @@ namespace Cirkla_API.Controllers
 
         [HttpPost]
         [Route("Login")]
+        [OpenApiOperation("Login")]
         [ProducesResponseType(typeof(UserAuthResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)

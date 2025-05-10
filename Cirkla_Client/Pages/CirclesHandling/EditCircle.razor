@@ -35,7 +35,7 @@
     {
         try
         {
-            Circle = await Client.ApiCircleGetAsync(CircleId);
+            Circle = await Client.GetCircleByIdAsync(CircleId);
         }
         catch (ApiException ex)
         {
@@ -60,11 +60,11 @@
 
         Circle.UpdatedAt = DateTime.Now;
         Circle.UpdatedById = await CurrentUser.GetUserId();
-        Circle.UpdatedBy = await Client.ApiUserGetAsync(await CurrentUser.GetUserId());
+        Circle.UpdatedBy = await Client.GetUserByIdAsync(await CurrentUser.GetUserId());
 
         try
         {
-            await Client.ApiCirclePutAsync(Circle.Id, Circle);
+            await Client.UpdateCircleAsync(Circle.Id, Circle);
             SnackbarService.Success($"Successfully edited circle '{Circle.Name}'");
             NavigationManager.NavigateTo("/circles");
         }

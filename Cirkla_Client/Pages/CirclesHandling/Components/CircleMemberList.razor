@@ -44,7 +44,7 @@
 
     private async Task RefreshList()
     {
-        Circle = await Client.ApiCircleGetAsync(Circle.Id);
+        Circle = await Client.GetCircleByIdAsync(Circle.Id);
         await InvokeAsync(StateHasChanged);
     }
 }

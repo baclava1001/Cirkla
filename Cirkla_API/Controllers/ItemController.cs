@@ -3,6 +3,7 @@ using Cirkla_API.Services.Items;
 using Cirkla_DAL.Models;
 using Cirkla.Shared.DTOs.Items;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace Cirkla_API.Controllers
 {
@@ -13,7 +14,8 @@ namespace Cirkla_API.Controllers
 
         // TODO: Add modelstate validation in all controller methods
 
-        [HttpPost]
+        [HttpPost("items")]
+        [OpenApiOperation("CreateItem")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -25,7 +27,8 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpGet("ByUserId")]
+        [HttpGet("items/users/{ownerId}")]
+        [OpenApiOperation("GetAllItemsForUser")]
         [ProducesResponseType(typeof(IEnumerable<Item>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -38,7 +41,7 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpGet("All")]
+        [HttpGet("items")]
         [ProducesResponseType(typeof(IEnumerable<Item>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -51,7 +54,8 @@ namespace Cirkla_API.Controllers
         }
 
 
-        [HttpGet("{id:int}")]
+        [HttpGet("items/{id}")]
+        [OpenApiOperation("GetItemById")]
         [ProducesResponseType(typeof(Item), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -65,6 +69,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpPut("{id}")]
+        [OpenApiOperation("UpdateItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -78,6 +83,7 @@ namespace Cirkla_API.Controllers
 
 
         [HttpDelete("{id}")]
+        [OpenApiOperation("DeleteItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

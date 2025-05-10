@@ -101,7 +101,7 @@
     {
         try
         {
-            var borrowingResult = await Client.ApiTimeLineBorrowingTimeLineAsync(await CurrentUser.GetUserId());
+            var borrowingResult = await Client.GetActiveLoansForBorrowerAsync(await CurrentUser.GetUserId());
             return borrowingResult.ToList();
         }
         catch (ApiException ex)
@@ -118,7 +118,7 @@
     {
         try
         {
-            var sharingResult = await Client.ApiTimeLineSharingTimeLineAsync(await CurrentUser.GetUserId());
+            var sharingResult = await Client.GetActiveLoansForOwnerAsync(await CurrentUser.GetUserId());
             return sharingResult.ToList();
         }
         catch (ApiException ex)
@@ -135,7 +135,7 @@
     {
         try
         {
-            var response = await Client.ApiItemByUserIdAsync(await CurrentUser.GetUserId());
+            var response = await Client.GetAllItemsForUserAsync(await CurrentUser.GetUserId());
             return response.ToList();
         }
         catch (ApiException ex)

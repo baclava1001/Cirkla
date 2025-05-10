@@ -33,7 +33,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var users = await Client.ApiUserGetAsync();
+        var users = await Client.GetAllUsersAsync();
         AppUsers = users.OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
     }
 
@@ -54,7 +54,7 @@
             ExpiresAt = DateTime.Now.AddDays(7),
 
         };
-        await Client.MembershipRequestsPostAsync(joinRequest);
+        await Client.SendJoinRequestAsync(joinRequest);
         SnackbarService.Success($"Sent invitation to {SelectedUser.FullName}");
         MudDialog.Close();
     }

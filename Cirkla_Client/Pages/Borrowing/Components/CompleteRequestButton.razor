@@ -30,7 +30,7 @@
 
         try
         {
-            await Client.ApiBorrowingContractRequestCompleteAsync(Contract.Id.Value, contractUpdateDTO);
+            await Client.CompleteBorrowingRequestAsync(Contract.Id.Value, contractUpdateDTO);
             Console.WriteLine("Button component completed request successfully");
             NavigationManager.NavigateTo("/my-inventory");
         }

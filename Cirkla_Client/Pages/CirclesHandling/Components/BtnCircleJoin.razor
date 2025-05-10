@@ -31,7 +31,7 @@
         };
         try
         {
-            await Client.MembershipRequestsPostAsync(request);
+            await Client.SendJoinRequestAsync(request);
             SnackbarService.Success("Membership request sent");
         }
         catch (Exception ex)

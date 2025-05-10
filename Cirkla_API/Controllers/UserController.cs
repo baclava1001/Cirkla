@@ -3,6 +3,7 @@ using Cirkla_API.Services.Users;
 using Cirkla_DAL.Models;
 using Cirkla_DAL.Repositories.Users;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace Cirkla_API.Controllers
 {
@@ -11,6 +12,7 @@ namespace Cirkla_API.Controllers
     public class UserController(IUserService userService, ILogger<UserController> logger) : ControllerBase
     {
         [HttpPost]
+        [OpenApiOperation("CreateUser")]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -22,6 +24,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet]
+        [OpenApiOperation("GetAllUsers")]
         [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -34,6 +37,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpGet("{id}")]
+        [OpenApiOperation("GetUserById")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -46,6 +50,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpPut("{id}")]
+        [OpenApiOperation("UpdateUser")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -58,6 +63,7 @@ namespace Cirkla_API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [OpenApiOperation("DeleteUser")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

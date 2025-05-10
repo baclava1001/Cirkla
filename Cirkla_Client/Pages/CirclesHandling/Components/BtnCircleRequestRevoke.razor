@@ -25,7 +25,8 @@ Class="ml-auto">Revoke</MudButton>
         {
             if (Request is null)
             {
-                var userRequests = await Client.MembershipRequestsUserCircleAsync(await CurrentUser.GetUserId(), Circle.Id);
+                var userRequests =
+                    await Client.GetAllJoinRequestsForUserAndCircleAsync(await CurrentUser.GetUserId(), Circle.Id);
                 Request = userRequests.FirstOrDefault(r => r.CircleId == Circle?.Id);
             }
 
@@ -38,7 +39,7 @@ Class="ml-auto">Revoke</MudButton>
 
             Request.UpdatedByUserId = await CurrentUser.GetUserId();
             var requestUpdateDTO = await Mapper.MapToCircleRequestUpdateDTO(Request);
-            await Client.MembershipRequestsRevokeAsync(requestUpdateDTO.Id, requestUpdateDTO);
+            await Client.RevokeJoinRequestAsync(requestUpdateDTO.Id, requestUpdateDTO);
         }
         catch (ApiException ex)
         {

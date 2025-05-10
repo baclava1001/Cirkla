@@ -22,7 +22,7 @@
     {
         try
         {
-            Circle = await Client.ApiCircleGetAsync(CircleId);
+            Circle = await Client.GetCircleByIdAsync(CircleId);
         }
         catch (ApiException ex)
         {
