@@ -41,8 +41,10 @@ namespace Cirkla_Client
             builder.Services.AddScoped<IClient, Client>(sp =>
             {
                 var httpClient = sp.GetRequiredService<HttpClient>();
-                return new Client(httpClient);
-
+                var apiBaseUrl = sp.GetRequiredService<IConfiguration>()["ApiBaseUrl"];
+                var client = new Client(httpClient);
+                client.BaseUrl = apiBaseUrl;
+                return client;
             });
 
             builder.Services.AddSingleton<NotificationService>();
