@@ -132,7 +132,6 @@
 
     private async Task GetRequestDataFromApi()
     {
-        Console.WriteLine("RequestSummary component is getting Contract values from API...");
         try
         {
             Contract = await Client.ViewBorrowingRequestSummaryAsync(ContractId);

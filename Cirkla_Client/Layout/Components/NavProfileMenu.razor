@@ -1,0 +1,51 @@
+﻿@inject NavigationManager NavigationManager;
+@inject IAuthenticationService AuthenticationService;
+@inject SnackbarService SnackbarService;
+
+<MudMenu>
+    <ActivatorContent>
+        <NavProfile />
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem>
+            <span class="d-none d-lg-block" style="color: black;">Account</span>
+            <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-user fa-2xl" style="color: grey;" /></span>
+            <span class="d-block d-md-none"><i class="fa-solid fa-user fa-xl" style="color: grey;" /></span>
+        </MudMenuItem>
+        <MudMenuItem>
+            <a href="my-inventory" style="color: black;">
+                <span class="d-none d-lg-block">Inventory</span>
+                <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-warehouse fa-2xl" style="color: grey;" /></span>
+                <span class="d-block d-md-none"><i class="fa-solid fa-warehouse fa-xl" style="color: grey;" /></span>
+            </a>
+        </MudMenuItem>
+        <MudMenuItem>
+            <a href="/circles" style="color: black;">
+                <span class="d-none d-lg-block">My circles</span>
+                <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-users fa-2xl" style="color: grey;" /></span>
+                <span class="d-block d-md-none"><i class="fa-solid fa-users fa-xl" style="color: grey;" /></span>
+            </a>
+        </MudMenuItem>
+        <MudMenuItem OnClick="() => Logout()">
+            <span class="d-none d-lg-block" style="color: black">Logout</span>
+            <span class="d-none d-md-block d-lg-none"><i class="fa-solid fa-door-closed fa-2xl" style="color: grey;" /></span>
+            <span class="d-block d-md-none"><i class="fa-solid fa-door-closed fa-xl" style="color: grey;" /></span>
+        </MudMenuItem>
+    </ChildContent>
+</MudMenu>
+
+@code {
+    private async Task Logout()
+    {
+        try
+        {
+            await AuthenticationService.Logout();
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            SnackbarService.Error("Logout failed. Please try again.");
+            Console.WriteLine($"Logout failed: {ex.Message}");
+        }
+    }
+}
