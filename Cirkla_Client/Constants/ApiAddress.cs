@@ -1,4 +1,4 @@
-﻿namespace Cirkla_Client.Constants
+﻿namespace Cirkla.BlazorClient.Constants
 {
     public static class ApiAddress
     {

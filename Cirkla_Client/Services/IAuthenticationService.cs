@@ -1,6 +1,6 @@
 ﻿using Cirkla.ApiClient;
 
-namespace Cirkla_Client.Services
+namespace Cirkla.BlazorClient.Services
 {
     public interface IAuthenticationService
     {

@@ -1,6 +1,6 @@
 ﻿using Cirkla.ApiClient;
 
-namespace Cirkla_Client.ViewModels;
+namespace Cirkla.BlazorClient.ViewModels;
 
 public class InfoCardVM
 {

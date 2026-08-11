@@ -50,7 +50,7 @@ namespace Cirkla_API
 
             var app = builder.Build();
 
-            app.MapGet("/health", () => Results.Ok("API is running!"));
+            app.MapGet("/health", () => Results.Ok("Cirkla API is healthy and running!"));
 
             // Configure dbContext to apply migrations on startup
             if (app.Environment.IsProduction())

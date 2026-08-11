@@ -1,4 +1,4 @@
-﻿namespace Cirkla_Client.Services
+﻿namespace Cirkla.BlazorClient.Services
 {
     public class ComponentNotificationService
     {

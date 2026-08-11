@@ -1,10 +1,10 @@
 ﻿using Blazored.LocalStorage;
-using Cirkla_Client.Extensions;
-using Cirkla_Client.Providers;
+using Cirkla.BlazorClient.Extensions;
+using Cirkla.BlazorClient.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Cirkla_Client.Services
+namespace Cirkla.BlazorClient.Services
 {
     public class CurrentUserService(ILocalStorageService localStorage, JwtSecurityTokenHandler tokenHandler)
         : ApiAuthStateProvider(localStorage, tokenHandler)

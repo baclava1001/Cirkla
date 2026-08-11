@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 
-namespace Cirkla_Client.Services
+namespace Cirkla.BlazorClient.Services
 {
     public class SnackbarService(ISnackbar snackbar)
     {

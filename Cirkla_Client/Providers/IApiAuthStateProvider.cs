@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Cirkla_Client.Providers
+namespace Cirkla.BlazorClient.Providers
 {
     public interface IApiAuthStateProvider
     {

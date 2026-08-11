@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cirkla_API\Cirkla_API.csproj" />
+    <ProjectReference Include="..\Cirkla_API\Cirkla.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

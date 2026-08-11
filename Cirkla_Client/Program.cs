@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Cirkla.ApiClient;
-using Cirkla_Client.Constants;
-using Cirkla_Client.Services;
+using Cirkla.BlazorClient.Constants;
+using Cirkla.BlazorClient.Services;
 using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
-using Cirkla_Client.Providers;
+using Cirkla.BlazorClient.Providers;
 using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Cirkla_Client
+namespace Cirkla.BlazorClient
 {
     public class Program
     {

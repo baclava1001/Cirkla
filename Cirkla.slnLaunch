@@ -3,12 +3,14 @@
     "Name": "Start API and Client",
     "Projects": [
       {
-        "Path": "Cirkla_API\\Cirkla_API.csproj",
-        "Action": "Start"
+        "Path": "Cirkla_API\\Cirkla.API.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
       },
       {
-        "Path": "Cirkla_Client\\Cirkla_Client.csproj",
-        "Action": "Start"
+        "Path": "Cirkla_Client\\Cirkla.BlazorClient.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
       }
     ]
   }

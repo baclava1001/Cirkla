@@ -1,7 +1,7 @@
-﻿using Cirkla_Client.Constants;
+﻿using Cirkla.BlazorClient.Constants;
 using MudBlazor;
 
-namespace Cirkla_Client.ViewModels;
+namespace Cirkla.BlazorClient.ViewModels;
 
 public class TimeLineItemVM
 {

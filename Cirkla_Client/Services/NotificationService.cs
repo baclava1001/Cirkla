@@ -1,11 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cirkla.ApiClient;
-using Cirkla_Client.Constants;
+using Cirkla.BlazorClient.Constants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace Cirkla_Client.Services
+namespace Cirkla.BlazorClient.Services
 {
     public class NotificationService : IAsyncDisposable
     {

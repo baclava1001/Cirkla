@@ -1,9 +1,9 @@
 ﻿using Blazored.LocalStorage;
-using Cirkla_Client.Providers;
+using Cirkla.BlazorClient.Providers;
 using Cirkla.ApiClient;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Cirkla_Client.Services
+namespace Cirkla.BlazorClient.Services
 {
     /// <summary>
     /// This class is responsible for sending authentication requests and receiving and storing token.

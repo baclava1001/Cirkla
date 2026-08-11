@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cirkla_DAL\Cirkla_DAL.csproj" />
+    <ProjectReference Include="..\Cirkla_DAL\Cirkla.Data.csproj" />
     <ProjectReference Include="..\Cirkla.Shared\Cirkla.Shared.csproj" />
   </ItemGroup>
 

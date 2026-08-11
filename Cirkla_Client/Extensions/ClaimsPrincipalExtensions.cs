@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.IdentityModel.JsonWebTokens;
 
-namespace Cirkla_Client.Extensions;
+namespace Cirkla.BlazorClient.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
