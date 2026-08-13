@@ -1,4 +1,4 @@
-﻿using Cirkla_DAL.Models;
+﻿using Cirkla.Data.Models;
 using Cirkla.Shared.DTOs.CircleJoinRequests;
 using Cirkla.Shared.DTOs.Circles;
 using Cirkla.Shared.DTOs.ContractNotifications;
@@ -31,9 +31,9 @@ namespace Cirkla.Shared.Mappers
             };
         }
 
-        public static async Task<ApiClient.ItemCreateDTO> MapToItemCreateDTO(ApiClient.Item item)
+        public static async Task<Cirkla.ApiClient.ItemCreateDTO> MapToItemCreateDTO(ApiClient.Item item)
         {
-            return new ApiClient.ItemCreateDTO
+            return new Cirkla.ApiClient.ItemCreateDTO
             {
                 Name = item.Name,
                 Category = item.Category,
@@ -242,9 +242,9 @@ namespace Cirkla.Shared.Mappers
             return circleRequest;
         }
 
-        public static async Task<ApiClient.CircleJoinRequestUpdateDTO> MapToCircleRequestUpdateDTO(ApiClient.CircleJoinRequest circleRequest)
+        public static async Task<Cirkla.ApiClient.CircleJoinRequestUpdateDTO> MapToCircleRequestUpdateDTO(ApiClient.CircleJoinRequest circleRequest)
         {
-            var circleRequestUpdateDTO = new ApiClient.CircleJoinRequestUpdateDTO
+            var circleRequestUpdateDTO = new Cirkla.ApiClient.CircleJoinRequestUpdateDTO
             {
                 Id = circleRequest.Id,
                 CircleId = circleRequest.CircleId,

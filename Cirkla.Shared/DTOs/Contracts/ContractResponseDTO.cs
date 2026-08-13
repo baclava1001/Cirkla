@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cirkla_DAL.Models;
+using Cirkla.Data.Models;
 
 namespace Cirkla.Shared.DTOs.Contracts
 {

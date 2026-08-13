@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cirkla_DAL.Models.Enums;
+using Cirkla.Data.Models.Enums;
 using Cirkla.Shared.DTOs.Contracts;
 
 namespace Cirkla.Shared.Validators.Contracts

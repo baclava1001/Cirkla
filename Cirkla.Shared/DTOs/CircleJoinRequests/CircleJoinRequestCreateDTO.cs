@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cirkla_DAL.Models;
-using Cirkla_DAL.Models.Enums;
+using Cirkla.Data.Models;
+using Cirkla.Data.Models.Enums;
 
 namespace Cirkla.Shared.DTOs.CircleJoinRequests
 {

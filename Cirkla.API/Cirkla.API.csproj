@@ -1,0 +1,86 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>257e7bb9-f662-40b7-98a8-43bb0ba9798a</UserSecretsId>
+	<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Authorization\**" />
+    <Compile Remove="Repositories\**" />
+    <Compile Remove="Services\EntityChange\**" />
+    <Compile Remove="Services\Inbox\**" />
+    <Compile Remove="Services\Notifications\**" />
+    <Content Remove="Authorization\**" />
+    <Content Remove="Repositories\**" />
+    <Content Remove="Services\EntityChange\**" />
+    <Content Remove="Services\Inbox\**" />
+    <Content Remove="Services\Notifications\**" />
+    <EmbeddedResource Remove="Authorization\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <EmbeddedResource Remove="Services\EntityChange\**" />
+    <EmbeddedResource Remove="Services\Inbox\**" />
+    <EmbeddedResource Remove="Services\Notifications\**" />
+    <None Remove="Authorization\**" />
+    <None Remove="Repositories\**" />
+    <None Remove="Services\EntityChange\**" />
+    <None Remove="Services\Inbox\**" />
+    <None Remove="Services\Notifications\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\InboxController.cs" />
+    <Compile Remove="Controllers\ProfileController.cs" />
+    <Compile Remove="Services\IProfileService.cs" />
+    <Compile Remove="Services\ProfileService.cs" />
+    <Compile Remove="Services\Users\IProfileService.cs" />
+    <Compile Remove="Services\Users\ProfileService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
+    <PackageReference Include="NSwag.Generation.AspNetCore" Version="14.2.0" />
+    <PackageReference Include="NSwag.MSBuild" Version="14.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cirkla.Data\Cirkla.Data.csproj" />
+    <ProjectReference Include="..\Cirkla.Data\Cirkla.Data.csproj" />
+    <ProjectReference Include="..\Cirkla.Shared\Cirkla.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\TokenGenerator\" />
+    <Folder Include="Startup\" />
+  </ItemGroup>
+
+	<!--
+<Target Name="NSwag" AfterTargets="Build">
+		<Exec Command="$(NSwagExe) aspnetcore2openapi /assembly:$(TargetDir)Cirkla.API.dll /output:swagger.json" />
+		<Exec Command="$(NSwagExe) openapi2tsclient /input:swagger.json /output:Scripts/MyController.ts" />
+	</Target>
+
+	<Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' ">
+		<Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net80) run nswag.json /variables:Configuration=$(Configuration)" />
+	</Target>
+	-->
+</Project>

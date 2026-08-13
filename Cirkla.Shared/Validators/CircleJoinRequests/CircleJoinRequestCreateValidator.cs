@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
-using Cirkla_DAL.Models.Enums;
+using Cirkla.Data.Models.Enums;
 using Cirkla.Shared.DTOs.CircleJoinRequests;
 using FluentValidation;
 using Cirkla.Shared.DTOs.CircleJoinRequests;

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Cirkla_DAL.Models;
-using Cirkla_DAL.Models.Enums;
+using Cirkla.Data.Models;
+using Cirkla.Data.Models.Enums;
 
 namespace Cirkla.Shared.DTOs.Contracts
 {

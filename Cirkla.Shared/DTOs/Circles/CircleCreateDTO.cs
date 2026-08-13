@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Cirkla_DAL.Models;
+using Cirkla.Data.Models;
 
 namespace Cirkla.Shared.DTOs.Circles;
 

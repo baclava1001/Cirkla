@@ -1,5 +1,5 @@
-﻿using Cirkla_DAL.Models.Enums;
-using Cirkla_DAL.Repositories.Contracts;
+﻿using Cirkla.Data.Models.Enums;
+using Cirkla.Data.Repositories.Contracts;
 using FluentValidation;
 using Cirkla.Shared.DTOs.Contracts;
 

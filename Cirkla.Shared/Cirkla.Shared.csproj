@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ApiClient\Cirkla.ApiClient.csproj" />
-    <ProjectReference Include="..\Cirkla_DAL\Cirkla.Data.csproj" />
+    <ProjectReference Include="..\Cirkla.ApiClient\Cirkla.ApiClient.csproj" />
+    <ProjectReference Include="..\Cirkla.Data\Cirkla.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

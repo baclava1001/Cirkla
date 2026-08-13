@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.7.11911.148 stable
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.API", "Cirkla_API\Cirkla.API.csproj", "{DBF5C2A5-D65B-44CC-9963-61D03CEAE090}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.API", "Cirkla.API\Cirkla.API.csproj", "{DBF5C2A5-D65B-44CC-9963-61D03CEAE090}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.Data", "Cirkla_DAL\Cirkla.Data.csproj", "{B9E00E8A-C17A-4943-BB23-779263B85330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.Data", "Cirkla.Data\Cirkla.Data.csproj", "{B9E00E8A-C17A-4943-BB23-779263B85330}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.BlazorClient", "Cirkla_Client\Cirkla.BlazorClient.csproj", "{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.BlazorClient", "Cirkla.BlazorClient\Cirkla.BlazorClient.csproj", "{B8C4B1C8-552D-4C47-9D9C-82D63FE457AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.ApiClient", "ApiClient\Cirkla.ApiClient.csproj", "{81691887-3FEE-4326-8C9C-9741187E56B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.ApiClient", "Cirkla.ApiClient\Cirkla.ApiClient.csproj", "{81691887-3FEE-4326-8C9C-9741187E56B6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cirkla.Shared", "Cirkla.Shared\Cirkla.Shared.csproj", "{36B2356C-0254-4863-9FCC-9CCBD5E79C02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cirkla.Tests", "CirklaApi.Test\Cirkla.Tests.csproj", "{845BBA1A-CB90-4E46-8484-5D84972854F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cirkla.Tests", "Cirkla.Tests\Cirkla.Tests.csproj", "{845BBA1A-CB90-4E46-8484-5D84972854F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
